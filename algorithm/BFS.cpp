@@ -46,8 +46,6 @@ std::vector<int> bfsShortestPath(const Graph &graph, const int startNode, const 
     queue.push(startNode);
     visited.insert(startNode);
 
-    int previousNode;
-
     bool found = false;
 
     while (!queue.empty()) {

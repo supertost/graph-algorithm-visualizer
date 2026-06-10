@@ -3,6 +3,7 @@
 
 #include "algorithm/Graph.hpp"
 #include "algorithm/BFS.hpp"
+#include "algorithm/DFS.hpp"
 
 int main() {
 
@@ -31,7 +32,7 @@ int main() {
         std::cout << node << " ";
     }
 
-    std::cout << "\n";
+    std::cout << "\n\n";
 
 
     int startNode = 10;
@@ -44,7 +45,31 @@ int main() {
         std::cout << node << " ";
     }
 
-    std::cout << "\n";
+    std::cout << "\n\n";
+
+
+    std::vector<int> traversal3 = dfs(graph, 10);
+
+    std::cout << "DFS traversal: ";
+
+    for (int node : traversal3) {
+        std::cout << node << " ";
+    }
+
+    std::cout << "\n\n";
+
+
+    startNode = 10;
+    destNode = 7;
+    std::vector<int> traversal4 = dfsPath(graph, startNode, destNode);
+
+    std::cout << "DFS path from " << startNode << " to " << destNode << " is: ";
+
+    for (int node : traversal4) {
+        std::cout << node << " ";
+    }
+
+    std::cout << "\n\n";
     
     return 0;
 }

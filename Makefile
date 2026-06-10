@@ -1,4 +1,4 @@
-files = main.cpp algorithm/Graph.cpp algorithm/BFS.cpp
+files = main.cpp algorithm/Graph.cpp algorithm/BFS.cpp algorithm/DFS.cpp
 
 all:
-	g++ $(files) -o main
+	clang++ $(files) -o main -Wall -Wextra -Werror
