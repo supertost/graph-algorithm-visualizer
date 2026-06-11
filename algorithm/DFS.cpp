@@ -7,11 +7,11 @@ void dfs(const Graph &graph, const int currentNode, std::unordered_set<int> &vis
     visited.insert(currentNode);
     traversal.push_back(currentNode);
 
-    for (int edge : graph.getEdges(currentNode)) {
+    for (Edge edge : graph.getEdges(currentNode)) {
 
-        if (visited.find(edge) == visited.end()) {
+        if (visited.find(edge.dest) == visited.end()) {
 
-            dfs(graph, edge, visited, traversal);
+            dfs(graph, edge.dest, visited, traversal);
         }
     }
 }
@@ -36,12 +36,12 @@ bool dfsPathHelper(const Graph &graph, const int currentNode, const int destNode
     if (currentNode == destNode)
         return true;
 
-    for (int edge : graph.getEdges(currentNode)) {
+    for (Edge edge : graph.getEdges(currentNode)) {
 
-        if (visited.find(edge) == visited.end()) {
+        if (visited.find(edge.dest) == visited.end()) {
 
-            traversal[edge] = currentNode;
-            if (dfsPathHelper(graph, edge, destNode, visited, traversal))
+            traversal[edge.dest] = currentNode;
+            if (dfsPathHelper(graph, edge.dest, destNode, visited, traversal))
                 return true;
         }
     }

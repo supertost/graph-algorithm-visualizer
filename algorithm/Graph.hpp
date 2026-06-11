@@ -4,23 +4,30 @@
 #include <vector>
 #include <map>
 
+struct Edge {
+    int dest;
+    int weight;
+};
+
+
 class Graph {
 
     private:
         
         int nodeAmount;
-        std::map<int, std::vector<int>> graph;
+        std::map<int, std::vector<Edge>> graph;
 
     public:
         
         Graph();
 
         int getNodeAmount() const;
-        int getEdgeCount(int node) const;
-        std::vector<int> getEdges(int node) const;
+        int getEdgeCount(const int node) const;
+        std::vector<Edge> getEdges(const int node) const;
 
-        void addEdge(int source, int destination);
-        void addNode(int node);
+        void addEdge(const int source, const int destination);
+        void addEdge(const int source, const int destination, const int weight);
+        bool addNode(const int node);
 };
 
 #endif

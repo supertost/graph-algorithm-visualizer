@@ -22,13 +22,13 @@ std::vector<int> bfs(const Graph &graph, const int startNode) {
 
         traversal.push_back(currentNode);
         
-        std::vector<int> edges = graph.getEdges(currentNode);
+        std::vector<Edge> edges = graph.getEdges(currentNode);
         
-        for (int edge : edges) {
+        for (const Edge &edge : edges) {
             
-            if (visited.find(edge) == visited.end()) {
-                visited.insert(edge);
-                queue.push(edge);
+            if (visited.find(edge.dest) == visited.end()) {
+                visited.insert(edge.dest);
+                queue.push(edge.dest);
             }
         }
     }
@@ -54,21 +54,21 @@ std::vector<int> bfsShortestPath(const Graph &graph, const int startNode, const 
         queue.pop();
 
         
-        std::vector<int> edges = graph.getEdges(currentNode);
+        std::vector<Edge> edges = graph.getEdges(currentNode);
         
-        for (int edge : edges) {
+        for (const Edge &edge : edges) {
             
-            if (visited.find(edge) == visited.end()) {
+            if (visited.find(edge.dest) == visited.end()) {
 
-                traversal[edge] = currentNode;
+                traversal[edge.dest] = currentNode;
 
-                if (edge == destNode) {
+                if (edge.dest == destNode) {
                     found = true;
                     break;
                 }
 
-                visited.insert(edge);
-                queue.push(edge);
+                visited.insert(edge.dest);
+                queue.push(edge.dest);
             }
         }
 
