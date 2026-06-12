@@ -1,16 +1,69 @@
 #include "menu.hpp"
 
+unsigned int updateTextScale(sf::RenderWindow &window, unsigned int size) {
+
+    sf::Vector2u windowSize = window.getSize();
+
+    float scaleX = static_cast<float>(windowSize.x) / 1280.0f;
+    float scaleY = static_cast<float>(windowSize.y) / 720.0f;
+
+    float scale = std::min(scaleX, scaleY);
+
+    return static_cast<unsigned int>(size * scale);
+}
+
+void updateMenuLayout(sf::RenderWindow &window, Label &title, Button &graphButton, Button &bfsButton, Button &dfsButton) {
+
+    sf::Vector2u windowSize = window.getSize();
+
+    float windowWidth = static_cast<float>(windowSize.x);
+    float windowHeight = static_cast<float>(windowSize.y);
+
+    // Title text
+    title.setCharacterSize(updateTextScale(window, 50));
+    title.setPosition(sf::Vector2f(windowWidth * 0.03f, windowHeight * 0.03f));
+
+    // Menu nav buttons
+    sf::Vector2f navButtonSize(windowWidth * 0.20f, windowHeight * 0.10f);
+
+    
+    // Menu nav buttons positions
+    sf::Vector2f graphEditorPosition(windowWidth * 0.03f, windowHeight * 0.2f);
+    sf::Vector2f BFSPosition(windowWidth * 0.03f, windowHeight * 0.2f + navButtonSize.y * 1.0f + windowHeight * 0.04f * 1.0f);
+    sf::Vector2f DFSPosition(windowWidth * 0.03f, windowHeight * 0.2f + navButtonSize.y * 2.0f + windowHeight * 0.04f * 2.0f);
+
+
+    //sf::Vector2f navButtonPosition(windowWidth * 0.5f - navButtonSize.x / 2.0f, windowHeight * 0.70f);
+
+    graphButton.adjustScaling(navButtonSize, graphEditorPosition, updateTextScale(window, graphButton.textPunto));
+    bfsButton.adjustScaling(navButtonSize, BFSPosition, updateTextScale(window, bfsButton.textPunto));
+    dfsButton.adjustScaling(navButtonSize, DFSPosition, updateTextScale(window, dfsButton.textPunto));
+}
+
+
 Screen displayMenu(sf::RenderWindow &window, sf::Font &font) {
 
     
     // Title Text
-    Label title("Graph Algorithm Visualizer", font, 50, sf::Text::Bold, sf::Color::White, sf::Vector2f(40.0f, 30.f));
+    Label title("Graph Algorithm Visualizer", font, 50, sf::Text::Bold, sf::Color(255, 255, 255, 255), sf::Vector2f(40.0f, 30.f)); // sf::Color için r g b ve alpha değerleri var aynı zamanda sf::Color::Transparent da var şeffaflık için
 
     // Graph Edit Button
     sf::Vector2f buttonSize(250.0f, 70.0f);
-    sf::Vector2f buttonPosition(640.0f - buttonSize.x / 2.0f, 500.0f);
+    sf::Vector2f buttonPosition(0.0f, 0.0f);
 
     Button graphButton(buttonSize, buttonPosition, sf::Color::White, "Graph Editor", font, 30, sf::Color::Black);
+    Button bfsButton(buttonSize, buttonPosition, sf::Color::White, "Run BFS", font, 30, sf::Color::Black);
+    Button dfsButton(buttonSize, buttonPosition, sf::Color::White, "Run DFS", font, 30, sf::Color::Black);
+
+    
+
+    sf::Vector2u windowSize = window.getSize();
+    float windowWidth = static_cast<float>(windowSize.x);
+    float windowHeight = static_cast<float>(windowSize.y);
+    
+    sf::FloatRect visibleArea(0.0f, 0.0f, static_cast<float>(windowWidth), static_cast<float>(windowHeight));
+    window.setView(sf::View(visibleArea));
+    updateMenuLayout(window, title, graphButton, bfsButton, dfsButton);
 
     while (window.isOpen()) {
         sf::Event event;
@@ -24,6 +77,15 @@ Screen displayMenu(sf::RenderWindow &window, sf::Font &font) {
                     window.close();
                     return Screen::Exit;
                     break;
+
+                case sf::Event::Resized: {
+                    
+                    sf::FloatRect visibleArea(0.0f, 0.0f, static_cast<float>(event.size.width), static_cast<float>(event.size.height));
+
+                    window.setView(sf::View(visibleArea));
+                    updateMenuLayout(window, title, graphButton, bfsButton, dfsButton);
+                    break;
+                }
 
                 case sf::Event::KeyPressed:
 
@@ -56,6 +118,8 @@ Screen displayMenu(sf::RenderWindow &window, sf::Font &font) {
         title.drawLabel(window);
         // Graph button
         graphButton.drawButton(window);
+        bfsButton.drawButton(window);
+        dfsButton.drawButton(window);
 
         window.display();
     }

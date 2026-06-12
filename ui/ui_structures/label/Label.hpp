@@ -14,6 +14,12 @@ class Label {
         ~Label();
 
         void drawLabel(sf::RenderWindow &window);
+
+        // For Scaling when resizing window
+        void setPosition(sf::Vector2f position);
+        void setCharacterSize(unsigned int charSize);
+
+        void adjustScaling(sf::Vector2f position, unsigned int charSize);
 };
 
 

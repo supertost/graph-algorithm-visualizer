@@ -15,7 +15,24 @@ void Label::drawLabel(sf::RenderWindow &window) {
     window.draw(this->text);
 }
 
+
+void Label::setPosition(sf::Vector2f position) {
+
+    this->text.setPosition(position);
+}
+
+void Label::setCharacterSize(unsigned int charSize) {
+
+    this->text.setCharacterSize(charSize);
+}
+
+void Label::adjustScaling(sf::Vector2f position, unsigned int charSize) {
+
+    setPosition(position);
+    setCharacterSize(charSize);
+}
+
 Label::~Label() {
 
-    
+
 }

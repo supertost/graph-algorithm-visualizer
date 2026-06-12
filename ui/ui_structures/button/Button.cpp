@@ -1,6 +1,6 @@
 #include "Button.hpp"
 
-Button::Button(sf::Vector2f size, sf::Vector2f position, sf::Color buttonCol, const std::string &text, const sf::Font &textFont, int textPunto, sf::Color textColor) {
+Button::Button(sf::Vector2f size, sf::Vector2f position, sf::Color buttonCol, const std::string &text, const sf::Font &textFont, unsigned int textPunto, sf::Color textColor) {
 
     this->size = size;
     this->position = position;
@@ -9,6 +9,7 @@ Button::Button(sf::Vector2f size, sf::Vector2f position, sf::Color buttonCol, co
     this->shape.setSize(size);
     this->shape.setPosition(position);
     
+    this->textPunto = textPunto;
     this->text.setFont(textFont);
     this->text.setString(text);
     this->text.setFillColor(textColor);
@@ -35,6 +36,34 @@ void Button::drawButton(sf::RenderWindow &window) {
 bool Button::isClicked(sf::Vector2f mousePosition) const {
     
     return shape.getGlobalBounds().contains(mousePosition);
+}
+
+
+void Button::setSize(sf::Vector2f size) {
+
+    this->size = size;
+    this->shape.setSize(size);
+    centerText();
+}
+
+void Button::setPosition(sf::Vector2f position) {
+
+    this->position = position;
+    this->shape.setPosition(position);
+    centerText();
+}
+
+void Button::setCharacterSize(unsigned int size) {
+
+    this->text.setCharacterSize(size);
+    centerText();
+}
+
+void Button::adjustScaling(sf::Vector2f size, sf::Vector2f position, int charSize) {
+
+    setSize(size);
+    setPosition(position);
+    setCharacterSize(charSize);
 }
 
 Button::~Button()
