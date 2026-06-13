@@ -13,6 +13,10 @@ class Textbox {
         std::string input = "";
         sf::RectangleShape shape;
 
+        sf::Color activeTextboxColor = sf::Color::Black;
+        sf::Color activeTextColor = sf::Color::Blue;
+        sf::Color activeOutlineColor = sf::Color::Blue;
+
         bool active = false;
 
         sf::Color textboxColor;
@@ -24,14 +28,22 @@ class Textbox {
         void positionText();
 
     public:
+        // UPDATE FUNCTIONS FOR ALL CONSTRUCTOR TYPES
         Textbox(sf::Vector2f size, sf::Vector2f position, const sf::Font &font, unsigned int characterSize, sf::Color textboxColor, sf::Color outlineColor, float outlineThickness, sf::Color textColor);
         Textbox(sf::Vector2f size, sf::Vector2f position, const sf::Font &font, unsigned int characterSize, sf::Color textboxColor, sf::Color outlineColor, float outlineThickness, sf::Color textColor, std::string placeholder);
+        Textbox(sf::Vector2f size, sf::Vector2f position, const sf::Font &font, unsigned int characterSize, sf::Color textboxColor, sf::Color outlineColor, float outlineThickness, sf::Color textColor, std::string placeholder, sf::Color activeTextboxColor, sf::Color activeTextColor, sf::Color activeOutlineColor);
         ~Textbox();
 
         void handleEvent(const sf::Event &event, const sf::RenderWindow &window);
         void setActive(sf::Color textboxColor, sf::Color outlineColor, sf::Color textColor);
 
         void drawTextbox(sf::RenderWindow &window);
+
+        // Getters
+        sf::Color getTextboxColor();
+        sf::Color getOutlineColor();
+        sf::Color getTextColor();
+        std::string getTextContent();
 };
 
 #endif

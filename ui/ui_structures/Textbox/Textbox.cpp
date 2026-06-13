@@ -43,6 +43,33 @@ Textbox::Textbox(sf::Vector2f size, sf::Vector2f position, const sf::Font &font,
     positionText();
 }
 
+Textbox::Textbox(sf::Vector2f size, sf::Vector2f position, const sf::Font &font, unsigned int characterSize, sf::Color textboxColor, sf::Color outlineColor, float outlineThickness, sf::Color textColor, std::string placeholder, sf::Color activeTextboxColor, sf::Color activeTextColor, sf::Color activeOutlineColor) {
+
+    this->shape.setSize(size);
+    this->shape.setPosition(position);
+    this->shape.setFillColor(textboxColor);
+    this->shape.setOutlineColor(outlineColor);
+    this->shape.setOutlineThickness(outlineThickness);
+
+    this->text.setFont(font);
+    this->text.setCharacterSize(characterSize);
+    this->text.setFillColor(textColor);
+    this->characterSize = characterSize;
+
+    this->placeholder = placeholder;
+    this->text.setString(placeholder);
+
+    this->textboxColor = textboxColor;
+    this->textColor = textColor;
+    this->outlineColor = outlineColor;
+
+    this->activeTextboxColor = activeTextboxColor;
+    this->activeTextColor = activeTextColor;
+    this->activeOutlineColor = activeOutlineColor;
+
+    positionText();
+}
+
 void Textbox::positionText() {
 
     sf::FloatRect buttonBounds = this->shape.getGlobalBounds();
@@ -88,7 +115,7 @@ void Textbox::handleEvent(const sf::Event &event, const sf::RenderWindow &window
                 sf::Vector2f mousePosition = window.mapPixelToCoords(sf::Vector2i(event.mouseButton.x, event.mouseButton.y));
 
                 this->active = shape.getGlobalBounds().contains(mousePosition);
-                setActive(sf::Color::Transparent, sf::Color::Blue, sf::Color::Blue);
+                setActive(this->activeTextboxColor, this->activeOutlineColor, this->activeTextColor);
 
                 std::string currentText = this->text.getString();
 
@@ -132,6 +159,25 @@ void Textbox::handleEvent(const sf::Event &event, const sf::RenderWindow &window
         default:
             break;
     }
+}
+
+
+// Getters and setters
+sf::Color Textbox::getTextboxColor() {
+
+    return this->textboxColor;
+}
+sf::Color Textbox::getOutlineColor() {
+
+    return this->outlineColor;
+}
+sf::Color Textbox::getTextColor() {
+
+    return this->textColor;
+}
+std::string Textbox::getTextContent() {
+ 
+    return this->text.getString();
 }
 
 Textbox::~Textbox()
