@@ -1,17 +1,5 @@
 #include "menu.hpp"
 
-unsigned int updateTextScale(sf::RenderWindow &window, unsigned int size) {
-
-    sf::Vector2u windowSize = window.getSize();
-
-    float scaleX = static_cast<float>(windowSize.x) / 1280.0f;
-    float scaleY = static_cast<float>(windowSize.y) / 720.0f;
-
-    float scale = std::min(scaleX, scaleY);
-
-    return static_cast<unsigned int>(size * scale);
-}
-
 void updateMenuLayout(sf::RenderWindow &window, Label &title, Button &graphButton, Button &bfsButton, Button &dfsButton) {
 
     sf::Vector2u windowSize = window.getSize();
@@ -51,9 +39,9 @@ Screen displayMenu(sf::RenderWindow &window, sf::Font &font) {
     sf::Vector2f buttonSize(250.0f, 70.0f);
     sf::Vector2f buttonPosition(0.0f, 0.0f);
 
-    Button graphButton(buttonSize, buttonPosition, sf::Color::White, "Graph Editor", font, 30, sf::Color::Black);
-    Button bfsButton(buttonSize, buttonPosition, sf::Color::White, "Run BFS", font, 30, sf::Color::Black);
-    Button dfsButton(buttonSize, buttonPosition, sf::Color::White, "Run DFS", font, 30, sf::Color::Black);
+    Button graphButton(buttonSize, buttonPosition, sf::Color::Transparent, sf::Color::White, 2.0f, "Graph Editor", font, 30, sf::Color::White);
+    Button bfsButton(buttonSize, buttonPosition, sf::Color::Transparent, sf::Color::White, 2.0f, "Run BFS", font, 30, sf::Color::White);
+    Button dfsButton(buttonSize, buttonPosition, sf::Color::Transparent, sf::Color::White, 2.0f, "Run DFS", font, 30, sf::Color::White);
 
     
 
@@ -100,9 +88,9 @@ Screen displayMenu(sf::RenderWindow &window, sf::Font &font) {
                     
                     if (event.mouseButton.button == sf::Mouse::Left) {
 
-                        sf::Vector2f mousePosition(static_cast<float>(event.mouseButton.x), static_cast<float>(event.mouseButton.y));
+                        sf::Vector2f mousePositionClick(static_cast<float>(event.mouseButton.x), static_cast<float>(event.mouseButton.y));
 
-                        if (graphButton.isClicked(mousePosition))
+                        if (graphButton.isClicked(mousePositionClick))
                             return Screen::Graph;
                     }
 
@@ -116,10 +104,17 @@ Screen displayMenu(sf::RenderWindow &window, sf::Font &font) {
         window.clear(sf::Color::Black);
 
         title.drawLabel(window);
-        // Graph button
+
+        sf::Vector2f mousePosition(static_cast<float>(event.mouseMove.x), static_cast<float>(event.mouseMove.y));
+
         graphButton.drawButton(window);
+        graphButton.hoverState(mousePosition, sf::Color::White, sf::Color::Black);
+        
         bfsButton.drawButton(window);
+        bfsButton.hoverState(mousePosition, sf::Color::White, sf::Color::Black);
+
         dfsButton.drawButton(window);
+        dfsButton.hoverState(mousePosition, sf::Color::White, sf::Color::Black);
 
         window.display();
     }

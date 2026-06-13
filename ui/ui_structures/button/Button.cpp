@@ -5,9 +5,36 @@ Button::Button(sf::Vector2f size, sf::Vector2f position, sf::Color buttonCol, co
     this->size = size;
     this->position = position;
     
+    this->buttonColor = buttonCol;
+    this->textColor = textColor;
+
     this->shape.setFillColor(buttonCol);
     this->shape.setSize(size);
     this->shape.setPosition(position);
+    
+    this->textPunto = textPunto;
+    this->text.setFont(textFont);
+    this->text.setString(text);
+    this->text.setFillColor(textColor);
+    this->text.setCharacterSize(textPunto);
+
+    centerText();
+}
+
+Button::Button(sf::Vector2f size, sf::Vector2f position, sf::Color buttonCol, sf::Color outlineCol, float outlineThickness, const std::string &text, const sf::Font &textFont, unsigned int textPunto, sf::Color textColor) {
+
+    this->size = size;
+    this->position = position;
+
+    this->buttonColor = buttonCol;
+    this->textColor = textColor;
+    
+    this->shape.setFillColor(buttonCol);
+    this->shape.setSize(size);
+    this->shape.setPosition(position);
+
+    this->shape.setOutlineColor(outlineCol);
+    this->shape.setOutlineThickness(outlineThickness);
     
     this->textPunto = textPunto;
     this->text.setFont(textFont);
@@ -36,6 +63,50 @@ void Button::drawButton(sf::RenderWindow &window) {
 bool Button::isClicked(sf::Vector2f mousePosition) const {
     
     return shape.getGlobalBounds().contains(mousePosition);
+}
+
+void Button::hoverState(sf::Vector2f mousePosition, sf::Color backgroundCol, sf::Color textColor) {
+
+    bool currentHovered = this->shape.getGlobalBounds().contains(mousePosition);
+
+    if (currentHovered == this->hovered)
+        return;
+
+    this->hovered = currentHovered;
+
+    if (this->hovered) {
+
+        this->shape.setFillColor(backgroundCol);
+        this->text.setFillColor(textColor);
+    }
+
+    else {
+        
+        this->shape.setFillColor(this->buttonColor);
+        this->text.setFillColor(this->textColor);
+    }
+}
+
+void Button::clickState(sf::Vector2f mousePosition, sf::Color backgroundCol, sf::Color textColor) {
+
+    bool currentClicked = this->shape.getGlobalBounds().contains(mousePosition);
+
+    if (currentClicked == this->clicked)
+        return;
+
+    this->clicked = currentClicked;
+
+    if (this->clicked) {
+
+        this->shape.setFillColor(backgroundCol);
+        this->text.setFillColor(textColor);
+    }
+
+    else {
+        
+        this->shape.setFillColor(this->buttonColor);
+        this->text.setFillColor(this->textColor);
+    }
 }
 
 
