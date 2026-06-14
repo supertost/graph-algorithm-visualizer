@@ -9,7 +9,7 @@ void updateMenuLayout(sf::RenderWindow &window, Label &title, Button &graphButto
 
     // Title text
     title.setCharacterSize(updateTextScale(window, 50));
-    title.setPosition(sf::Vector2f(windowWidth * 0.03f, windowHeight * 0.03f));
+    title.setPosition(sf::Vector2f(windowWidth * 0.03f, windowHeight * 0.06f));
 
     // Menu nav buttons
     sf::Vector2f navButtonSize(windowWidth * 0.20f, windowHeight * 0.10f);
@@ -29,29 +29,32 @@ void updateMenuLayout(sf::RenderWindow &window, Label &title, Button &graphButto
 }
 
 
-Screen displayMenu(sf::RenderWindow &window, sf::Font &font) {
+Screen displayMenu(sf::RenderWindow &window, sf::Font &font, sf::RectangleShape &rectRing) {
 
-    
+    sf::Vector2u windowSize = window.getSize();
+    float windowWidth = static_cast<float>(windowSize.x);
+    float windowHeight = static_cast<float>(windowSize.y);
+
+
     // Title Text
-    Label title("Graph Algorithm Visualizer", font, 50, sf::Text::Bold, sf::Color(255, 255, 255, 255), sf::Vector2f(40.0f, 30.f)); // sf::Color için r g b ve alpha değerleri var aynı zamanda sf::Color::Transparent da var şeffaflık için
+    Label title("Graph Algorithm Visualizer", font, 50, sf::Text::Bold, sf::Color(237, 98, 28), sf::Vector2f(40.0f, 30.f)); // sf::Color için r g b ve alpha değerleri var aynı zamanda sf::Color::Transparent da var şeffaflık için
 
     // Graph Edit Button
     sf::Vector2f buttonSize(250.0f, 70.0f);
     sf::Vector2f buttonPosition(0.0f, 0.0f);
 
-    Button graphButton(buttonSize, buttonPosition, sf::Color::Transparent, sf::Color::White, 2.0f, "Graph Editor", font, 30, sf::Color::White);
-    Button bfsButton(buttonSize, buttonPosition, sf::Color::Transparent, sf::Color::White, 2.0f, "Run BFS", font, 30, sf::Color::White);
-    Button dfsButton(buttonSize, buttonPosition, sf::Color::Transparent, sf::Color::White, 2.0f, "Run DFS", font, 30, sf::Color::White);
+    Button graphButton(buttonSize, buttonPosition, sf::Color::Transparent, sf::Color(237, 98, 28), 2.0f, "Graph Editor", font, 30, sf::Color(237, 98, 28));
+    Button bfsButton(buttonSize, buttonPosition, sf::Color::Transparent, sf::Color(237, 98, 28), 2.0f, "Run BFS", font, 30, sf::Color(237, 98, 28));
+    Button dfsButton(buttonSize, buttonPosition, sf::Color::Transparent, sf::Color(237, 98, 28), 2.0f, "Run DFS", font, 30, sf::Color(237, 98, 28));
 
     
 
-    sf::Vector2u windowSize = window.getSize();
-    float windowWidth = static_cast<float>(windowSize.x);
-    float windowHeight = static_cast<float>(windowSize.y);
     
     sf::FloatRect visibleArea(0.0f, 0.0f, static_cast<float>(windowWidth), static_cast<float>(windowHeight));
     window.setView(sf::View(visibleArea));
     updateMenuLayout(window, title, graphButton, bfsButton, dfsButton);
+
+    updateBorderRing(window, rectRing);
 
     while (window.isOpen()) {
         sf::Event event;
@@ -72,6 +75,7 @@ Screen displayMenu(sf::RenderWindow &window, sf::Font &font) {
 
                     window.setView(sf::View(visibleArea));
                     updateMenuLayout(window, title, graphButton, bfsButton, dfsButton);
+                    updateBorderRing(window, rectRing);
                     break;
                 }
 
@@ -103,18 +107,22 @@ Screen displayMenu(sf::RenderWindow &window, sf::Font &font) {
 
         window.clear(sf::Color::Black);
 
+        window.draw(rectRing);
+
+
         title.drawLabel(window);
 
         sf::Vector2f mousePosition(static_cast<float>(event.mouseMove.x), static_cast<float>(event.mouseMove.y));
 
         graphButton.drawButton(window);
-        graphButton.hoverState(mousePosition, sf::Color::White, sf::Color::Black);
+        graphButton.hoverState(mousePosition, sf::Color(237, 98, 28), sf::Color::Black);
         
         bfsButton.drawButton(window);
-        bfsButton.hoverState(mousePosition, sf::Color::White, sf::Color::Black);
+        bfsButton.hoverState(mousePosition, sf::Color(237, 98, 28), sf::Color::Black);
 
         dfsButton.drawButton(window);
-        dfsButton.hoverState(mousePosition, sf::Color::White, sf::Color::Black);
+        dfsButton.hoverState(mousePosition, sf::Color(237, 98, 28), sf::Color::Black);
+
 
         window.display();
     }

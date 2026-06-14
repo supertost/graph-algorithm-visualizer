@@ -109,6 +109,14 @@ void Button::clickState(sf::Vector2f mousePosition, sf::Color backgroundCol, sf:
     }
 }
 
+void Button::setOriginCenter() {
+
+    sf::FloatRect bounds = this->shape.getLocalBounds();
+
+    this->shape.setOrigin(bounds.left + bounds.width / 2.0f, bounds.top + bounds.height / 2.0f);
+    centerText();
+}
+
 
 void Button::setSize(sf::Vector2f size) {
 

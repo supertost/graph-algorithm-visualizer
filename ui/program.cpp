@@ -3,13 +3,35 @@
 #include "screens/menu.hpp"
 #include "screens/graphEditor.hpp"
 
+void updateBorderRing(sf::RenderWindow &window, sf::RectangleShape &rectRing) {
+
+    sf::Vector2u windowSize = window.getSize();
+
+    float windowWidth = static_cast<float>(windowSize.x);
+    float windowHeight = static_cast<float>(windowSize.y);
+
+    rectRing.setSize(sf::Vector2f(windowWidth * 0.98f, windowHeight * 0.97f));
+    sf::FloatRect rectRingBounds = rectRing.getLocalBounds();
+
+    rectRing.setOrigin(rectRingBounds.left + rectRingBounds.width / 2.0f, rectRingBounds.top + rectRingBounds.height / 2.0f);
+    rectRing.setPosition(windowWidth / 2.0f,  windowHeight / 2.0f);
+}
+
+
 int main() {
     sf::RenderWindow window(sf::VideoMode(1280, 720), "Graph Algorithm Visualizer");
 
     // Setting up font
     sf::Font font;
-    if (!font.loadFromFile("ui/fonts/AdwaitaSans-Regular.ttf"))
+    if (!font.loadFromFile("ui/fonts/Futura-Heavy.ttf"))
         return EXIT_FAILURE;
+
+
+    // Background rectangle ring
+    sf::RectangleShape rectRing;
+    rectRing.setOutlineColor(sf::Color(237, 98, 28));
+    rectRing.setOutlineThickness(2.0f);
+    rectRing.setFillColor(sf::Color::Transparent);
 
 
     Screen currentScreen = Screen::Menu;
@@ -20,13 +42,13 @@ int main() {
     
             case Screen::Menu:
     
-                currentScreen = displayMenu(window, font);
+                currentScreen = displayMenu(window, font, rectRing);
                 break;
 
 
             case Screen::Graph: // For adding nodes into the graph and such
 
-                currentScreen = displayGraphEditor(window, font);
+                currentScreen = displayGraphEditor(window, font, rectRing);
                 break;
 
             default:

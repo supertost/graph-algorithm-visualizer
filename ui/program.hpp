@@ -9,4 +9,6 @@ enum class Screen {
     Exit
 };
 
+void updateBorderRing(sf::RenderWindow &window, sf::RectangleShape &rectRing);
+
 #endif

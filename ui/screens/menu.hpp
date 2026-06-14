@@ -7,6 +7,6 @@
 
 #include "screens.hpp"
 
-Screen displayMenu(sf::RenderWindow &window, sf::Font &font);
+Screen displayMenu(sf::RenderWindow &window, sf::Font &font, sf::RectangleShape &rectRing);
 
 #endif

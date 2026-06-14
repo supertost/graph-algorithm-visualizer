@@ -23,8 +23,6 @@ class Textbox {
         sf::Color outlineColor;
         sf::Color textColor;
 
-        unsigned int characterSize;
-
         void positionText();
 
     public:
@@ -34,16 +32,25 @@ class Textbox {
         Textbox(sf::Vector2f size, sf::Vector2f position, const sf::Font &font, unsigned int characterSize, sf::Color textboxColor, sf::Color outlineColor, float outlineThickness, sf::Color textColor, std::string placeholder, sf::Color activeTextboxColor, sf::Color activeTextColor, sf::Color activeOutlineColor);
         ~Textbox();
 
-        void handleEvent(const sf::Event &event, const sf::RenderWindow &window);
+        void handleEvent(const sf::Event &event, const sf::RenderWindow &window, const sf::View &view);
         void setActive(sf::Color textboxColor, sf::Color outlineColor, sf::Color textColor);
 
+        void setSize(sf::Vector2f size);
+        void setPosition(sf::Vector2f position);
+        void setCharacterSize(unsigned int size);
+        void adjustScaling(sf::Vector2f size, sf::Vector2f position, int charSize);
+
         void drawTextbox(sf::RenderWindow &window);
+
+        void setOriginCenter();
 
         // Getters
         sf::Color getTextboxColor();
         sf::Color getOutlineColor();
         sf::Color getTextColor();
         std::string getTextContent();
+
+        unsigned int characterSize;
 };
 
 #endif

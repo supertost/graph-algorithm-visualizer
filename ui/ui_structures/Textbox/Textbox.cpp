@@ -79,6 +79,31 @@ void Textbox::positionText() {
     this->text.setPosition(buttonBounds.left + 10.0f, buttonBounds.top + buttonBounds.height / 2.0f);
 }
 
+void Textbox::setSize(sf::Vector2f size) {
+
+    this->shape.setSize(size);
+    positionText();
+}
+
+void Textbox::setPosition(sf::Vector2f position) {
+
+    this->shape.setPosition(position);
+    positionText();
+}
+
+void Textbox::setCharacterSize(unsigned int size) {
+
+    this->text.setCharacterSize(size);
+    positionText();
+}
+
+void Textbox::adjustScaling(sf::Vector2f size, sf::Vector2f position, int charSize) {
+
+    setSize(size);
+    setPosition(position);
+    setCharacterSize(charSize);
+}
+
 void Textbox::drawTextbox(sf::RenderWindow &window) {
 
     window.draw(this->shape);
@@ -104,7 +129,7 @@ void Textbox::setActive(sf::Color textboxColor, sf::Color outlineColor, sf::Colo
 }
 
 
-void Textbox::handleEvent(const sf::Event &event, const sf::RenderWindow &window) {
+void Textbox::handleEvent(const sf::Event &event, const sf::RenderWindow &window, const sf::View &view) {
 
     switch (event.type) {
 
@@ -112,7 +137,8 @@ void Textbox::handleEvent(const sf::Event &event, const sf::RenderWindow &window
             
             if (event.mouseButton.button == sf::Mouse::Left) {
 
-                sf::Vector2f mousePosition = window.mapPixelToCoords(sf::Vector2i(event.mouseButton.x, event.mouseButton.y));
+                sf::Vector2i mousePixel(event.mouseButton.x, event.mouseButton.y);
+                sf::Vector2f mousePosition = window.mapPixelToCoords(mousePixel, view);
 
                 this->active = shape.getGlobalBounds().contains(mousePosition);
                 setActive(this->activeTextboxColor, this->activeOutlineColor, this->activeTextColor);
@@ -159,6 +185,14 @@ void Textbox::handleEvent(const sf::Event &event, const sf::RenderWindow &window
         default:
             break;
     }
+}
+
+void Textbox::setOriginCenter() {
+
+    sf::FloatRect bounds = this->shape.getLocalBounds();
+
+    this->shape.setOrigin(bounds.left + bounds.width / 2.0f, bounds.top + bounds.height / 2.0f);
+    positionText();
 }
 
 

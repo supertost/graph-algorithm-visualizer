@@ -36,6 +36,8 @@ class Button {
         void setPosition(sf::Vector2f position);
         void setCharacterSize(unsigned int charSize);
 
+        void setOriginCenter();
+
         void adjustScaling(sf::Vector2f size, sf::Vector2f position, int charSize);
 
 };
