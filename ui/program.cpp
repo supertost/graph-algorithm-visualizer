@@ -19,7 +19,11 @@ void updateBorderRing(sf::RenderWindow &window, sf::RectangleShape &rectRing) {
 
 
 int main() {
-    sf::RenderWindow window(sf::VideoMode(1280, 720), "Graph Algorithm Visualizer");
+
+    sf::ContextSettings settings;
+    settings.antialiasingLevel = 8;
+
+    sf::RenderWindow window(sf::VideoMode(1280, 720), "Graph Algorithm Visualizer", sf::Style::Default, settings);
 
     // Setting up font
     sf::Font font;
@@ -36,6 +40,9 @@ int main() {
 
     Screen currentScreen = Screen::Menu;
 
+
+    VisualGraph vgraph(font);
+
     while (window.isOpen() && currentScreen != Screen::Exit) {
 
         switch (currentScreen) {
@@ -48,7 +55,7 @@ int main() {
 
             case Screen::Graph: // For adding nodes into the graph and such
 
-                currentScreen = displayGraphEditor(window, font, rectRing);
+                currentScreen = displayGraphEditor(window, vgraph, font, rectRing);
                 break;
 
             default:

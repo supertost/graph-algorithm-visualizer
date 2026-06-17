@@ -7,6 +7,6 @@
 
 #include "screens.hpp"
 
-Screen displayGraphEditor(sf::RenderWindow &window, sf::Font &font, sf::RectangleShape &rectRing);
+Screen displayGraphEditor(sf::RenderWindow &window, VisualGraph &vgraph, sf::Font &font, sf::RectangleShape &rectRing);
 
 #endif

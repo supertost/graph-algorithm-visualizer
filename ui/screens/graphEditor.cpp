@@ -58,7 +58,7 @@ void updateGraphEditorLayout(sf::RenderWindow &window, Button &exitButton, Textb
 
 }
 
-Screen displayGraphEditor(sf::RenderWindow &window, sf::Font &font, sf::RectangleShape &rectRing) {
+Screen displayGraphEditor(sf::RenderWindow &window, VisualGraph &vgraph, sf::Font &font, sf::RectangleShape &rectRing) {
 
     sf::Vector2u windowSize = window.getSize();
 
@@ -90,6 +90,14 @@ Screen displayGraphEditor(sf::RenderWindow &window, sf::Font &font, sf::Rectangl
 
     sf::Vector2i mousePixel;
     sf::Vector2f mousePosition;
+
+
+    // Graph View Settings
+
+    //float graphZoom = 1.0f;
+    //sf::Vector2f graphCameraCenter = graphView.getCenter();
+    //bool isPanningGraph = false;
+    //sf::Vector2i lastPanPixel;
     
     while (window.isOpen()) {
         sf::Event event;
@@ -118,6 +126,26 @@ Screen displayGraphEditor(sf::RenderWindow &window, sf::Font &font, sf::Rectangl
                     if (event.key.code == sf::Keyboard::Escape)
                         return Screen::Menu;
 
+                    if (event.key.code == sf::Keyboard::Enter) {
+
+                        try
+                        {
+                            int key = std::stoi(nodeBox.getTextContent());
+                            std::cout << key << "\n";
+
+                            // Add a position check for other nodes
+                            if (!vgraph.addNode(key)) {
+
+                                std::cout << "Key " << key << " is already in the graph\n";
+                            }
+                        }
+                        catch(const std::exception& e)
+                        {
+                            std::cout << "Invalid Node Number\n";
+                        }
+                    }
+
+
                     break;
 
                 case sf::Event::MouseButtonPressed:
@@ -137,6 +165,12 @@ Screen displayGraphEditor(sf::RenderWindow &window, sf::Font &font, sf::Rectangl
                             {
                                 int key = std::stoi(nodeBox.getTextContent());
                                 std::cout << key << "\n";
+
+                                // Add a position check for other nodes
+                                if (!vgraph.addNode(key)) {
+
+                                    std::cout << "Key " << key << " is already in the graph\n";
+                                }
                             }
                             catch(const std::exception& e)
                             {
@@ -157,8 +191,15 @@ Screen displayGraphEditor(sf::RenderWindow &window, sf::Font &font, sf::Rectangl
 
         window.clear(sf::Color::Black);
 
-        window.setView(uiView);
 
+        window.setView(graphView);
+
+        vgraph.drawGraph(window);
+
+        
+        
+        window.setView(uiView);
+        
         sf::Vector2i mousePixel = sf::Mouse::getPosition(window);
         sf::Vector2f mousePosition = window.mapPixelToCoords(mousePixel, uiView);
         
@@ -171,7 +212,7 @@ Screen displayGraphEditor(sf::RenderWindow &window, sf::Font &font, sf::Rectangl
         
         window.setView(borderView);
         window.draw(rectRing);
-
+        
         window.display();
     }
 

@@ -6,5 +6,6 @@
 #include "../program.hpp"
 #include "textScale.hpp"
 #include "../ui_structures/Textbox/Textbox.hpp"
+#include "../ui_structures/Graph/VisualGraph.hpp"
 
 #endif
