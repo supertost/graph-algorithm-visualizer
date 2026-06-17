@@ -28,7 +28,7 @@ class Button {
 
         void drawButton(sf::RenderWindow &window);
         bool isClicked(sf::Vector2f mousePosition) const;
-        void hoverState(sf::Vector2f mousePosition, sf::Color backgroundCol, sf::Color textColor);
+        bool hoverState(sf::Vector2f mousePosition, sf::Color backgroundCol, sf::Color textColor);
         void clickState(sf::Vector2f mousePosition, sf::Color backgroundCol, sf::Color textColor);
 
         // For real time scaling of the program

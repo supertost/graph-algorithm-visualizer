@@ -65,12 +65,12 @@ bool Button::isClicked(sf::Vector2f mousePosition) const {
     return shape.getGlobalBounds().contains(mousePosition);
 }
 
-void Button::hoverState(sf::Vector2f mousePosition, sf::Color backgroundCol, sf::Color textColor) {
+bool Button::hoverState(sf::Vector2f mousePosition, sf::Color backgroundCol, sf::Color textColor) {
 
     bool currentHovered = this->shape.getGlobalBounds().contains(mousePosition);
 
     if (currentHovered == this->hovered)
-        return;
+        return currentHovered;
 
     this->hovered = currentHovered;
 
@@ -78,13 +78,17 @@ void Button::hoverState(sf::Vector2f mousePosition, sf::Color backgroundCol, sf:
 
         this->shape.setFillColor(backgroundCol);
         this->text.setFillColor(textColor);
+        return true;
     }
 
     else {
         
         this->shape.setFillColor(this->buttonColor);
         this->text.setFillColor(this->textColor);
+        return false;
     }
+
+    return false;
 }
 
 void Button::clickState(sf::Vector2f mousePosition, sf::Color backgroundCol, sf::Color textColor) {

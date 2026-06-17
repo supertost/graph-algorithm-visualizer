@@ -31,6 +31,15 @@ void updateMenuLayout(sf::RenderWindow &window, Label &title, Button &graphButto
 
 Screen displayMenu(sf::RenderWindow &window, sf::Font &font, sf::RectangleShape &rectRing) {
 
+    // Cursor for buttons and normal use
+    sf::Cursor normalCursor;
+    normalCursor.loadFromSystem(sf::Cursor::Arrow);
+    
+    sf::Cursor handCursor;
+    handCursor.loadFromSystem(sf::Cursor::Hand);
+
+
+
     sf::Vector2u windowSize = window.getSize();
     float windowWidth = static_cast<float>(windowSize.x);
     float windowHeight = static_cast<float>(windowSize.y);
@@ -115,14 +124,23 @@ Screen displayMenu(sf::RenderWindow &window, sf::Font &font, sf::RectangleShape 
         sf::Vector2f mousePosition(static_cast<float>(event.mouseMove.x), static_cast<float>(event.mouseMove.y));
 
         graphButton.drawButton(window);
-        graphButton.hoverState(mousePosition, sf::Color(237, 98, 28), sf::Color::Black);
+        bool graphEditorHover = graphButton.hoverState(mousePosition, sf::Color(237, 98, 28), sf::Color::Black);
         
         bfsButton.drawButton(window);
-        bfsButton.hoverState(mousePosition, sf::Color(237, 98, 28), sf::Color::Black);
+        bool bfsHover = bfsButton.hoverState(mousePosition, sf::Color(237, 98, 28), sf::Color::Black);
 
         dfsButton.drawButton(window);
-        dfsButton.hoverState(mousePosition, sf::Color(237, 98, 28), sf::Color::Black);
+        bool dfsHover = dfsButton.hoverState(mousePosition, sf::Color(237, 98, 28), sf::Color::Black);
 
+        if (graphEditorHover || bfsHover || dfsHover) {
+
+            window.setMouseCursor(handCursor);
+        }
+
+        else {
+
+            window.setMouseCursor(normalCursor);
+        }
 
         window.display();
     }

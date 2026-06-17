@@ -10,11 +10,11 @@ void updateGraphViews(sf::RenderWindow &window, sf::View &graphView, sf::View &u
     float windowWidth = static_cast<float>(windowSize.x);
     float windowHeight = static_cast<float>(windowSize.y);
 
-    float graphWidth = windowWidth * 0.8f;
+    float graphWidth = windowWidth * 1.0f;
     float uiWidth = windowWidth * 0.2f;
 
     // Left 80% of the window
-    graphView.setViewport(sf::FloatRect(0.0f, 0.0f, 0.8f, 1.0f));
+    graphView.setViewport(sf::FloatRect(0.0f, 0.0f, 1.0f, 1.0f));
     graphView.setSize(graphWidth, windowHeight);
     graphView.setCenter(graphWidth / 2.0f, windowHeight / 2.0f);
 
@@ -67,7 +67,66 @@ void updateGraphEditorLayout(sf::RenderWindow &window, Button &exitButton, Textb
     addEdgeButton.setOriginCenter();
 }
 
+void addNodeAction(Textbox &nodeBox, VisualGraph &vgraph) {
+
+    try {
+
+        int key = std::stoi(nodeBox.getTextContent());
+        std::cout << key << "\n";
+        
+        // Add a position check for other nodes
+        if (!vgraph.addNode(key)) {
+        
+            std::cout << "Key " << key << " is already in the graph\n";
+        }
+    }
+    catch(const std::exception& e) {
+
+        std::cout << "Invalid Node Number\n";
+    }
+}
+
+void addEdgeAction(Textbox &edgeBox, VisualGraph &vgraph) {
+
+    try {
+
+        std::string edge = edgeBox.getTextContent();
+        std::stringstream ss(edge);
+
+        int source;
+        int destination;
+
+        if (ss >> source >> destination) {
+
+            if (!vgraph.addEdge(source, destination)) {
+                
+                std::cout << "Edge cannot be added\n";
+            }
+        }
+
+        else {
+            
+            std::cout << "Invalid edge input\n";
+        }
+    }
+    catch(const std::exception& e) {
+
+        std::cout << "Invalid Edge input\n";
+    }
+}
+
 Screen displayGraphEditor(sf::RenderWindow &window, VisualGraph &vgraph, sf::Font &font, sf::RectangleShape &rectRing) {
+
+    // Cursor for buttons and normal use
+    sf::Cursor normalCursor;
+    normalCursor.loadFromSystem(sf::Cursor::Arrow);
+    
+    sf::Cursor handCursor;
+    handCursor.loadFromSystem(sf::Cursor::Hand);
+
+    sf::Cursor moveCursor;
+    moveCursor.loadFromSystem(sf::Cursor::SizeAll);
+
 
     sf::Vector2u windowSize = window.getSize();
 
@@ -104,16 +163,26 @@ Screen displayGraphEditor(sf::RenderWindow &window, VisualGraph &vgraph, sf::Fon
     sf::Vector2i mousePixel;
     sf::Vector2f mousePosition;
 
+    // ui black semi transparent rectangle
+    float uiWidth = windowWidth * 0.2f;
+    sf::RectangleShape uibg;
+    uibg.setFillColor(sf::Color(0, 0, 0, 200));
+    uibg.setSize(sf::Vector2f(uiWidth, windowHeight));
+
+
 
     // Graph View Settings
 
     //float graphZoom = 1.0f;
     //sf::Vector2f graphCameraCenter = graphView.getCenter();
-    //bool isPanningGraph = false;
-    //sf::Vector2i lastPanPixel;
+    bool isPanningGraph = false;
+    sf::Vector2i lastPanPixel;
 
     int clickedNode;
     bool isNodeClicked = false;
+
+    float currentZoom = 1.0f;
+    float targetZoom = 1.0f;
     
     while (window.isOpen()) {
         sf::Event event;
@@ -144,53 +213,11 @@ Screen displayGraphEditor(sf::RenderWindow &window, VisualGraph &vgraph, sf::Fon
 
                     if (event.key.code == sf::Keyboard::Enter) {
 
-                        if (nodeBox.getActive()) {
-                            
-                            try {
+                        if (nodeBox.getActive())
+                            addNodeAction(nodeBox, vgraph);
 
-                                int key = std::stoi(nodeBox.getTextContent());
-                                std::cout << key << "\n";
-    
-                                // Add a position check for other nodes
-                                if (!vgraph.addNode(key)) {
-    
-                                    std::cout << "Key " << key << " is already in the graph\n";
-                                }
-                            }
-                            catch(const std::exception& e) {
-
-                                std::cout << "Invalid Node Number\n";
-                            }
-                        }
-
-                        if (edgeBox.getActive()) {
-
-                            try {
-
-                                std::string edge = edgeBox.getTextContent();
-                                std::stringstream ss(edge);
-
-                                int source;
-                                int destination;
-
-                                if (ss >> source >> destination) {
-
-                                    if (!vgraph.addEdge(source, destination)) {
-                                        
-                                        std::cout << "Edge cannot be added\n";
-                                    }
-                                }
-
-                                else {
-                                    
-                                    std::cout << "Invalid edge input\n";
-                                }
-                            }
-                            catch(const std::exception& e) {
-
-                                std::cout << "Invalid Edge input\n";
-                            }
-                        }
+                        if (edgeBox.getActive())
+                            addEdgeAction(edgeBox, vgraph);
                     }
 
 
@@ -198,62 +225,80 @@ Screen displayGraphEditor(sf::RenderWindow &window, VisualGraph &vgraph, sf::Fon
 
                 case sf::Event::MouseButtonPressed:
                     
-                    if (event.mouseButton.button == sf::Mouse::Left) {
+                    switch (event.mouseButton.button) {
 
-                        sf::Vector2i mousePixel(event.mouseButton.x, event.mouseButton.y);
-                        sf::Vector2f mousePositionClickForUI = window.mapPixelToCoords(mousePixel, uiView);
-                        sf::Vector2f mousePositionClickForGraph = window.mapPixelToCoords(mousePixel, graphView);
+                        case sf::Mouse::Left: {
 
-                        if (exitButton.isClicked(mousePositionClickForUI))
-                            return Screen::Menu;
+                            sf::Vector2i mousePixel(event.mouseButton.x, event.mouseButton.y);
+                            sf::Vector2f mousePositionClickForUI = window.mapPixelToCoords(mousePixel, uiView);
+                            sf::Vector2f mousePositionClickForGraph = window.mapPixelToCoords(mousePixel, graphView);
+        
+                            if (exitButton.isClicked(mousePositionClickForUI))
+                                return Screen::Menu;
+        
+                            // Change this later on
+                            if (addNodeButton.isClicked(mousePositionClickForUI)) {
+        
+                                addNodeAction(nodeBox, vgraph);
+                            }
 
-                        // Change this later on
-                        if (addNodeButton.isClicked(mousePositionClickForUI)) {
-
-                            try
-                            {
-                                int key = std::stoi(nodeBox.getTextContent());
-                                std::cout << key << "\n";
-
-                                // Add a position check for other nodes
-                                if (!vgraph.addNode(key)) {
-
-                                    std::cout << "Key " << key << " is already in the graph\n";
+                            if (addEdgeButton.isClicked(mousePositionClickForUI)) {
+        
+                                addEdgeAction(edgeBox, vgraph);
+                                
+                            }
+        
+                            else {
+        
+                                if (!isNodeClicked) {
+        
+                                    isNodeClicked = vgraph.isClicked(mousePositionClickForGraph, clickedNode);
+                                    
+                                    if (isNodeClicked) {
+                                        
+                                        std::cout << "Clicked Node " << clickedNode << "\n";
+                                    }
                                 }
                             }
-                            catch(const std::exception& e)
-                            {
-                                std::cout << "Invalid Node Number\n";
-                            }
-                            
+
+                            break;
+
                         }
 
-                        else {
+                        case sf::Mouse::Middle:
 
-                            if (!isNodeClicked) {
+                            isPanningGraph = true;
+                            lastPanPixel = sf::Vector2i(event.mouseButton.x, event.mouseButton.y);
 
-                                isNodeClicked = vgraph.isClicked(mousePositionClickForGraph, clickedNode);
-
-                                if (isNodeClicked) {
-
-                                    std::cout << "Clicked Node " << clickedNode << "\n";
-                                }
-                            }
-                        }
-
+                            break;
                         
+                        
+                        default:
+                            break;
                     }
 
                     break;
 
                 case sf::Event::MouseButtonReleased:
 
-                    if (event.mouseButton.button == sf::Mouse::Left) {
+                    switch (event.mouseButton.button) {
 
-                        if (isNodeClicked) {
-                            std::cout << "Mouse button released and no longer dragging\n";
-                            isNodeClicked = false;
-                        }
+                        case sf::Mouse::Left:
+
+                            if (isNodeClicked) {
+                                std::cout << "Mouse button released and no longer dragging\n";
+                                isNodeClicked = false;
+                            }
+
+                            break;
+
+                        case sf::Mouse::Middle:
+                            
+                            isPanningGraph = false;
+                            break;
+                        
+                        default:
+                            break;
                     }
 
                     break;
@@ -262,11 +307,37 @@ Screen displayGraphEditor(sf::RenderWindow &window, VisualGraph &vgraph, sf::Fon
 
                     if (isNodeClicked) {
 
+                        window.setMouseCursor(moveCursor);
+
                         sf::Vector2i mousePixel(event.mouseMove.x, event.mouseMove.y);
                         sf::Vector2f mousePositionForGraph = window.mapPixelToCoords(mousePixel, graphView);
 
                         vgraph.dragNode(mousePositionForGraph, clickedNode);
                     }
+
+                    if (isPanningGraph) {
+
+                        window.setMouseCursor(moveCursor);
+
+                        sf::Vector2i currentPixel(event.mouseMove.x, event.mouseMove.y);
+
+                        sf::Vector2f oldPosition = window.mapPixelToCoords(lastPanPixel, graphView);
+                        sf::Vector2f newPosition = window.mapPixelToCoords(currentPixel, graphView);
+
+                        graphView.move(oldPosition - newPosition);
+
+                        lastPanPixel = currentPixel;
+                    }
+
+                    break;
+
+                case sf::Event::MouseWheelScrolled:
+
+                    if (event.mouseWheelScroll.delta > 0)
+                        targetZoom *= 0.9f;
+                    else
+                        targetZoom *= 1.1;
+                    
 
                     break;
             
@@ -278,6 +349,12 @@ Screen displayGraphEditor(sf::RenderWindow &window, VisualGraph &vgraph, sf::Fon
             edgeBox.handleEvent(event, window, uiView);
         }        
 
+
+        float newZoom = currentZoom + (targetZoom - currentZoom) * 0.01f;
+        float zoomFactor = newZoom / currentZoom;
+        graphView.zoom(zoomFactor);
+        currentZoom = newZoom;
+
         window.clear(sf::Color::Black);
 
 
@@ -288,21 +365,31 @@ Screen displayGraphEditor(sf::RenderWindow &window, VisualGraph &vgraph, sf::Fon
         
         
         window.setView(uiView);
+
+        window.draw(uibg);
         
         sf::Vector2i mousePixel = sf::Mouse::getPosition(window);
         sf::Vector2f mousePosition = window.mapPixelToCoords(mousePixel, uiView);
         
         exitButton.drawButton(window);
-        exitButton.hoverState(mousePosition, sf::Color(237, 98, 28), sf::Color::Black);
+        bool exitButtonHover = exitButton.hoverState(mousePosition, sf::Color(237, 98, 28), sf::Color::Black);
         
         nodeBox.drawTextbox(window);
         addNodeButton.drawButton(window);
-        addNodeButton.hoverState(mousePosition, sf::Color(237, 98, 28), sf::Color::Black);
+        bool addNodeHover = addNodeButton.hoverState(mousePosition, sf::Color(237, 98, 28), sf::Color::Black);
         
         edgeBox.drawTextbox(window);
         addEdgeButton.drawButton(window);
-        addEdgeButton.hoverState(mousePosition, sf::Color(237, 98, 28), sf::Color::Black);
+        bool addEdgeHover = addEdgeButton.hoverState(mousePosition, sf::Color(237, 98, 28), sf::Color::Black);
 
+        if (addNodeHover || addEdgeHover || exitButtonHover) {
+            
+            window.setMouseCursor(handCursor);
+        }
+        else if (!(isNodeClicked || isPanningGraph)) {
+
+            window.setMouseCursor(normalCursor);
+        }
         
         window.setView(borderView);
         window.draw(rectRing);
