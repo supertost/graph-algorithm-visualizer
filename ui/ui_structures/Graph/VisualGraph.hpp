@@ -12,10 +12,10 @@
 class VisualGraph {
     private:
 
-        float highestCoordX;
-        float lowestCoordX;
-        float highestCoordY;
-        float lowestCoordY;
+        //float highestCoordX;
+        //float lowestCoordX;
+        //float highestCoordY;
+        //float lowestCoordY;
         const sf::Font &font;
 
         sf::Vector2f determineNodeLocation() const;
@@ -30,7 +30,7 @@ class VisualGraph {
         bool addEdge(int source, int dest);
         bool containsNode(int key) const;
 
-        void drawGraph(sf::RenderWindow &window);
+        void drawGraph(sf::RenderWindow &window) const;
 };
 
 

@@ -45,10 +45,11 @@ class Textbox {
         void setOriginCenter();
 
         // Getters
-        sf::Color getTextboxColor();
-        sf::Color getOutlineColor();
-        sf::Color getTextColor();
-        std::string getTextContent();
+        sf::Color getTextboxColor() const;
+        sf::Color getOutlineColor() const;
+        sf::Color getTextColor() const;
+        std::string getTextContent() const;
+        bool getActive() const;
 
         unsigned int characterSize;
 };

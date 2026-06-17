@@ -4,6 +4,7 @@ VisualGraph::VisualGraph(const sf::Font &font) : font(font) {
 
 }
 
+// Improve node location determination, this is not good
 sf::Vector2f VisualGraph::determineNodeLocation() const {  
     std::size_t nodeCount = displayNodes.size();  
 
@@ -38,10 +39,42 @@ bool VisualGraph::addNode(int key) {
     return true;
 }
 
-void VisualGraph::drawGraph(sf::RenderWindow &window) {
+bool VisualGraph::addEdge(int source, int dest) {
 
-    for (std::pair<const int, Node> displayNode : this->displayNodes) {
+    addNode(source);
+    addNode(dest);
 
+    for (int neighbor : this->edges.at(source)) {
+
+        if (neighbor == dest) {
+
+            return false;
+        }
+    }
+
+    this->edges[source].push_back(dest);
+
+    return true;
+}
+
+void VisualGraph::drawGraph(sf::RenderWindow &window) const {
+
+    for (const std::pair<const int, std::vector<int>> &edge : this->edges) {
+        
+        for (const int neighbor : edge.second) {
+            
+            sf::Vertex line[] = {
+                
+                sf::Vertex(this->displayNodes.at(edge.first).getPosition(), sf::Color(237, 98, 28)),
+                sf::Vertex(this->displayNodes.at(neighbor).getPosition(), sf::Color(237, 98, 28))
+            };
+            
+            window.draw(line, 2, sf::Lines);
+        }
+    }
+
+    for (const std::pair<const int, Node> &displayNode : this->displayNodes) {
+    
         displayNode.second.drawNode(window);
     }
 }

@@ -1,6 +1,7 @@
 #include "graphEditor.hpp"
 
 #include <iostream>
+#include <sstream>
 
 void updateGraphViews(sf::RenderWindow &window, sf::View &graphView, sf::View &uiView, sf::View &borderView) {
 
@@ -28,7 +29,7 @@ void updateGraphViews(sf::RenderWindow &window, sf::View &graphView, sf::View &u
     borderView.setCenter(windowWidth / 2.0f, windowHeight / 2.0f);
 }
 
-void updateGraphEditorLayout(sf::RenderWindow &window, Button &exitButton, Textbox &nodeBox, Button &addNodeButton) {
+void updateGraphEditorLayout(sf::RenderWindow &window, Button &exitButton, Textbox &nodeBox, Button &addNodeButton, Textbox &edgeBox, Button &addEdgeButton) {
 
     sf::Vector2u windowSize = window.getSize();
 
@@ -49,13 +50,21 @@ void updateGraphEditorLayout(sf::RenderWindow &window, Button &exitButton, Textb
     nodeBox.adjustScaling(nodeBoxSize, nodeBoxPosition, updateTextScale(window, nodeBox.characterSize));
     nodeBox.setOriginCenter();
 
-    (void)addNodeButton;
     sf::Vector2f addNodeButtonSize(uiWidth * 0.8f, windowHeight * 0.1f);
     sf::Vector2f addNodeButtonPosition(uiWidth / 2.0f, windowHeight * 0.915f);
     addNodeButton.adjustScaling(addNodeButtonSize, addNodeButtonPosition, updateTextScale(window, addNodeButton.textPunto));
     addNodeButton.setOriginCenter();
 
+    // Edge creaton
+    sf::Vector2f edgeBoxSize(uiWidth * 0.8f, windowHeight * 0.1f);
+    sf::Vector2f edgeBoxPosition(uiWidth / 2.0f, windowHeight * 0.5f);
+    edgeBox.adjustScaling(edgeBoxSize, edgeBoxPosition, updateTextScale(window, edgeBox.characterSize));
+    edgeBox.setOriginCenter();
 
+    sf::Vector2f addEdgeButtonSize(uiWidth * 0.8f, windowHeight * 0.1f);
+    sf::Vector2f addEdgeButtonPosition(uiWidth / 2.0f, windowHeight * 0.615f);
+    addEdgeButton.adjustScaling(addEdgeButtonSize, addEdgeButtonPosition, updateTextScale(window, addEdgeButton.textPunto));
+    addEdgeButton.setOriginCenter();
 }
 
 Screen displayGraphEditor(sf::RenderWindow &window, VisualGraph &vgraph, sf::Font &font, sf::RectangleShape &rectRing) {
@@ -84,8 +93,12 @@ Screen displayGraphEditor(sf::RenderWindow &window, VisualGraph &vgraph, sf::Fon
     //Textbox nodeBox(sf::Vector2f(0.0f, 0.0f), sf::Vector2f(3.0f, 3.0f), font, 30, sf::Color::Transparent, sf::Color::White, 2.0f, sf::Color(255, 255, 255, 150), "Add a node", sf::Color::Transparent, sf::Color(52, 177, 235), sf::Color(52, 177, 235));
     Textbox nodeBox(sf::Vector2f(0.0f, 0.0f), sf::Vector2f(3.0f, 3.0f), font, 30, sf::Color::Transparent, sf::Color(237, 98, 28, 100), 2.0f, sf::Color(237, 98, 28, 100), "Add a node", sf::Color::Transparent, sf::Color(237, 98, 28), sf::Color(237, 98, 28));
     Button addNodeButton(sf::Vector2f(0.0f, 0.0f), sf::Vector2f(3.0f, 130.0f), sf::Color::Transparent, sf::Color(237, 98, 28), 2.0f, "Add Node", font, 30, sf::Color(237, 98, 28));
+    
+    // Edge
+    Textbox edgeBox(sf::Vector2f(0.0f, 0.0f), sf::Vector2f(3.0f, 3.0f), font, 30, sf::Color::Transparent, sf::Color(237, 98, 28, 100), 2.0f, sf::Color(237, 98, 28, 100), "Edge (eg. 2 3)", sf::Color::Transparent, sf::Color(237, 98, 28), sf::Color(237, 98, 28));
+    Button addEdgeButton(sf::Vector2f(0.0f, 0.0f), sf::Vector2f(3.0f, 130.0f), sf::Color::Transparent, sf::Color(237, 98, 28), 2.0f, "Add Edge", font, 30, sf::Color(237, 98, 28));
 
-    updateGraphEditorLayout(window, exitButton, nodeBox, addNodeButton);
+    updateGraphEditorLayout(window, exitButton, nodeBox, addNodeButton, edgeBox, addEdgeButton);
     updateBorderRing(window, rectRing);
 
     sf::Vector2i mousePixel;
@@ -116,7 +129,7 @@ Screen displayGraphEditor(sf::RenderWindow &window, VisualGraph &vgraph, sf::Fon
                 case sf::Event::Resized: {
 
                     updateGraphViews(window, graphView, uiView, borderView);
-                    updateGraphEditorLayout(window, exitButton, nodeBox, addNodeButton);
+                    updateGraphEditorLayout(window, exitButton, nodeBox, addNodeButton, edgeBox, addEdgeButton);
                     updateBorderRing(window, rectRing);
                     break;
                 }
@@ -128,20 +141,52 @@ Screen displayGraphEditor(sf::RenderWindow &window, VisualGraph &vgraph, sf::Fon
 
                     if (event.key.code == sf::Keyboard::Enter) {
 
-                        try
-                        {
-                            int key = std::stoi(nodeBox.getTextContent());
-                            std::cout << key << "\n";
+                        if (nodeBox.getActive()) {
+                            
+                            try {
 
-                            // Add a position check for other nodes
-                            if (!vgraph.addNode(key)) {
+                                int key = std::stoi(nodeBox.getTextContent());
+                                std::cout << key << "\n";
+    
+                                // Add a position check for other nodes
+                                if (!vgraph.addNode(key)) {
+    
+                                    std::cout << "Key " << key << " is already in the graph\n";
+                                }
+                            }
+                            catch(const std::exception& e) {
 
-                                std::cout << "Key " << key << " is already in the graph\n";
+                                std::cout << "Invalid Node Number\n";
                             }
                         }
-                        catch(const std::exception& e)
-                        {
-                            std::cout << "Invalid Node Number\n";
+
+                        if (edgeBox.getActive()) {
+
+                            try {
+
+                                std::string edge = edgeBox.getTextContent();
+                                std::stringstream ss(edge);
+
+                                int source;
+                                int destination;
+
+                                if (ss >> source >> destination) {
+
+                                    if (!vgraph.addEdge(source, destination)) {
+                                        
+                                        std::cout << "Edge cannot be added\n";
+                                    }
+                                }
+
+                                else {
+                                    
+                                    std::cout << "Invalid edge input\n";
+                                }
+                            }
+                            catch(const std::exception& e) {
+
+                                std::cout << "Invalid Edge input\n";
+                            }
                         }
                     }
 
@@ -187,6 +232,7 @@ Screen displayGraphEditor(sf::RenderWindow &window, VisualGraph &vgraph, sf::Fon
             }
 
             nodeBox.handleEvent(event, window, uiView);
+            edgeBox.handleEvent(event, window, uiView);
         }        
 
         window.clear(sf::Color::Black);
@@ -209,6 +255,11 @@ Screen displayGraphEditor(sf::RenderWindow &window, VisualGraph &vgraph, sf::Fon
         nodeBox.drawTextbox(window);
         addNodeButton.drawButton(window);
         addNodeButton.hoverState(mousePosition, sf::Color(237, 98, 28), sf::Color::Black);
+        
+        edgeBox.drawTextbox(window);
+        addEdgeButton.drawButton(window);
+        addEdgeButton.hoverState(mousePosition, sf::Color(237, 98, 28), sf::Color::Black);
+
         
         window.setView(borderView);
         window.draw(rectRing);

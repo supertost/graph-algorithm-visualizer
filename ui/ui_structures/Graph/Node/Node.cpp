@@ -11,6 +11,8 @@ Node::Node(int key, sf::Vector2f position, float radius, sf::Color nodeColorActi
     this->shape.setOutlineColor(nodeColorActive);
     this->shape.setOutlineThickness(outlineThickness);
 
+    this->position = position;
+
     setText(font);
 }
 
@@ -35,4 +37,12 @@ void Node::drawNode(sf::RenderWindow &window) const {
 
     window.draw(this->shape);
     window.draw(this->text);
+}
+
+
+// Getters
+
+sf::Vector2f Node::getPosition() const {
+
+    return this->position;
 }

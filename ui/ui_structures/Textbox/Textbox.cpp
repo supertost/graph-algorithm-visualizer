@@ -174,7 +174,7 @@ void Textbox::handleEvent(const sf::Event &event, const sf::RenderWindow &window
                     this->text.setString(this->placeholder);
             }
 
-            else if (this->active && (event.text.unicode >= '0' && event.text.unicode <= '9')) {
+            else if (this->active && ((event.text.unicode >= '0' && event.text.unicode <= '9') || event.text.unicode == ' ')) {
 
                 input += static_cast<char>(event.text.unicode);
                 this->text.setString(input);
@@ -197,21 +197,26 @@ void Textbox::setOriginCenter() {
 
 
 // Getters and setters
-sf::Color Textbox::getTextboxColor() {
+sf::Color Textbox::getTextboxColor() const {
 
     return this->textboxColor;
 }
-sf::Color Textbox::getOutlineColor() {
+sf::Color Textbox::getOutlineColor() const {
 
     return this->outlineColor;
 }
-sf::Color Textbox::getTextColor() {
+sf::Color Textbox::getTextColor() const {
 
     return this->textColor;
 }
-std::string Textbox::getTextContent() {
+std::string Textbox::getTextContent() const {
  
     return this->text.getString();
+}
+
+bool Textbox::getActive() const {
+
+    return this->active;
 }
 
 Textbox::~Textbox()
