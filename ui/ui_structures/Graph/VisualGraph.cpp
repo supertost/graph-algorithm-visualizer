@@ -57,6 +57,28 @@ bool VisualGraph::addEdge(int source, int dest) {
     return true;
 }
 
+
+bool VisualGraph::isClicked(sf::Vector2f mousePosition, int &nodeClicked) {
+
+    for (const std::pair<const int, Node> &node : this->displayNodes) {
+
+        if (node.second.getGlobalBounds().contains(mousePosition)) {
+            
+            nodeClicked = node.first;
+            return true;
+        }
+    }
+
+    return false;
+}
+
+void VisualGraph::dragNode(sf::Vector2f mousePosition, int clickedNode) {
+
+    this->displayNodes.at(clickedNode).setPosition(mousePosition);
+}
+
+
+
 void VisualGraph::drawGraph(sf::RenderWindow &window) const {
 
     for (const std::pair<const int, std::vector<int>> &edge : this->edges) {

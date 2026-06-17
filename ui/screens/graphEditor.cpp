@@ -111,6 +111,9 @@ Screen displayGraphEditor(sf::RenderWindow &window, VisualGraph &vgraph, sf::Fon
     //sf::Vector2f graphCameraCenter = graphView.getCenter();
     //bool isPanningGraph = false;
     //sf::Vector2i lastPanPixel;
+
+    int clickedNode;
+    bool isNodeClicked = false;
     
     while (window.isOpen()) {
         sf::Event event;
@@ -198,13 +201,14 @@ Screen displayGraphEditor(sf::RenderWindow &window, VisualGraph &vgraph, sf::Fon
                     if (event.mouseButton.button == sf::Mouse::Left) {
 
                         sf::Vector2i mousePixel(event.mouseButton.x, event.mouseButton.y);
-                        sf::Vector2f mousePositionClick = window.mapPixelToCoords(mousePixel, uiView);
+                        sf::Vector2f mousePositionClickForUI = window.mapPixelToCoords(mousePixel, uiView);
+                        sf::Vector2f mousePositionClickForGraph = window.mapPixelToCoords(mousePixel, graphView);
 
-                        if (exitButton.isClicked(mousePositionClick))
+                        if (exitButton.isClicked(mousePositionClickForUI))
                             return Screen::Menu;
 
                         // Change this later on
-                        if (addNodeButton.isClicked(mousePositionClick)) {
+                        if (addNodeButton.isClicked(mousePositionClickForUI)) {
 
                             try
                             {
@@ -223,6 +227,45 @@ Screen displayGraphEditor(sf::RenderWindow &window, VisualGraph &vgraph, sf::Fon
                             }
                             
                         }
+
+                        else {
+
+                            if (!isNodeClicked) {
+
+                                isNodeClicked = vgraph.isClicked(mousePositionClickForGraph, clickedNode);
+
+                                if (isNodeClicked) {
+
+                                    std::cout << "Clicked Node " << clickedNode << "\n";
+                                }
+                            }
+                        }
+
+                        
+                    }
+
+                    break;
+
+                case sf::Event::MouseButtonReleased:
+
+                    if (event.mouseButton.button == sf::Mouse::Left) {
+
+                        if (isNodeClicked) {
+                            std::cout << "Mouse button released and no longer dragging\n";
+                            isNodeClicked = false;
+                        }
+                    }
+
+                    break;
+
+                case sf::Event::MouseMoved:
+
+                    if (isNodeClicked) {
+
+                        sf::Vector2i mousePixel(event.mouseMove.x, event.mouseMove.y);
+                        sf::Vector2f mousePositionForGraph = window.mapPixelToCoords(mousePixel, graphView);
+
+                        vgraph.dragNode(mousePositionForGraph, clickedNode);
                     }
 
                     break;

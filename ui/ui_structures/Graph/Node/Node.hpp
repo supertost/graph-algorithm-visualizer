@@ -19,6 +19,11 @@ class Node {
         Node(int key, sf::Vector2f position, float radius, sf::Color nodeColorActive, sf::Color nodeColorUnactive, float outlineThickness, const sf::Font &font);
         void drawNode(sf::RenderWindow &window) const;
         sf::Vector2f getPosition() const;
+
+        bool isClicked() const;
+
+        const sf::FloatRect getGlobalBounds() const;
+        void setPosition(sf::Vector2f position);
 };
 
 

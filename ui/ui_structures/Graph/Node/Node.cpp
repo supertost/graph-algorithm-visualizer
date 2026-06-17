@@ -39,10 +39,24 @@ void Node::drawNode(sf::RenderWindow &window) const {
     window.draw(this->text);
 }
 
-
 // Getters
 
 sf::Vector2f Node::getPosition() const {
 
     return this->position;
+}
+
+const sf::FloatRect Node::getGlobalBounds() const {
+
+    return this->shape.getGlobalBounds();
+}
+
+
+// Setters
+
+void Node::setPosition(sf::Vector2f position) {
+
+    this->position = position;
+    this->shape.setPosition(position);
+    centerText();
 }

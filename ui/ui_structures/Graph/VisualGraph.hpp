@@ -19,18 +19,21 @@ class VisualGraph {
         const sf::Font &font;
 
         sf::Vector2f determineNodeLocation() const;
+        std::map<int, Node> displayNodes;
+        std::map<int, std::vector<int>> edges;
         
     public:
 
-        std::map<int, Node> displayNodes;
-        std::map<int, std::vector<int>> edges;
         VisualGraph(const sf::Font &font);
 
         bool addNode(int key);
         bool addEdge(int source, int dest);
         bool containsNode(int key) const;
 
+        bool isClicked(sf::Vector2f mousePosition, int &nodeClicked);
+
         void drawGraph(sf::RenderWindow &window) const;
+        void dragNode(sf::Vector2f mousePosition, int clickedNode);
 };
 
 

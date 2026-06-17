@@ -174,7 +174,7 @@ void Textbox::handleEvent(const sf::Event &event, const sf::RenderWindow &window
                     this->text.setString(this->placeholder);
             }
 
-            else if (this->active && ((event.text.unicode >= '0' && event.text.unicode <= '9') || event.text.unicode == ' ')) {
+            else if (this->active && ((event.text.unicode >= '0' && event.text.unicode <= '9') || event.text.unicode == ' ' || event.text.unicode == '-')) {
 
                 input += static_cast<char>(event.text.unicode);
                 this->text.setString(input);
