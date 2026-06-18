@@ -1,4 +1,6 @@
 #include "graphEditor.hpp"
+#include "../../third_party_libraries/tinyfiledialogs/tinyfiledialogs.hpp"
+#include "../../io/readwrite.hpp"
 
 #include <iostream>
 #include <sstream>
@@ -29,7 +31,7 @@ void updateGraphViews(sf::RenderWindow &window, sf::View &graphView, sf::View &u
     borderView.setCenter(windowWidth / 2.0f, windowHeight / 2.0f);
 }
 
-void updateGraphEditorLayout(sf::RenderWindow &window, Button &exitButton, Textbox &nodeBox, Button &addNodeButton, Textbox &edgeBox, Button &addEdgeButton) {
+void updateGraphEditorLayout(sf::RenderWindow &window, Button &exitButton, Textbox &nodeBox, Button &addNodeButton, Textbox &edgeBox, Button &addEdgeButton, sf::RectangleShape &uibg, Button &clearGraphButton, Button &loadGraphButton, Button &saveGraphButton) {
 
     sf::Vector2u windowSize = window.getSize();
 
@@ -65,9 +67,26 @@ void updateGraphEditorLayout(sf::RenderWindow &window, Button &exitButton, Textb
     sf::Vector2f addEdgeButtonPosition(uiWidth / 2.0f, windowHeight * 0.615f);
     addEdgeButton.adjustScaling(addEdgeButtonSize, addEdgeButtonPosition, updateTextScale(window, addEdgeButton.textPunto));
     addEdgeButton.setOriginCenter();
+
+    uibg.setSize(sf::Vector2f(uiWidth, windowHeight));
+
+    sf::Vector2f clearGraphButtonSize(uiWidth * 0.8f, windowHeight * 0.06f);
+    sf::Vector2f clearGraphButtonPosition(uiWidth / 2.0f, windowHeight * 0.15f);
+    clearGraphButton.adjustScaling(clearGraphButtonSize, clearGraphButtonPosition, updateTextScale(window, clearGraphButton.textPunto));
+    clearGraphButton.setOriginCenter();
+
+    sf::Vector2f loadGraphButtonSize(uiWidth * 0.8f, windowHeight * 0.06f);
+    sf::Vector2f loadGraphButtonPosition(uiWidth / 2.0f, windowHeight * 0.24f);
+    loadGraphButton.adjustScaling(loadGraphButtonSize, loadGraphButtonPosition, updateTextScale(window, loadGraphButton.textPunto));
+    loadGraphButton.setOriginCenter();
+
+    sf::Vector2f saveGraphButtonSize(uiWidth * 0.8f, windowHeight * 0.06f);
+    sf::Vector2f saveGraphButtonPosition(uiWidth / 2.0f, windowHeight * 0.33f);
+    saveGraphButton.adjustScaling(saveGraphButtonSize, saveGraphButtonPosition, updateTextScale(window, saveGraphButton.textPunto));
+    saveGraphButton.setOriginCenter();
 }
 
-void addNodeAction(Textbox &nodeBox, VisualGraph &vgraph) {
+void addNodeAction(Textbox &nodeBox, VisualGraph &vgraph, bool &showNodeErrorPopUp) {
 
     try {
 
@@ -77,6 +96,7 @@ void addNodeAction(Textbox &nodeBox, VisualGraph &vgraph) {
         // Add a position check for other nodes
         if (!vgraph.addNode(key)) {
         
+            showNodeErrorPopUp = true;
             std::cout << "Key " << key << " is already in the graph\n";
         }
     }
@@ -86,7 +106,7 @@ void addNodeAction(Textbox &nodeBox, VisualGraph &vgraph) {
     }
 }
 
-void addEdgeAction(Textbox &edgeBox, VisualGraph &vgraph) {
+void addEdgeAction(Textbox &edgeBox, VisualGraph &vgraph, bool &showEdgeErrorPopUp) {
 
     try {
 
@@ -100,6 +120,7 @@ void addEdgeAction(Textbox &edgeBox, VisualGraph &vgraph) {
 
             if (!vgraph.addEdge(source, destination)) {
                 
+                showEdgeErrorPopUp = true;
                 std::cout << "Edge cannot be added\n";
             }
         }
@@ -116,6 +137,9 @@ void addEdgeAction(Textbox &edgeBox, VisualGraph &vgraph) {
 }
 
 Screen displayGraphEditor(sf::RenderWindow &window, VisualGraph &vgraph, sf::Font &font, sf::RectangleShape &rectRing) {
+
+    // For file selection
+    char const *lFilterPatterns[] = {"*.txt"};
 
     // Cursor for buttons and normal use
     sf::Cursor normalCursor;
@@ -156,20 +180,32 @@ Screen displayGraphEditor(sf::RenderWindow &window, VisualGraph &vgraph, sf::Fon
     // Edge
     Textbox edgeBox(sf::Vector2f(0.0f, 0.0f), sf::Vector2f(3.0f, 3.0f), font, 30, sf::Color::Transparent, sf::Color(237, 98, 28, 100), 2.0f, sf::Color(237, 98, 28, 100), "Edge (eg. 2 3)", sf::Color::Transparent, sf::Color(237, 98, 28), sf::Color(237, 98, 28));
     Button addEdgeButton(sf::Vector2f(0.0f, 0.0f), sf::Vector2f(3.0f, 130.0f), sf::Color::Transparent, sf::Color(237, 98, 28), 2.0f, "Add Edge", font, 30, sf::Color(237, 98, 28));
-
-    updateGraphEditorLayout(window, exitButton, nodeBox, addNodeButton, edgeBox, addEdgeButton);
+    
+    Button clearGraphButton(sf::Vector2f(0.0f, 0.0f), sf::Vector2f(3.0f, 130.0f), sf::Color::Transparent, sf::Color(237, 98, 28), 2.0f, "Clear Graph", font, 20, sf::Color(237, 98, 28));
+    Button loadGraphButton(sf::Vector2f(0.0f, 0.0f), sf::Vector2f(3.0f, 130.0f), sf::Color::Transparent, sf::Color(237, 98, 28), 2.0f, "Load Graph", font, 20, sf::Color(237, 98, 28));
+    Button saveGraphButton(sf::Vector2f(0.0f, 0.0f), sf::Vector2f(3.0f, 130.0f), sf::Color::Transparent, sf::Color(237, 98, 28), 2.0f, "Save Graph", font, 20, sf::Color(237, 98, 28));
+    
+    // ui black semi transparent rectangle
+    sf::RectangleShape uibg;
+    uibg.setFillColor(sf::Color(0, 0, 0, 200));
+    
+    updateGraphEditorLayout(window, exitButton, nodeBox, addNodeButton, edgeBox, addEdgeButton, uibg, clearGraphButton, loadGraphButton, saveGraphButton);
     updateBorderRing(window, rectRing);
+
+
+    // Error Pop Ups
+    sf::Font fontLight;
+    if (!fontLight.loadFromFile("ui/fonts/Futura-Light.ttf"))
+        return Screen::Menu;
+
+    bool showNodeErrorPopUp = false;
+    PopUp nodeErrorPopUp("Cannot Add Node", "The node you are trying to add is already in the graph", "Okay", sf::Color(237, 98, 28), sf::Color(237, 98, 28), sf::Color(237, 98, 28), font, fontLight, 30, sf::Vector2f(windowWidth * 0.5, windowHeight * 0.5), sf::Color(0, 0, 0, 200), sf::Color(237, 98, 28), 2.0f, sf::Color(0, 0, 0, 200), sf::Color::Black, window);
+    bool showEdgeErrorPopUp = false;
+    PopUp edgeErrorPopUp("Cannot Add Edge", "The edge you are trying to add is already in the graph", "Okay", sf::Color(237, 98, 28), sf::Color(237, 98, 28), sf::Color(237, 98, 28), font, fontLight, 30, sf::Vector2f(windowWidth * 0.5, windowHeight * 0.5), sf::Color(0, 0, 0, 200), sf::Color(237, 98, 28), 2.0f, sf::Color(0, 0, 0, 200), sf::Color::Black, window);
+
 
     sf::Vector2i mousePixel;
     sf::Vector2f mousePosition;
-
-    // ui black semi transparent rectangle
-    float uiWidth = windowWidth * 0.2f;
-    sf::RectangleShape uibg;
-    uibg.setFillColor(sf::Color(0, 0, 0, 200));
-    uibg.setSize(sf::Vector2f(uiWidth, windowHeight));
-
-
 
     // Graph View Settings
 
@@ -201,7 +237,7 @@ Screen displayGraphEditor(sf::RenderWindow &window, VisualGraph &vgraph, sf::Fon
                 case sf::Event::Resized: {
 
                     updateGraphViews(window, graphView, uiView, borderView);
-                    updateGraphEditorLayout(window, exitButton, nodeBox, addNodeButton, edgeBox, addEdgeButton);
+                    updateGraphEditorLayout(window, exitButton, nodeBox, addNodeButton, edgeBox, addEdgeButton, uibg, clearGraphButton, loadGraphButton, saveGraphButton);
                     updateBorderRing(window, rectRing);
                     break;
                 }
@@ -214,10 +250,10 @@ Screen displayGraphEditor(sf::RenderWindow &window, VisualGraph &vgraph, sf::Fon
                     if (event.key.code == sf::Keyboard::Enter) {
 
                         if (nodeBox.getActive())
-                            addNodeAction(nodeBox, vgraph);
+                            addNodeAction(nodeBox, vgraph, showNodeErrorPopUp);
 
                         if (edgeBox.getActive())
-                            addEdgeAction(edgeBox, vgraph);
+                            addEdgeAction(edgeBox, vgraph, showEdgeErrorPopUp);
                     }
 
 
@@ -232,34 +268,90 @@ Screen displayGraphEditor(sf::RenderWindow &window, VisualGraph &vgraph, sf::Fon
                             sf::Vector2i mousePixel(event.mouseButton.x, event.mouseButton.y);
                             sf::Vector2f mousePositionClickForUI = window.mapPixelToCoords(mousePixel, uiView);
                             sf::Vector2f mousePositionClickForGraph = window.mapPixelToCoords(mousePixel, graphView);
-        
-                            if (exitButton.isClicked(mousePositionClickForUI))
-                                return Screen::Menu;
-        
-                            // Change this later on
-                            if (addNodeButton.isClicked(mousePositionClickForUI)) {
-        
-                                addNodeAction(nodeBox, vgraph);
-                            }
+                            sf::Vector2f mousePositionClickForBorder = window.mapPixelToCoords(mousePixel, borderView);
 
-                            if (addEdgeButton.isClicked(mousePositionClickForUI)) {
-        
-                                addEdgeAction(edgeBox, vgraph);
-                                
-                            }
-        
-                            else {
-        
-                                if (!isNodeClicked) {
-        
-                                    isNodeClicked = vgraph.isClicked(mousePositionClickForGraph, clickedNode);
+                            if (!(showEdgeErrorPopUp || showNodeErrorPopUp)) {
+
+                                if (exitButton.isClicked(mousePositionClickForUI))
+                                    return Screen::Menu;
+            
+                                // Change this later on
+                                else if (addNodeButton.isClicked(mousePositionClickForUI)) {
+            
+                                    addNodeAction(nodeBox, vgraph, showNodeErrorPopUp);
+                                }
+    
+                                else if (addEdgeButton.isClicked(mousePositionClickForUI)) {
+            
+                                    addEdgeAction(edgeBox, vgraph, showEdgeErrorPopUp);
                                     
-                                    if (isNodeClicked) {
+                                }
+    
+                                else if (clearGraphButton.isClicked(mousePositionClickForUI)) {
+    
+                                    vgraph.clearGraph();
+                                }
+    
+                                if (loadGraphButton.isClicked(mousePositionClickForUI)) {
+    
+                                    // Tiny File Dialog part
+                                    char const *selection = tinyfd_openFileDialog(
+                                        "Select file", // title
+                                        "", // optional initial directory
+                                        1, // number of filter patterns
+                                        lFilterPatterns, // char const * lFilterPatterns[2] = { "*.txt", "*.jpg" };
+                                        NULL, // optional filter description
+                                        0 // forbids multiple selections
+                                    );
+    
+                                    std::cout << selection << "\n";
+
+                                    readGraphData(selection, vgraph);
+                                }
+
+                                if (saveGraphButton.isClicked(mousePositionClickForUI)) {
+
+                                    char const *folderSelection = tinyfd_selectFolderDialog(
+                                        "Select a folder to save", // title
+                                        "" // optional initial directory
+                                    );
+                                    char const *fileNameSelection = tinyfd_inputBox("Name your graph", "Choose a file name for your graph (must end with .txt)", "graph.txt");
+
+                                    std::string filepath(folderSelection);
+                                    filepath.append("/");
+                                    filepath.append(fileNameSelection);
+
+                                    std::cout << "Filepath created: " << filepath << "\n";
+
+                                    saveGraphData(filepath.c_str(), vgraph);
+                                }
+            
+                                else {
+            
+                                    if (!isNodeClicked) {
+            
+                                        isNodeClicked = vgraph.isClicked(mousePositionClickForGraph, clickedNode);
                                         
-                                        std::cout << "Clicked Node " << clickedNode << "\n";
+                                        if (isNodeClicked) {
+                                            
+                                            window.setMouseCursor(moveCursor);
+                                            std::cout << "Clicked Node " << clickedNode << "\n";
+                                        }
                                     }
                                 }
                             }
+
+                            else {
+
+                                if (showNodeErrorPopUp)
+                                    if (nodeErrorPopUp.isDismissed(mousePositionClickForBorder))
+                                        showNodeErrorPopUp = false;
+
+                                if (showEdgeErrorPopUp)
+                                    if (edgeErrorPopUp.isDismissed(mousePositionClickForBorder))
+                                        showEdgeErrorPopUp = false;
+                            }
+        
 
                             break;
 
@@ -269,6 +361,7 @@ Screen displayGraphEditor(sf::RenderWindow &window, VisualGraph &vgraph, sf::Fon
 
                             isPanningGraph = true;
                             lastPanPixel = sf::Vector2i(event.mouseButton.x, event.mouseButton.y);
+                            window.setMouseCursor(moveCursor);
 
                             break;
                         
@@ -307,8 +400,6 @@ Screen displayGraphEditor(sf::RenderWindow &window, VisualGraph &vgraph, sf::Fon
 
                     if (isNodeClicked) {
 
-                        window.setMouseCursor(moveCursor);
-
                         sf::Vector2i mousePixel(event.mouseMove.x, event.mouseMove.y);
                         sf::Vector2f mousePositionForGraph = window.mapPixelToCoords(mousePixel, graphView);
 
@@ -316,8 +407,6 @@ Screen displayGraphEditor(sf::RenderWindow &window, VisualGraph &vgraph, sf::Fon
                     }
 
                     if (isPanningGraph) {
-
-                        window.setMouseCursor(moveCursor);
 
                         sf::Vector2i currentPixel(event.mouseMove.x, event.mouseMove.y);
 
@@ -381,17 +470,45 @@ Screen displayGraphEditor(sf::RenderWindow &window, VisualGraph &vgraph, sf::Fon
         edgeBox.drawTextbox(window);
         addEdgeButton.drawButton(window);
         bool addEdgeHover = addEdgeButton.hoverState(mousePosition, sf::Color(237, 98, 28), sf::Color::Black);
-
-        if (addNodeHover || addEdgeHover || exitButtonHover) {
+        
+        clearGraphButton.drawButton(window);
+        bool clearGraphHover = clearGraphButton.hoverState(mousePosition, sf::Color(237, 98, 28), sf::Color::Black);
+        
+        loadGraphButton.drawButton(window);
+        bool loadGraphHover = loadGraphButton.hoverState(mousePosition, sf::Color(237, 98, 28), sf::Color::Black);
+        
+        saveGraphButton.drawButton(window);
+        bool saveGraphHover = saveGraphButton.hoverState(mousePosition, sf::Color(237, 98, 28), sf::Color::Black);
+        
+        
+        if (addNodeHover || addEdgeHover || exitButtonHover || clearGraphHover || loadGraphHover || saveGraphHover) {
             
             window.setMouseCursor(handCursor);
         }
         else if (!(isNodeClicked || isPanningGraph)) {
-
+            
             window.setMouseCursor(normalCursor);
         }
         
         window.setView(borderView);
+        sf::Vector2f mousePositionPopUp = window.mapPixelToCoords(mousePixel, borderView);
+
+        if (showNodeErrorPopUp) {
+            
+            if (nodeErrorPopUp.dismissHoverState(mousePositionPopUp, sf::Color(237, 98, 28), sf::Color::Black))
+                window.setMouseCursor(handCursor);
+
+            nodeErrorPopUp.drawPopUp(window);
+        }
+
+        if (showEdgeErrorPopUp) {
+
+            if (edgeErrorPopUp.dismissHoverState(mousePositionPopUp, sf::Color(237, 98, 28), sf::Color::Black))
+                window.setMouseCursor(handCursor);
+
+            edgeErrorPopUp.drawPopUp(window);
+        }
+
         window.draw(rectRing);
         
         window.display();

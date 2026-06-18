@@ -34,6 +34,11 @@ class VisualGraph {
 
         void drawGraph(sf::RenderWindow &window) const;
         void dragNode(sf::Vector2f mousePosition, int clickedNode);
+        void clearGraph();
+        const std::map<int, Node> &getNodesMap() const;
+        const std::map<int, std::vector<int>> &getEdgesMap() const;
+        
+        std::map<int, Node> &getNodesMapNonConst();
 };
 
 

@@ -1,5 +1,9 @@
 #include "Button.hpp"
 
+Button::Button() {
+    
+}
+
 Button::Button(sf::Vector2f size, sf::Vector2f position, sf::Color buttonCol, const std::string &text, const sf::Font &textFont, unsigned int textPunto, sf::Color textColor) {
 
     this->size = size;

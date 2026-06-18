@@ -77,6 +77,12 @@ void VisualGraph::dragNode(sf::Vector2f mousePosition, int clickedNode) {
     this->displayNodes.at(clickedNode).setPosition(mousePosition);
 }
 
+void VisualGraph::clearGraph() {
+    
+    this->displayNodes.clear();
+    this->edges.clear();
+}
+
 
 
 void VisualGraph::drawGraph(sf::RenderWindow &window) const {
@@ -99,4 +105,22 @@ void VisualGraph::drawGraph(sf::RenderWindow &window) const {
     
         displayNode.second.drawNode(window);
     }
+}
+
+
+// Getters
+
+const std::map<int, Node>& VisualGraph::getNodesMap() const {
+
+    return this->displayNodes;
+}
+
+const std::map<int, std::vector<int>>& VisualGraph::getEdgesMap() const {
+
+    return this->edges;
+}
+
+std::map<int, Node>& VisualGraph::getNodesMapNonConst() {
+
+    return this->displayNodes;
 }
