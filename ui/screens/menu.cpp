@@ -1,6 +1,6 @@
 #include "menu.hpp"
 
-void updateMenuLayout(sf::RenderWindow &window, Label &title, Button &graphButton, Button &bfsButton, Button &dfsButton) {
+void updateMenuLayout(sf::RenderWindow &window, Label &title, Button &graphButton, Button &bfsButton, Button &dfsButton, Button &settingsButton) {
 
     sf::Vector2u windowSize = window.getSize();
 
@@ -26,6 +26,11 @@ void updateMenuLayout(sf::RenderWindow &window, Label &title, Button &graphButto
     graphButton.adjustScaling(navButtonSize, graphEditorPosition, updateTextScale(window, graphButton.textPunto));
     bfsButton.adjustScaling(navButtonSize, BFSPosition, updateTextScale(window, bfsButton.textPunto));
     dfsButton.adjustScaling(navButtonSize, DFSPosition, updateTextScale(window, dfsButton.textPunto));
+    
+
+    sf::Vector2f setttingsButtonSize(windowWidth * 0.20f, windowHeight * 0.06f);
+    sf::Vector2f settingsPosition(windowWidth * 0.03f, windowHeight * 0.89f);
+    settingsButton.adjustScaling(setttingsButtonSize, settingsPosition, updateTextScale(window, settingsButton.textPunto));
 }
 
 
@@ -55,13 +60,14 @@ Screen displayMenu(sf::RenderWindow &window, sf::Font &font, sf::RectangleShape 
     Button graphButton(buttonSize, buttonPosition, sf::Color::Transparent, sf::Color(237, 98, 28), 2.0f, "Graph Editor", font, 30, sf::Color(237, 98, 28));
     Button bfsButton(buttonSize, buttonPosition, sf::Color::Transparent, sf::Color(237, 98, 28), 2.0f, "Run BFS", font, 30, sf::Color(237, 98, 28));
     Button dfsButton(buttonSize, buttonPosition, sf::Color::Transparent, sf::Color(237, 98, 28), 2.0f, "Run DFS", font, 30, sf::Color(237, 98, 28));
-
     
+    
+    Button settingsButton(buttonSize, buttonPosition, sf::Color::Transparent, sf::Color(237, 98, 28), 2.0f, "Settings", font, 30, sf::Color(237, 98, 28));
 
     
     sf::FloatRect visibleArea(0.0f, 0.0f, static_cast<float>(windowWidth), static_cast<float>(windowHeight));
     window.setView(sf::View(visibleArea));
-    updateMenuLayout(window, title, graphButton, bfsButton, dfsButton);
+    updateMenuLayout(window, title, graphButton, bfsButton, dfsButton, settingsButton);
 
     updateBorderRing(window, rectRing);
 
@@ -83,7 +89,7 @@ Screen displayMenu(sf::RenderWindow &window, sf::Font &font, sf::RectangleShape 
                     sf::FloatRect visibleArea(0.0f, 0.0f, static_cast<float>(event.size.width), static_cast<float>(event.size.height));
 
                     window.setView(sf::View(visibleArea));
-                    updateMenuLayout(window, title, graphButton, bfsButton, dfsButton);
+                    updateMenuLayout(window, title, graphButton, bfsButton, dfsButton, settingsButton);
                     updateBorderRing(window, rectRing);
                     break;
                 }
@@ -105,6 +111,9 @@ Screen displayMenu(sf::RenderWindow &window, sf::Font &font, sf::RectangleShape 
 
                         if (graphButton.isClicked(mousePositionClick))
                             return Screen::Graph;
+
+                        if (settingsButton.isClicked(mousePositionClick))
+                            return Screen::Settings;
                     }
 
                     break;
@@ -132,7 +141,10 @@ Screen displayMenu(sf::RenderWindow &window, sf::Font &font, sf::RectangleShape 
         dfsButton.drawButton(window);
         bool dfsHover = dfsButton.hoverState(mousePosition, sf::Color(237, 98, 28), sf::Color::Black);
 
-        if (graphEditorHover || bfsHover || dfsHover) {
+        settingsButton.drawButton(window);
+        bool settingsHover = settingsButton.hoverState(mousePosition, sf::Color(237, 98, 28), sf::Color::Black);
+
+        if (graphEditorHover || bfsHover || dfsHover || settingsHover) {
 
             window.setMouseCursor(handCursor);
         }

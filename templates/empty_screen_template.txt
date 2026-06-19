@@ -1,0 +1,76 @@
+kind of empty screen template to use later for other screens
+
+#include "settings.hpp"
+
+void updateSettingsLayout(sf::RenderWindow &window) {
+
+
+}
+
+Screen displaySettings(sf::RenderWindow &window, const sf::Font &font, sf::RectangleShape &rectRing) {
+
+    sf::View settingsView;
+    
+    while (window.isOpen()) {
+        sf::Event event;
+
+        while (window.pollEvent(event)) {
+
+
+            switch (event.type) {
+
+                case sf::Event::Closed:
+                    
+                    window.close();
+                    return Screen::Exit;
+                    break;
+
+                case sf::Event::Resized: {
+
+                    updateSettingsLayout(window);
+                    updateBorderRing(window, rectRing);
+                    break;
+                }
+
+                case sf::Event::KeyPressed:
+
+                    if (event.key.code == sf::Keyboard::Escape)
+                        return Screen::Menu;
+
+                    break;
+
+                case sf::Event::MouseButtonPressed:
+                    
+                    switch (event.mouseButton.button) {
+
+                        case sf::Mouse::Left: {
+
+                            sf::Vector2i mousePixel(event.mouseButton.x, event.mouseButton.y);
+                            sf::Vector2f mousePositionClickForUI = window.mapPixelToCoords(mousePixel, uiView);
+
+                            break;
+
+                        }
+                        
+                        
+                        default:
+                            break;
+                    }
+
+                    break;
+
+            
+                default:
+                    break;
+            }
+        }        
+
+        window.clear(sf::Color::Black);
+
+        window.draw(rectRing);
+        
+        window.display();
+    }
+
+    return Screen::Menu;
+}

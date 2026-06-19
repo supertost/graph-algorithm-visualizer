@@ -146,6 +146,12 @@ void Button::setCharacterSize(unsigned int size) {
     centerText();
 }
 
+void Button::setText(const std::string text) {
+
+    this->text.setString(text);
+    centerText();
+}
+
 void Button::adjustScaling(sf::Vector2f size, sf::Vector2f position, int charSize) {
 
     setSize(size);

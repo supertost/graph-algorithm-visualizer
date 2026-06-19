@@ -41,6 +41,8 @@ class Button {
 
         void adjustScaling(sf::Vector2f size, sf::Vector2f position, int charSize);
 
+        void setText(const std::string text);
+
 };
 
 

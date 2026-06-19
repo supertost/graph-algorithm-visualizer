@@ -2,6 +2,8 @@
 
 #include "screens/menu.hpp"
 #include "screens/graphEditor.hpp"
+#include "screens/settings.hpp"
+#include "../io/readwrite.hpp"
 
 void updateBorderRing(sf::RenderWindow &window, sf::RectangleShape &rectRing) {
 
@@ -38,6 +40,11 @@ int main() {
     rectRing.setFillColor(sf::Color::Transparent);
 
 
+    // Config settings
+    Config config;
+    readConfig(config);
+
+
     Screen currentScreen = Screen::Menu;
 
 
@@ -55,7 +62,13 @@ int main() {
 
             case Screen::Graph: // For adding nodes into the graph and such
 
-                currentScreen = displayGraphEditor(window, vgraph, font, rectRing);
+                currentScreen = displayGraphEditor(window, vgraph, font, rectRing, config);
+                break;
+
+            
+            case Screen::Settings:
+
+                currentScreen = displaySettings(window, font, rectRing, config);
                 break;
 
             default:

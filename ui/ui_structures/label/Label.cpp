@@ -32,6 +32,11 @@ void Label::adjustScaling(sf::Vector2f position, unsigned int charSize) {
     setCharacterSize(charSize);
 }
 
+const sf::FloatRect Label::getLocalBounds() const {
+
+    return this->text.getLocalBounds();
+}
+
 Label::~Label() {
 
 
