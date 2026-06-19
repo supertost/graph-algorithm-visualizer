@@ -20,6 +20,7 @@ class Label {
         void setCharacterSize(unsigned int charSize);
 
         void adjustScaling(sf::Vector2f position, unsigned int charSize);
+        const sf::FloatRect getLocalBounds() const;
 };
 
 

@@ -85,3 +85,48 @@ bool saveGraphData(const char *filepath, VisualGraph &vgraph) {
 
     return true;
 }
+
+
+bool readConfig(Config &config) {
+
+    std::fstream filein(config.filepath.c_str(), std::ios::in);
+
+    if (!filein.is_open()) {
+        // Ask the user to create a config folder in the root folder of the application.
+        std::cout << "Config file not found at location: " << config.filepath << "\n";
+        return false;
+    }
+
+    
+    std::string line;
+    while (getline(filein, line)) {
+
+        std::stringstream ss(line);
+
+        std::string setting;
+        ss >> setting;
+
+        std::cout << "Setting: " << setting << "\n";
+
+        if (!(setting.compare("smoothScroll"))) {
+
+            int value;
+            ss >> value;
+            config.smoothScroll = value;
+            std::cout << "Start value for smoothscroll: " << config.smoothScroll << "\n";
+        }
+    }
+    
+    return true;
+}
+
+bool saveConfig(Config &config) {
+
+    // To be fixed, just a working one for single setting
+
+    std::fstream fileout(config.filepath.c_str(), std::ios::out);
+
+    fileout << "smoothScroll" << " " << config.smoothScroll << "\n";
+
+    return true;
+}

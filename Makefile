@@ -2,7 +2,7 @@ files = main.cpp algorithm/Graph.cpp algorithm/BFS.cpp algorithm/DFS.cpp algorit
 
 # SFML stuff
 uiProgram = ui/program.cpp
-uiScreens = ui/screens/menu.cpp ui/screens/graphEditor.cpp ui/screens/textScale.cpp
+uiScreens = ui/screens/menu.cpp ui/screens/graphEditor.cpp ui/screens/textScale.cpp ui/screens/settings.cpp
 uiStructures = ui/ui_structures/button/Button.cpp ui/ui_structures/label/Label.cpp ui/ui_structures/Textbox/Textbox.cpp ui/ui_structures/PopUp/PopUp.cpp
 uiGraphStructures = ui/ui_structures/Graph/Node/Node.cpp ui/ui_structures/Graph/VisualGraph.cpp
 

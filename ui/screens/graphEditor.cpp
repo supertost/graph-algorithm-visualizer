@@ -136,7 +136,7 @@ void addEdgeAction(Textbox &edgeBox, VisualGraph &vgraph, bool &showEdgeErrorPop
     }
 }
 
-Screen displayGraphEditor(sf::RenderWindow &window, VisualGraph &vgraph, sf::Font &font, sf::RectangleShape &rectRing) {
+Screen displayGraphEditor(sf::RenderWindow &window, VisualGraph &vgraph, sf::Font &font, sf::RectangleShape &rectRing, Config &config) {
 
     // For file selection
     char const *lFilterPatterns[] = {"*.txt"};
@@ -303,10 +303,17 @@ Screen displayGraphEditor(sf::RenderWindow &window, VisualGraph &vgraph, sf::Fon
                                         NULL, // optional filter description
                                         0 // forbids multiple selections
                                     );
-    
-                                    std::cout << selection << "\n";
 
-                                    readGraphData(selection, vgraph);
+                                    if (!(selection == nullptr)) {
+
+                                        std::cout << selection << "\n";
+                                        readGraphData(selection, vgraph);
+                                    }
+    
+                                    else {
+
+                                        std::cout << "No file selected\n";
+                                    }
                                 }
 
                                 if (saveGraphButton.isClicked(mousePositionClickForUI)) {
@@ -422,10 +429,22 @@ Screen displayGraphEditor(sf::RenderWindow &window, VisualGraph &vgraph, sf::Fon
 
                 case sf::Event::MouseWheelScrolled:
 
-                    if (event.mouseWheelScroll.delta > 0)
-                        targetZoom *= 0.9f;
-                    else
-                        targetZoom *= 1.1;
+                    if (config.smoothScroll == 1) {
+
+                        if (event.mouseWheelScroll.delta > 0)
+                            targetZoom *= 0.9f;
+
+                        else
+                            targetZoom *= 1.1;
+                    }
+                    else {
+
+                        if (event.mouseWheelScroll.delta > 0)
+                            graphView.zoom(0.9f);
+
+                        else
+                            graphView.zoom(1.1);
+                    }
                     
 
                     break;
@@ -439,10 +458,13 @@ Screen displayGraphEditor(sf::RenderWindow &window, VisualGraph &vgraph, sf::Fon
         }        
 
 
-        float newZoom = currentZoom + (targetZoom - currentZoom) * 0.01f;
-        float zoomFactor = newZoom / currentZoom;
-        graphView.zoom(zoomFactor);
-        currentZoom = newZoom;
+        if (config.smoothScroll == 1) {
+
+            float newZoom = currentZoom + (targetZoom - currentZoom) * 0.01f;
+            float zoomFactor = newZoom / currentZoom;
+            graphView.zoom(zoomFactor);
+            currentZoom = newZoom;
+        }
 
         window.clear(sf::Color::Black);
 
