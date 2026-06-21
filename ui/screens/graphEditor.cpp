@@ -31,7 +31,7 @@ void updateGraphViews(sf::RenderWindow &window, sf::View &graphView, sf::View &u
     borderView.setCenter(windowWidth / 2.0f, windowHeight / 2.0f);
 }
 
-void updateGraphEditorLayout(sf::RenderWindow &window, Button &exitButton, Textbox &nodeBox, Button &addNodeButton, Textbox &edgeBox, Button &addEdgeButton, sf::RectangleShape &uibg, Button &clearGraphButton, Button &loadGraphButton, Button &saveGraphButton) {
+void updateGraphEditorLayout(sf::RenderWindow &window, Button &exitButton, Textbox &nodeBox, Button &addNodeButton, Textbox &edgeBox, Button &addEdgeButton, sf::RectangleShape &uibg, Button &clearGraphButton, Button &loadGraphButton, Button &saveGraphButton, Button &centerGraphButton) {
 
     sf::Vector2u windowSize = window.getSize();
 
@@ -59,12 +59,12 @@ void updateGraphEditorLayout(sf::RenderWindow &window, Button &exitButton, Textb
 
     // Edge creaton
     sf::Vector2f edgeBoxSize(uiWidth * 0.8f, windowHeight * 0.1f);
-    sf::Vector2f edgeBoxPosition(uiWidth / 2.0f, windowHeight * 0.5f);
+    sf::Vector2f edgeBoxPosition(uiWidth / 2.0f, windowHeight * 0.55f);
     edgeBox.adjustScaling(edgeBoxSize, edgeBoxPosition, updateTextScale(window, edgeBox.characterSize));
     edgeBox.setOriginCenter();
 
     sf::Vector2f addEdgeButtonSize(uiWidth * 0.8f, windowHeight * 0.1f);
-    sf::Vector2f addEdgeButtonPosition(uiWidth / 2.0f, windowHeight * 0.615f);
+    sf::Vector2f addEdgeButtonPosition(uiWidth / 2.0f, windowHeight * 0.665f);
     addEdgeButton.adjustScaling(addEdgeButtonSize, addEdgeButtonPosition, updateTextScale(window, addEdgeButton.textPunto));
     addEdgeButton.setOriginCenter();
 
@@ -84,6 +84,11 @@ void updateGraphEditorLayout(sf::RenderWindow &window, Button &exitButton, Textb
     sf::Vector2f saveGraphButtonPosition(uiWidth / 2.0f, windowHeight * 0.33f);
     saveGraphButton.adjustScaling(saveGraphButtonSize, saveGraphButtonPosition, updateTextScale(window, saveGraphButton.textPunto));
     saveGraphButton.setOriginCenter();
+
+    sf::Vector2f centerGraphButtonSize(uiWidth * 0.8f, windowHeight * 0.06f);
+    sf::Vector2f centerGraphButtonPosition(uiWidth / 2.0f, windowHeight * 0.42f);
+    centerGraphButton.adjustScaling(centerGraphButtonSize, centerGraphButtonPosition, updateTextScale(window, centerGraphButton.textPunto));
+    centerGraphButton.setOriginCenter();
 }
 
 void addNodeAction(Textbox &nodeBox, VisualGraph &vgraph, bool &showNodeErrorPopUp) {
@@ -136,6 +141,24 @@ void addEdgeAction(Textbox &edgeBox, VisualGraph &vgraph, bool &showEdgeErrorPop
     }
 }
 
+
+void centerCamera(sf::View &graphView, VisualGraph &vgraph) {
+
+    std::array<float, 4> bounds = vgraph.getBounds();
+
+    float lowestX  = bounds[0];
+    float highestX = bounds[1];
+    float lowestY  = bounds[2];
+    float highestY = bounds[3];
+
+    sf::Vector2f centerPoint(
+        (lowestX + highestX) / 2.0f,
+        (lowestY + highestY) / 2.0f
+    );
+
+    graphView.setCenter(centerPoint);
+}
+
 Screen displayGraphEditor(sf::RenderWindow &window, VisualGraph &vgraph, sf::Font &font, sf::RectangleShape &rectRing, Config &config) {
 
     // For file selection
@@ -184,12 +207,13 @@ Screen displayGraphEditor(sf::RenderWindow &window, VisualGraph &vgraph, sf::Fon
     Button clearGraphButton(sf::Vector2f(0.0f, 0.0f), sf::Vector2f(3.0f, 130.0f), sf::Color::Transparent, sf::Color(237, 98, 28), 2.0f, "Clear Graph", font, 20, sf::Color(237, 98, 28));
     Button loadGraphButton(sf::Vector2f(0.0f, 0.0f), sf::Vector2f(3.0f, 130.0f), sf::Color::Transparent, sf::Color(237, 98, 28), 2.0f, "Load Graph", font, 20, sf::Color(237, 98, 28));
     Button saveGraphButton(sf::Vector2f(0.0f, 0.0f), sf::Vector2f(3.0f, 130.0f), sf::Color::Transparent, sf::Color(237, 98, 28), 2.0f, "Save Graph", font, 20, sf::Color(237, 98, 28));
+    Button centerGraphButton(sf::Vector2f(0.0f, 0.0f), sf::Vector2f(3.0f, 130.0f), sf::Color::Transparent, sf::Color(237, 98, 28), 2.0f, "Center Graph", font, 20, sf::Color(237, 98, 28));
     
     // ui black semi transparent rectangle
     sf::RectangleShape uibg;
     uibg.setFillColor(sf::Color(0, 0, 0, 200));
     
-    updateGraphEditorLayout(window, exitButton, nodeBox, addNodeButton, edgeBox, addEdgeButton, uibg, clearGraphButton, loadGraphButton, saveGraphButton);
+    updateGraphEditorLayout(window, exitButton, nodeBox, addNodeButton, edgeBox, addEdgeButton, uibg, clearGraphButton, loadGraphButton, saveGraphButton, centerGraphButton);
     updateBorderRing(window, rectRing);
 
 
@@ -237,7 +261,7 @@ Screen displayGraphEditor(sf::RenderWindow &window, VisualGraph &vgraph, sf::Fon
                 case sf::Event::Resized: {
 
                     updateGraphViews(window, graphView, uiView, borderView);
-                    updateGraphEditorLayout(window, exitButton, nodeBox, addNodeButton, edgeBox, addEdgeButton, uibg, clearGraphButton, loadGraphButton, saveGraphButton);
+                    updateGraphEditorLayout(window, exitButton, nodeBox, addNodeButton, edgeBox, addEdgeButton, uibg, clearGraphButton, loadGraphButton, saveGraphButton, centerGraphButton);
                     updateBorderRing(window, rectRing);
                     break;
                 }
@@ -290,6 +314,11 @@ Screen displayGraphEditor(sf::RenderWindow &window, VisualGraph &vgraph, sf::Fon
                                 else if (clearGraphButton.isClicked(mousePositionClickForUI)) {
     
                                     vgraph.clearGraph();
+                                }
+
+                                else if (centerGraphButton.isClicked(mousePositionClickForUI)) {
+
+                                    centerCamera(graphView, vgraph);
                                 }
     
                                 if (loadGraphButton.isClicked(mousePositionClickForUI)) {
@@ -502,8 +531,10 @@ Screen displayGraphEditor(sf::RenderWindow &window, VisualGraph &vgraph, sf::Fon
         saveGraphButton.drawButton(window);
         bool saveGraphHover = saveGraphButton.hoverState(mousePosition, sf::Color(237, 98, 28), sf::Color::Black);
         
+        centerGraphButton.drawButton(window);
+        bool centerGraphHover = centerGraphButton.hoverState(mousePosition, sf::Color(237, 98, 28), sf::Color::Black);
         
-        if (addNodeHover || addEdgeHover || exitButtonHover || clearGraphHover || loadGraphHover || saveGraphHover) {
+        if (addNodeHover || addEdgeHover || exitButtonHover || clearGraphHover || loadGraphHover || saveGraphHover || centerGraphHover) {
             
             window.setMouseCursor(handCursor);
         }

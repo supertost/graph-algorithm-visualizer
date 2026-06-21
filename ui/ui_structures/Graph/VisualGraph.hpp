@@ -8,14 +8,11 @@
 #include <vector>
 #include <unordered_set>
 #include <utility>
+#include <array>
 
 class VisualGraph {
     private:
 
-        //float highestCoordX;
-        //float lowestCoordX;
-        //float highestCoordY;
-        //float lowestCoordY;
         const sf::Font &font;
 
         sf::Vector2f determineNodeLocation() const;
@@ -39,6 +36,8 @@ class VisualGraph {
         const std::map<int, std::vector<int>> &getEdgesMap() const;
         
         std::map<int, Node> &getNodesMapNonConst();
+
+        const std::array<float, 4> getBounds() const;
 };
 
 

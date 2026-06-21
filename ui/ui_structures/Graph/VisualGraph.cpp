@@ -124,3 +124,30 @@ std::map<int, Node>& VisualGraph::getNodesMapNonConst() {
 
     return this->displayNodes;
 }
+
+const std::array<float, 4>  VisualGraph::getBounds() const {
+
+    if (displayNodes.empty()) {
+        return {0.0f, 0.0f, 0.0f, 0.0f};
+    }
+
+    auto it = displayNodes.begin();
+    sf::Vector2f firstPos = it->second.getPosition();
+
+    float lowestX = firstPos.x;
+    float highestX = firstPos.x;
+    float lowestY = firstPos.y;
+    float highestY = firstPos.y;
+
+    for (const auto &pair : displayNodes) {
+        
+        sf::Vector2f pos = pair.second.getPosition();
+
+        if (pos.x < lowestX)  lowestX = pos.x;
+        if (pos.x > highestX) highestX = pos.x;
+        if (pos.y < lowestY)  lowestY = pos.y;
+        if (pos.y > highestY) highestY = pos.y;
+    }
+
+    return {lowestX, highestX, lowestY, highestY};
+}
