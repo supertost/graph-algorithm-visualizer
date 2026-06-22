@@ -11,10 +11,10 @@ void updateSettingsLayout(sf::RenderWindow &window, Button &exitButton, Label &t
     float windowWidth = static_cast<float>(windowSize.x);
     float windowHeight = static_cast<float>(windowSize.y);
 
-    title.setCharacterSize(updateTextScale(window, 50));
+    title.setTextPunto(updateTextScale(window, 50));
     title.setPosition(sf::Vector2f(windowWidth * 0.03f, windowHeight * 0.06f));
 
-    smoothScroll.setCharacterSize(updateTextScale(window, 30));
+    smoothScroll.setTextPunto(updateTextScale(window, 30));
     smoothScroll.setPosition(sf::Vector2f(windowWidth * 0.03f, windowHeight * 0.25f));
     sf::FloatRect smoothScrollBounds = smoothScroll.getLocalBounds();
 

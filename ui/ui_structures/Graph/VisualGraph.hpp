@@ -1,7 +1,7 @@
 #ifndef VGRAPH_HPP
 #define VGRAPH_HPP
 
-#include "Node/Node.hpp"
+#include "Node.hpp"
 
 #include <SFML/Graphics.hpp>
 #include <map>

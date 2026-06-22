@@ -29,7 +29,7 @@ void Button::setStyle(const ButtonStyle &buttonStyle)
         shape.setOutlineThickness(buttonStyle.outlineThickness);
 
         text.setFillColor(buttonStyle.textColor);
-        text.setCharacterSize(buttonStyle.textPunto);
+        text.setTextPunto(buttonStyle.textPunto);
 
         centerText();
 }
@@ -78,6 +78,11 @@ void Button::drawButton(sf::RenderWindow &window) const
         window.draw(text);
 }
 
+// Getters
+unsigned int Button::getTextPunto()
+{
+        return defaultStyle.textPunto;
+}
 
 // Setter Functions
 void Button::setOriginCenter()
@@ -103,11 +108,11 @@ void Button::setPosition(sf::Vector2f position)
         centerText();
 }
 
-void Button::setCharacterSize(unsigned int textPunto)
+void Button::setTextPunto(unsigned int textPunto)
 {
         defaultStyle.textPunto = textPunto;
         hoverStyle.textPunto = textPunto;
-        text.setCharacterSize(textPunto);
+        text.setTextPunto(textPunto);
         centerText();
 }
 
@@ -117,9 +122,13 @@ void Button::setText(const std::string &newText)
         centerText();
 }
 
-void Button::adjustScaling(sf::Vector2f size, sf::Vector2f position, unsigned int textPunto)
+void Button::adjustScaling(
+                sf::Vector2f size, 
+                sf::Vector2f position, 
+                unsigned int textPunto
+        )
 {
         setSize(size);
         setPosition(position);
-        setCharacterSize(textPunto);
+        setTextPunto(textPunto);
 }

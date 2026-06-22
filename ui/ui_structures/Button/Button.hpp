@@ -41,11 +41,12 @@ class Button
                         
                 bool isClicked(sf::Vector2f mousePosition) const;
                 bool hoverState(sf::Vector2f mousePosition);
+                unsigned int getTextPunto();
                         
                 // For real time scaling of the program
                 void setSize(sf::Vector2f size);
                 void setPosition(sf::Vector2f position);
-                void setCharacterSize(unsigned int textPunto);
+                void setTextPunto(unsigned int textPunto);
                         
                 void setOriginCenter();
                         

@@ -3,8 +3,8 @@ files = main.cpp algorithm/Graph.cpp algorithm/BFS.cpp algorithm/DFS.cpp algorit
 # SFML stuff
 uiProgram = ui/program.cpp
 uiScreens = ui/screens/menu.cpp ui/screens/graphEditor.cpp ui/screens/textScale.cpp ui/screens/settings.cpp ui/screens/bfsScreen.cpp
-uiStructures = ui/ui_structures/button/Button.cpp ui/ui_structures/label/Label.cpp ui/ui_structures/Textbox/Textbox.cpp ui/ui_structures/PopUp/PopUp.cpp
-uiGraphStructures = ui/ui_structures/Graph/Node/Node.cpp ui/ui_structures/Graph/VisualGraph.cpp
+uiStructures = ui/ui_structures/Button/Button.cpp ui/ui_structures/Label/Label.cpp ui/ui_structures/Textbox/Textbox.cpp ui/ui_structures/PopUp/PopUp.cpp
+uiGraphStructures = ui/ui_structures/Graph/Node.cpp ui/ui_structures/Graph/VisualGraph.cpp
 
 # io
 io = io/readwrite.cpp

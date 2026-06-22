@@ -37,7 +37,7 @@ class Textbox {
 
         void setSize(sf::Vector2f size);
         void setPosition(sf::Vector2f position);
-        void setCharacterSize(unsigned int size);
+        void setTextPunto(unsigned int size);
         void adjustScaling(sf::Vector2f size, sf::Vector2f position, int charSize);
 
         void drawTextbox(sf::RenderWindow &window);

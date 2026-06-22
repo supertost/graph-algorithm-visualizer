@@ -20,7 +20,7 @@ void Node::setText(const sf::Font &font) {
 
     this->text.setFont(font);
     this->text.setString(std::to_string(this->key));
-    this->text.setCharacterSize(this->radius);
+    this->text.setTextPunto(this->radius);
     this->text.setFillColor(sf::Color(237, 98, 28));
     centerText();
 }

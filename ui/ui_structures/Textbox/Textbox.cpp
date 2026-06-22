@@ -9,7 +9,7 @@ Textbox::Textbox(sf::Vector2f size, sf::Vector2f position, const sf::Font &font,
     this->shape.setOutlineThickness(outlineThickness);
 
     this->text.setFont(font);
-    this->text.setCharacterSize(characterSize);
+    this->text.setTextPunto(characterSize);
     this->text.setFillColor(textColor);
     this->characterSize = characterSize;
 
@@ -29,7 +29,7 @@ Textbox::Textbox(sf::Vector2f size, sf::Vector2f position, const sf::Font &font,
     this->shape.setOutlineThickness(outlineThickness);
 
     this->text.setFont(font);
-    this->text.setCharacterSize(characterSize);
+    this->text.setTextPunto(characterSize);
     this->text.setFillColor(textColor);
     this->characterSize = characterSize;
 
@@ -52,7 +52,7 @@ Textbox::Textbox(sf::Vector2f size, sf::Vector2f position, const sf::Font &font,
     this->shape.setOutlineThickness(outlineThickness);
 
     this->text.setFont(font);
-    this->text.setCharacterSize(characterSize);
+    this->text.setTextPunto(characterSize);
     this->text.setFillColor(textColor);
     this->characterSize = characterSize;
 
@@ -91,9 +91,9 @@ void Textbox::setPosition(sf::Vector2f position) {
     positionText();
 }
 
-void Textbox::setCharacterSize(unsigned int size) {
+void Textbox::setTextPunto(unsigned int size) {
 
-    this->text.setCharacterSize(size);
+    this->text.setTextPunto(size);
     positionText();
 }
 
@@ -101,7 +101,7 @@ void Textbox::adjustScaling(sf::Vector2f size, sf::Vector2f position, int charSi
 
     setSize(size);
     setPosition(position);
-    setCharacterSize(charSize);
+    setTextPunto(charSize);
 }
 
 void Textbox::drawTextbox(sf::RenderWindow &window) {

@@ -37,13 +37,13 @@ PopUp::PopUp(
     this->title.setFont(fontBold);
     this->title.setFillColor(titleColor);
     this->title.setString(title);
-    this->title.setCharacterSize(textPunto);
+    this->title.setTextPunto(textPunto);
     centerTitle();
 
     this->description.setFont(fontLight);
     this->description.setFillColor(descriptionColor);
     this->description.setString(description);
-    this->description.setCharacterSize(textPunto);
+    this->description.setTextPunto(textPunto);
     centerDescription();
 
     this->dismissButton = Button(sf::Vector2f(size.x * 0.4f, size.y * 0.2f), sf::Vector2f(0.0f, 0.0f), buttonBgColor, popUpOutlineColor, popUpOutlineThickness, buttonText, fontBold, textPunto, buttonColorText);

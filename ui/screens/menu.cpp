@@ -8,7 +8,7 @@ void updateMenuLayout(sf::RenderWindow &window, Label &title, Button &graphButto
     float windowHeight = static_cast<float>(windowSize.y);
 
     // Title text
-    title.setCharacterSize(updateTextScale(window, 50));
+    title.setTextPunto(updateTextScale(window, 50));
     title.setPosition(sf::Vector2f(windowWidth * 0.03f, windowHeight * 0.06f));
 
     // Menu nav buttons
