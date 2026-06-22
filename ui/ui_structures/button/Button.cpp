@@ -1,164 +1,125 @@
 #include "Button.hpp"
 
-Button::Button() {
-    
-}
-
-Button::Button(sf::Vector2f size, sf::Vector2f position, sf::Color buttonCol, const std::string &text, const sf::Font &textFont, unsigned int textPunto, sf::Color textColor) {
-
-    this->size = size;
-    this->position = position;
-    
-    this->buttonColor = buttonCol;
-    this->textColor = textColor;
-
-    this->shape.setFillColor(buttonCol);
-    this->shape.setSize(size);
-    this->shape.setPosition(position);
-    
-    this->textPunto = textPunto;
-    this->text.setFont(textFont);
-    this->text.setString(text);
-    this->text.setFillColor(textColor);
-    this->text.setCharacterSize(textPunto);
-
-    centerText();
-}
-
-Button::Button(sf::Vector2f size, sf::Vector2f position, sf::Color buttonCol, sf::Color outlineCol, float outlineThickness, const std::string &text, const sf::Font &textFont, unsigned int textPunto, sf::Color textColor) {
-
-    this->size = size;
-    this->position = position;
-
-    this->buttonColor = buttonCol;
-    this->textColor = textColor;
-    
-    this->shape.setFillColor(buttonCol);
-    this->shape.setSize(size);
-    this->shape.setPosition(position);
-
-    this->shape.setOutlineColor(outlineCol);
-    this->shape.setOutlineThickness(outlineThickness);
-    
-    this->textPunto = textPunto;
-    this->text.setFont(textFont);
-    this->text.setString(text);
-    this->text.setFillColor(textColor);
-    this->text.setCharacterSize(textPunto);
-
-    centerText();
-}
-
-void Button::centerText() {
-
-    sf::FloatRect buttonBounds = this->shape.getGlobalBounds();
-    sf::FloatRect textBounds = this->text.getLocalBounds();
-
-    this->text.setOrigin(textBounds.left + textBounds.width / 2.0f, textBounds.top + textBounds.height / 2.0f);
-    this->text.setPosition(buttonBounds.left + buttonBounds.width / 2.0f, buttonBounds.top + buttonBounds.height / 2.0f);
-}
-
-void Button::drawButton(sf::RenderWindow &window) {
-
-    window.draw(this->shape);
-    window.draw(this->text);
-}
-
-bool Button::isClicked(sf::Vector2f mousePosition) const {
-    
-    return shape.getGlobalBounds().contains(mousePosition);
-}
-
-bool Button::hoverState(sf::Vector2f mousePosition, sf::Color backgroundCol, sf::Color textColor) {
-
-    bool currentHovered = this->shape.getGlobalBounds().contains(mousePosition);
-
-    if (currentHovered == this->hovered)
-        return currentHovered;
-
-    this->hovered = currentHovered;
-
-    if (this->hovered) {
-
-        this->shape.setFillColor(backgroundCol);
-        this->text.setFillColor(textColor);
-        return true;
-    }
-
-    else {
-        
-        this->shape.setFillColor(this->buttonColor);
-        this->text.setFillColor(this->textColor);
-        return false;
-    }
-
-    return false;
-}
-
-void Button::clickState(sf::Vector2f mousePosition, sf::Color backgroundCol, sf::Color textColor) {
-
-    bool currentClicked = this->shape.getGlobalBounds().contains(mousePosition);
-
-    if (currentClicked == this->clicked)
-        return;
-
-    this->clicked = currentClicked;
-
-    if (this->clicked) {
-
-        this->shape.setFillColor(backgroundCol);
-        this->text.setFillColor(textColor);
-    }
-
-    else {
-        
-        this->shape.setFillColor(this->buttonColor);
-        this->text.setFillColor(this->textColor);
-    }
-}
-
-void Button::setOriginCenter() {
-
-    sf::FloatRect bounds = this->shape.getLocalBounds();
-
-    this->shape.setOrigin(bounds.left + bounds.width / 2.0f, bounds.top + bounds.height / 2.0f);
-    centerText();
-}
-
-
-void Button::setSize(sf::Vector2f size) {
-
-    this->size = size;
-    this->shape.setSize(size);
-    centerText();
-}
-
-void Button::setPosition(sf::Vector2f position) {
-
-    this->position = position;
-    this->shape.setPosition(position);
-    centerText();
-}
-
-void Button::setCharacterSize(unsigned int size) {
-
-    this->text.setCharacterSize(size);
-    centerText();
-}
-
-void Button::setText(const std::string text) {
-
-    this->text.setString(text);
-    centerText();
-}
-
-void Button::adjustScaling(sf::Vector2f size, sf::Vector2f position, int charSize) {
-
-    setSize(size);
-    setPosition(position);
-    setCharacterSize(charSize);
-}
-
-Button::~Button()
+Button::Button()
 {
+}
+
+Button::Button(
+                const std::string &buttonText, 
+                sf::Vector2f size, 
+                sf::Vector2f position, 
+                const sf::Font &textFont,
+                const ButtonStyle &defaultStyle,
+                const ButtonStyle &hoverStyle
+        ) : defaultStyle(defaultStyle), hoverStyle(hoverStyle)
+{     
+        shape.setSize(size);
+        shape.setPosition(position);
+        
+        text.setFont(textFont);
+        text.setString(buttonText);
+
+        setStyle(defaultStyle);
+}
+
+void Button::setStyle(const ButtonStyle &buttonStyle)
+{
+        shape.setFillColor(buttonStyle.backgroundColor);
+        shape.setOutlineColor(buttonStyle.outlineColor);
+        shape.setOutlineThickness(buttonStyle.outlineThickness);
+
+        text.setFillColor(buttonStyle.textColor);
+        text.setCharacterSize(buttonStyle.textPunto);
+
+        centerText();
+}
+
+void Button::centerText()
+{
+        const sf::FloatRect buttonBounds = shape.getGlobalBounds();
+        const sf::FloatRect textBounds = text.getLocalBounds();
+
+        text.setOrigin(
+                textBounds.left + textBounds.width / 2.0f, 
+                textBounds.top + textBounds.height / 2.0f
+        );
+
+        text.setPosition(
+                buttonBounds.left + buttonBounds.width / 2.0f, 
+                buttonBounds.top + buttonBounds.height / 2.0f
+        );
+}
+
+bool Button::isClicked(sf::Vector2f mousePosition) const
+{    
+        return shape.getGlobalBounds().contains(mousePosition);
+}
+
+bool Button::hoverState(sf::Vector2f mousePosition)
+{
+        bool currentHovered = shape.getGlobalBounds().contains(mousePosition);
+
+        if (currentHovered == hovered)
+                return currentHovered;
+
+        hovered = currentHovered;
+
+        if (hovered)
+                setStyle(hoverStyle);
+        else
+                setStyle(defaultStyle);
+
+        return hovered;
+}
+
+void Button::drawButton(sf::RenderWindow &window) const
+{
+        window.draw(shape);
+        window.draw(text);
+}
+
+
+// Setter Functions
+void Button::setOriginCenter()
+{
+        sf::FloatRect bounds = shape.getLocalBounds();
+        shape.setOrigin(
+                bounds.left + bounds.width / 2.0f, 
+                bounds.top + bounds.height / 2.0f
+        );
+        
+        centerText();
+}
+
+void Button::setSize(sf::Vector2f size)
+{
+        shape.setSize(size);
+        centerText();
+}
+
+void Button::setPosition(sf::Vector2f position)
+{
+        shape.setPosition(position);
+        centerText();
+}
+
+void Button::setCharacterSize(unsigned int textPunto)
+{
+        defaultStyle.textPunto = textPunto;
+        hoverStyle.textPunto = textPunto;
+        text.setCharacterSize(textPunto);
+        centerText();
+}
+
+void Button::setText(const std::string &newText)
+{
+        text.setString(newText);
+        centerText();
+}
+
+void Button::adjustScaling(sf::Vector2f size, sf::Vector2f position, unsigned int textPunto)
+{
+        setSize(size);
+        setPosition(position);
+        setCharacterSize(textPunto);
 }

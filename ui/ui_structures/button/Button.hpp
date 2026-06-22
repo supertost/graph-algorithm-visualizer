@@ -4,46 +4,60 @@
 #include <SFML/Graphics.hpp>
 #include <string>
 
-class Button {
-    private:
-        sf::RectangleShape shape;
-        sf::Text text;
-        sf::Color buttonColor;
-        sf::Color textColor;
-        
-        bool hovered = false;
-        bool clicked = false;
-
-        void centerText();
-
-    
-    public:
-        sf::Vector2f size;
-        sf::Vector2f position;
-        unsigned int textPunto;
-
-        Button();
-        Button(sf::Vector2f size, sf::Vector2f position, sf::Color buttonCol, const std::string &text, const sf::Font &textFont, unsigned int textPunto, sf::Color textColor);
-        Button(sf::Vector2f size, sf::Vector2f position, sf::Color buttonCol, sf::Color outlineCol, float outlineThickness, const std::string &text, const sf::Font &textFont, unsigned int textPunto, sf::Color textColor);
-        ~Button();
-
-        void drawButton(sf::RenderWindow &window);
-        bool isClicked(sf::Vector2f mousePosition) const;
-        bool hoverState(sf::Vector2f mousePosition, sf::Color backgroundCol, sf::Color textColor);
-        void clickState(sf::Vector2f mousePosition, sf::Color backgroundCol, sf::Color textColor);
-
-        // For real time scaling of the program
-        void setSize(sf::Vector2f size);
-        void setPosition(sf::Vector2f position);
-        void setCharacterSize(unsigned int charSize);
-
-        void setOriginCenter();
-
-        void adjustScaling(sf::Vector2f size, sf::Vector2f position, int charSize);
-
-        void setText(const std::string text);
-
+struct ButtonStyle
+{
+        sf::Color backgroundColor = sf::Color::White;
+        sf::Color outlineColor = sf::Color::Black;
+        float outlineThickness = 2.0f;
+        sf::Color textColor = sf::Color::Black;
+        unsigned int textPunto = 30;
 };
 
+class Button
+{
+        private:
+                sf::RectangleShape shape;
+                sf::Text text;
+
+                ButtonStyle defaultStyle;
+                ButtonStyle hoverStyle;
+                
+                bool hovered = false;
+
+                void centerText();
+                void setStyle(const ButtonStyle &buttonStyle);
+
+        public:
+                Button();
+                Button(
+                        const std::string &buttonText, 
+                        sf::Vector2f size, 
+                        sf::Vector2f position, 
+                        const sf::Font &textFont,
+                        const ButtonStyle &defaultStyle,
+                        const ButtonStyle &hoverStyle
+                );
+
+                        
+                bool isClicked(sf::Vector2f mousePosition) const;
+                bool hoverState(sf::Vector2f mousePosition);
+                        
+                // For real time scaling of the program
+                void setSize(sf::Vector2f size);
+                void setPosition(sf::Vector2f position);
+                void setCharacterSize(unsigned int textPunto);
+                        
+                void setOriginCenter();
+                        
+                void adjustScaling(
+                        sf::Vector2f size, 
+                        sf::Vector2f position, 
+                        unsigned int textPunto
+                );
+                        
+                void setText(const std::string &newText);
+
+                void drawButton(sf::RenderWindow &window) const;
+};
 
 #endif
