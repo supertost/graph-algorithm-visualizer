@@ -29,7 +29,7 @@ void Button::setStyle(const ButtonStyle &buttonStyle)
         shape.setOutlineThickness(buttonStyle.outlineThickness);
 
         text.setFillColor(buttonStyle.textColor);
-        text.setTextPunto(buttonStyle.textPunto);
+        text.setCharacterSize(buttonStyle.textPunto);
 
         centerText();
 }
@@ -112,7 +112,7 @@ void Button::setTextPunto(unsigned int textPunto)
 {
         defaultStyle.textPunto = textPunto;
         hoverStyle.textPunto = textPunto;
-        text.setTextPunto(textPunto);
+        text.setCharacterSize(textPunto);
         centerText();
 }
 

@@ -17,4 +17,22 @@ void updateGraphEditorLayout(
         Button &centerGraphButton
 );
 
+void updateMenuLayout(
+        sf::RenderWindow &window,
+        Label &title,
+        Button &graphButton,
+        Button &bfsButton,
+        Button &dfsButton,
+        Button &settingsButton
+);
+
+void updateSettingsLayout(
+        sf::RenderWindow &window,
+        Button &exitButton,
+        Label &title,
+        Label &smoothScroll,
+        Button &smoothScrollButton,
+        Button &saveButton
+);
+
 #endif

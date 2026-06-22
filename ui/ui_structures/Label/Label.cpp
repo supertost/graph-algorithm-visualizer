@@ -3,7 +3,7 @@
 Label::Label(
                 const std::string &labelText, 
                 const sf::Font &font, 
-                LabelStyle &style, 
+                const LabelStyle &style, 
                 sf::Vector2f position
         )
 {
@@ -21,7 +21,7 @@ void Label::drawLabel(sf::RenderWindow &window)
 }
 
 // Setters
-void Label::setStyle(LabelStyle &newStyle)
+void Label::setStyle(const LabelStyle &newStyle)
 {
         style = newStyle;
         text.setCharacterSize(style.textPunto);

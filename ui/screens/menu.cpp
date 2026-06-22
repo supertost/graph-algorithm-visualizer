@@ -1,68 +1,72 @@
 #include "menu.hpp"
 
-void updateMenuLayout(sf::RenderWindow &window, Label &title, Button &graphButton, Button &bfsButton, Button &dfsButton, Button &settingsButton) {
-
-    sf::Vector2u windowSize = window.getSize();
-
-    float windowWidth = static_cast<float>(windowSize.x);
-    float windowHeight = static_cast<float>(windowSize.y);
-
-    // Title text
-    title.setTextPunto(updateTextScale(window, 50));
-    title.setPosition(sf::Vector2f(windowWidth * 0.03f, windowHeight * 0.06f));
-
-    // Menu nav buttons
-    sf::Vector2f navButtonSize(windowWidth * 0.20f, windowHeight * 0.10f);
-
-    
-    // Menu nav buttons positions
-    sf::Vector2f graphEditorPosition(windowWidth * 0.03f, windowHeight * 0.2f);
-    sf::Vector2f BFSPosition(windowWidth * 0.03f, windowHeight * 0.2f + navButtonSize.y * 1.0f + windowHeight * 0.04f * 1.0f);
-    sf::Vector2f DFSPosition(windowWidth * 0.03f, windowHeight * 0.2f + navButtonSize.y * 2.0f + windowHeight * 0.04f * 2.0f);
-
-
-    //sf::Vector2f navButtonPosition(windowWidth * 0.5f - navButtonSize.x / 2.0f, windowHeight * 0.70f);
-
-    graphButton.adjustScaling(navButtonSize, graphEditorPosition, updateTextScale(window, graphButton.textPunto));
-    bfsButton.adjustScaling(navButtonSize, BFSPosition, updateTextScale(window, bfsButton.textPunto));
-    dfsButton.adjustScaling(navButtonSize, DFSPosition, updateTextScale(window, dfsButton.textPunto));
-    
-
-    sf::Vector2f setttingsButtonSize(windowWidth * 0.20f, windowHeight * 0.06f);
-    sf::Vector2f settingsPosition(windowWidth * 0.03f, windowHeight * 0.89f);
-    settingsButton.adjustScaling(setttingsButtonSize, settingsPosition, updateTextScale(window, settingsButton.textPunto));
-}
-
-
-Screen displayMenu(sf::RenderWindow &window, sf::Font &font, sf::RectangleShape &rectRing) {
-
-    // Cursor for buttons and normal use
-    sf::Cursor normalCursor;
-    normalCursor.loadFromSystem(sf::Cursor::Arrow);
-    
-    sf::Cursor handCursor;
-    handCursor.loadFromSystem(sf::Cursor::Hand);
+Screen displayMenu(
+                sf::RenderWindow &window,
+                sf::Font &font,
+                sf::RectangleShape &rectRing
+        )
+{
+        // Cursor for buttons and normal use
+        sf::Cursor normalCursor;
+        normalCursor.loadFromSystem(sf::Cursor::Arrow);
+        
+        sf::Cursor handCursor;
+        handCursor.loadFromSystem(sf::Cursor::Hand);
 
 
 
-    sf::Vector2u windowSize = window.getSize();
-    float windowWidth = static_cast<float>(windowSize.x);
-    float windowHeight = static_cast<float>(windowSize.y);
+        sf::Vector2u windowSize = window.getSize();
+        float windowWidth = static_cast<float>(windowSize.x);
+        float windowHeight = static_cast<float>(windowSize.y);
 
 
-    // Title Text
-    Label title("Graph Algorithm Visualizer", font, 50, sf::Text::Bold, sf::Color(237, 98, 28), sf::Vector2f(40.0f, 30.f)); // sf::Color için r g b ve alpha değerleri var aynı zamanda sf::Color::Transparent da var şeffaflık için
+        // Title Text
+        Label title(
+                "Graph Algorithm Visualizer",
+                font,
+                titleStyle,
+                sf::Vector2f(40.0f, 30.f)
+        );
 
-    // Graph Edit Button
-    sf::Vector2f buttonSize(250.0f, 70.0f);
-    sf::Vector2f buttonPosition(0.0f, 0.0f);
+        // Graph Edit Button
+        sf::Vector2f buttonSize(250.0f, 70.0f);
+        sf::Vector2f buttonPosition(0.0f, 0.0f);
 
-    Button graphButton(buttonSize, buttonPosition, sf::Color::Transparent, sf::Color(237, 98, 28), 2.0f, "Graph Editor", font, 30, sf::Color(237, 98, 28));
-    Button bfsButton(buttonSize, buttonPosition, sf::Color::Transparent, sf::Color(237, 98, 28), 2.0f, "Run BFS", font, 30, sf::Color(237, 98, 28));
-    Button dfsButton(buttonSize, buttonPosition, sf::Color::Transparent, sf::Color(237, 98, 28), 2.0f, "Run DFS", font, 30, sf::Color(237, 98, 28));
-    
-    
-    Button settingsButton(buttonSize, buttonPosition, sf::Color::Transparent, sf::Color(237, 98, 28), 2.0f, "Settings", font, 30, sf::Color(237, 98, 28));
+        Button graphButton(
+                "Graph Editor",
+                buttonSize,
+                buttonPosition,
+                font,
+                normalButton,
+                hoverNormalButton
+        );
+        
+        Button bfsButton(
+                "Run BFS",
+                buttonSize,
+                buttonPosition,
+                font,
+                normalButton,
+                hoverNormalButton
+        );
+
+        Button dfsButton(
+                "Run DFS",
+                buttonSize,
+                buttonPosition,
+                font,
+                normalButton,
+                hoverNormalButton
+        );
+        
+        Button settingsButton(
+                "Settings",
+                buttonSize,
+                buttonPosition,
+                font,
+                normalButton,
+                hoverNormalButton
+        );
 
     
     sf::FloatRect visibleArea(0.0f, 0.0f, static_cast<float>(windowWidth), static_cast<float>(windowHeight));
@@ -133,16 +137,16 @@ Screen displayMenu(sf::RenderWindow &window, sf::Font &font, sf::RectangleShape 
         sf::Vector2f mousePosition(static_cast<float>(event.mouseMove.x), static_cast<float>(event.mouseMove.y));
 
         graphButton.drawButton(window);
-        bool graphEditorHover = graphButton.hoverState(mousePosition, sf::Color(237, 98, 28), sf::Color::Black);
+        bool graphEditorHover = graphButton.hoverState(mousePosition);
         
         bfsButton.drawButton(window);
-        bool bfsHover = bfsButton.hoverState(mousePosition, sf::Color(237, 98, 28), sf::Color::Black);
+        bool bfsHover = bfsButton.hoverState(mousePosition);
 
         dfsButton.drawButton(window);
-        bool dfsHover = dfsButton.hoverState(mousePosition, sf::Color(237, 98, 28), sf::Color::Black);
+        bool dfsHover = dfsButton.hoverState(mousePosition);
 
         settingsButton.drawButton(window);
-        bool settingsHover = settingsButton.hoverState(mousePosition, sf::Color(237, 98, 28), sf::Color::Black);
+        bool settingsHover = settingsButton.hoverState(mousePosition);
 
         if (graphEditorHover || bfsHover || dfsHover || settingsHover) {
 

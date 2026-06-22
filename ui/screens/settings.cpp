@@ -3,71 +3,75 @@
 
 #include <iostream>
 
-
-void updateSettingsLayout(sf::RenderWindow &window, Button &exitButton, Label &title, Label &smoothScroll, Button &smoothScrollButton, Button &saveButton) {
-
-    sf::Vector2u windowSize = window.getSize();
-
-    float windowWidth = static_cast<float>(windowSize.x);
-    float windowHeight = static_cast<float>(windowSize.y);
-
-    title.setTextPunto(updateTextScale(window, 50));
-    title.setPosition(sf::Vector2f(windowWidth * 0.03f, windowHeight * 0.06f));
-
-    smoothScroll.setTextPunto(updateTextScale(window, 30));
-    smoothScroll.setPosition(sf::Vector2f(windowWidth * 0.03f, windowHeight * 0.25f));
-    sf::FloatRect smoothScrollBounds = smoothScroll.getLocalBounds();
-
-    sf::Vector2f smoothScrollButtonSize(windowWidth * 0.2 * 0.8f, windowHeight * 0.06f);
-    sf::Vector2f smoothScrollButtonPosition(windowWidth * 0.28f, windowHeight * 0.25f + smoothScrollBounds.height / 2 + 5.0f);
-    smoothScrollButton.adjustScaling(smoothScrollButtonSize, smoothScrollButtonPosition, updateTextScale(window, smoothScrollButton.textPunto));
-    smoothScrollButton.setOriginCenter();
+Screen displaySettings(
+                sf::RenderWindow &window,
+                const sf::Font &font,
+                sf::RectangleShape &rectRing,
+                Config &config
+        )
+{
+        sf::Cursor normalCursor;
+        normalCursor.loadFromSystem(sf::Cursor::Arrow);
+        
+        sf::Cursor handCursor;
+        handCursor.loadFromSystem(sf::Cursor::Hand);
 
 
-    sf::Vector2f exitButtonSize(windowWidth * 0.2 * 0.8f, windowHeight * 0.06f);
-    sf::Vector2f exitButtonPosition(windowWidth * 0.2 / 2.0f + windowWidth * 0.8, windowHeight * 0.06f);
-    exitButton.adjustScaling(exitButtonSize, exitButtonPosition, updateTextScale(window, exitButton.textPunto));
-    exitButton.setOriginCenter();
+        sf::Vector2u windowSize = window.getSize();
 
-    sf::Vector2f saveButtonSize(windowWidth * 0.20f, windowHeight * 0.06f);
-    sf::Vector2f savePosition(windowWidth * 0.03f, windowHeight * 0.89f);
-    saveButton.adjustScaling(saveButtonSize, savePosition, updateTextScale(window, saveButton.textPunto));
-}
-
-Screen displaySettings(sf::RenderWindow &window, const sf::Font &font, sf::RectangleShape &rectRing, Config &config) {
-
-    sf::Cursor normalCursor;
-    normalCursor.loadFromSystem(sf::Cursor::Arrow);
-    
-    sf::Cursor handCursor;
-    handCursor.loadFromSystem(sf::Cursor::Hand);
-
-
-    sf::Vector2u windowSize = window.getSize();
-
-    float windowWidth = static_cast<float>(windowSize.x);
-    float windowHeight = static_cast<float>(windowSize.y);
+        float windowWidth = static_cast<float>(windowSize.x);
+        float windowHeight = static_cast<float>(windowSize.y);
 
 
     
-    Label title("Settings", font, 50, sf::Text::Bold, sf::Color(237, 98, 28), sf::Vector2f(40.0f, 30.f));
+        Label title(
+                "Settings",
+                font,
+                titleStyle,
+                sf::Vector2f(40.0f, 30.f)
+        );
     
-    sf::Vector2f buttonSize(windowWidth * 0.10f, windowHeight * 0.05f);
-    sf::Vector2f buttonPosition(0.0f, 0.0f);
-    Button exitButton(buttonSize, buttonPosition, sf::Color::Transparent, sf::Color(237, 98, 28), 2.0f, "<- Menu", font, 20, sf::Color(237, 98, 28));
-    
-    std::string smoothState = "Off";
-    if (config.smoothScroll == 1)
-        smoothState = "On";
+        Button exitButton(
+                "<- Menu", 
+                sf::Vector2f(0.0f, 0.0f),
+                sf::Vector2f(0.0f, 0.0f),
+                font,
+                compactButton,
+                hoverCompactButton
+        );
+        
+        std::string smoothState = "Off";
+        if (config.smoothScroll == 1)
+                smoothState = "On";
 
-    Label smoothScroll("Smooth Scroll", font, 30, sf::Text::Bold, sf::Color(237, 98, 28), sf::Vector2f(0.0f, 0.0f));
-    Button smoothScrollButton(buttonSize, buttonPosition, sf::Color::Transparent, sf::Color(237, 98, 28), 2.0f, smoothState, font, 20, sf::Color(237, 98, 28));
-    
+        Label smoothScroll(
+                "Smooth Scroll",
+                font,
+                subTitleStyle,
+                sf::Vector2f(0.0f, 0.0f)
+        );
 
-    Button saveButton(buttonSize, buttonPosition, sf::Color::Transparent, sf::Color(237, 98, 28), 2.0f, "Save", font, 30, sf::Color(237, 98, 28));
+        Button smoothScrollButton(
+                smoothState,
+                sf::Vector2f(0.0f, 0.0f),
+                sf::Vector2f(0.0f, 0.0f),
+                font,
+                compactButton,
+                hoverCompactButton
+        );
+        
 
-    updateSettingsLayout(window, exitButton, title, smoothScroll, smoothScrollButton, saveButton);
-    updateBorderRing(window, rectRing);
+        Button saveButton(
+                "Save",
+                sf::Vector2f(0.0f, 0.0f),
+                sf::Vector2f(0.0f, 0.0f),
+                font,
+                normalButton,
+                hoverNormalButton
+        );
+
+        updateSettingsLayout(window, exitButton, title, smoothScroll, smoothScrollButton, saveButton);
+        updateBorderRing(window, rectRing);
 
     
     sf::FloatRect visibleArea(0.0f, 0.0f, windowWidth, windowHeight);
@@ -155,13 +159,13 @@ Screen displaySettings(sf::RenderWindow &window, const sf::Font &font, sf::Recta
 
         smoothScroll.drawLabel(window);
         smoothScrollButton.drawButton(window);
-        bool smoothScrollHover = smoothScrollButton.hoverState(mousePosition, sf::Color(237, 98, 28), sf::Color::Black);
+        bool smoothScrollHover = smoothScrollButton.hoverState(mousePosition);
 
         exitButton.drawButton(window);
-        bool exitHover = exitButton.hoverState(mousePosition, sf::Color(237, 98, 28), sf::Color::Black);
+        bool exitHover = exitButton.hoverState(mousePosition);
 
         saveButton.drawButton(window);
-        bool saveHover = saveButton.hoverState(mousePosition, sf::Color(237, 98, 28), sf::Color::Black);
+        bool saveHover = saveButton.hoverState(mousePosition);
 
         if (exitHover || smoothScrollHover || saveHover)
             window.setMouseCursor(handCursor);

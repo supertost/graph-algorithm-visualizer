@@ -21,14 +21,14 @@ class Label
                 Label(
                         const std::string &text, 
                         const sf::Font &font, 
-                        LabelStyle &style, 
+                        const LabelStyle &style, 
                         sf::Vector2f position
                 );
                 
                 void drawLabel(sf::RenderWindow &window);
                 
                 // Setters
-                void setStyle(LabelStyle &style);
+                void setStyle(const LabelStyle &style);
                 void setPosition(sf::Vector2f position);
                 void setTextPunto(unsigned int charSize);
                 void adjustScaling(sf::Vector2f position, unsigned int charSize);

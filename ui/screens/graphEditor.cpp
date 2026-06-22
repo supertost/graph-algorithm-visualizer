@@ -222,15 +222,33 @@ Screen displayGraphEditor(
 
 
         // Error Pop Ups
-        sf::Font fontLight;
-        if (!fontLight.loadFromFile("ui/fonts/Futura-Light.ttf"))
-                return Screen::Menu;
-
         bool showNodeErrorPopUp = false;
-        PopUp nodeErrorPopUp("Cannot Add Node", "The node you are trying to add is already in the graph", "Okay", sf::Color(237, 98, 28), sf::Color(237, 98, 28), sf::Color(237, 98, 28), font, fontLight, 30, sf::Vector2f(windowWidth * 0.5, windowHeight * 0.5), sf::Color(0, 0, 0, 200), sf::Color(237, 98, 28), 2.0f, sf::Color(0, 0, 0, 200), sf::Color::Black, window);
-        bool showEdgeErrorPopUp = false;
-        PopUp edgeErrorPopUp("Cannot Add Edge", "The edge you are trying to add is already in the graph", "Okay", sf::Color(237, 98, 28), sf::Color(237, 98, 28), sf::Color(237, 98, 28), font, fontLight, 30, sf::Vector2f(windowWidth * 0.5, windowHeight * 0.5), sf::Color(0, 0, 0, 200), sf::Color(237, 98, 28), 2.0f, sf::Color(0, 0, 0, 200), sf::Color::Black, window);
+        PopUp nodeErrorPopUp(
+                "Cannot Add Node",
+                "The node you are trying to\nadd is already in the graph",
+                "Okay",
+                font,
+                sf::Vector2f(
+                        windowWidth * 0.5,
+                        windowHeight * 0.5
+                ),
+                popUpDefault,
+                window
+        );
 
+        bool showEdgeErrorPopUp = false;
+        PopUp edgeErrorPopUp(
+                "Cannot Add Edge",
+                "The edge you are trying to\nadd is already in the graph",
+                "Okay",
+                font,
+                sf::Vector2f(
+                        windowWidth * 0.5, 
+                        windowHeight * 0.5
+                ),
+                popUpDefault,
+                window
+        );
 
         sf::Vector2i mousePixel;
         sf::Vector2f mousePosition;
@@ -509,27 +527,27 @@ Screen displayGraphEditor(
         sf::Vector2f mousePosition = window.mapPixelToCoords(mousePixel, uiView);
         
         exitButton.drawButton(window);
-        bool exitButtonHover = exitButton.hoverState(mousePosition, sf::Color(237, 98, 28), sf::Color::Black);
+        bool exitButtonHover = exitButton.hoverState(mousePosition);
         
         nodeBox.drawTextbox(window);
         addNodeButton.drawButton(window);
-        bool addNodeHover = addNodeButton.hoverState(mousePosition, sf::Color(237, 98, 28), sf::Color::Black);
+        bool addNodeHover = addNodeButton.hoverState(mousePosition);
         
         edgeBox.drawTextbox(window);
         addEdgeButton.drawButton(window);
-        bool addEdgeHover = addEdgeButton.hoverState(mousePosition, sf::Color(237, 98, 28), sf::Color::Black);
+        bool addEdgeHover = addEdgeButton.hoverState(mousePosition);
         
         clearGraphButton.drawButton(window);
-        bool clearGraphHover = clearGraphButton.hoverState(mousePosition, sf::Color(237, 98, 28), sf::Color::Black);
+        bool clearGraphHover = clearGraphButton.hoverState(mousePosition);
         
         loadGraphButton.drawButton(window);
-        bool loadGraphHover = loadGraphButton.hoverState(mousePosition, sf::Color(237, 98, 28), sf::Color::Black);
+        bool loadGraphHover = loadGraphButton.hoverState(mousePosition);
         
         saveGraphButton.drawButton(window);
-        bool saveGraphHover = saveGraphButton.hoverState(mousePosition, sf::Color(237, 98, 28), sf::Color::Black);
+        bool saveGraphHover = saveGraphButton.hoverState(mousePosition);
         
         centerGraphButton.drawButton(window);
-        bool centerGraphHover = centerGraphButton.hoverState(mousePosition, sf::Color(237, 98, 28), sf::Color::Black);
+        bool centerGraphHover = centerGraphButton.hoverState(mousePosition);
         
         if (addNodeHover || addEdgeHover || exitButtonHover || clearGraphHover || loadGraphHover || saveGraphHover || centerGraphHover) {
             
@@ -545,7 +563,7 @@ Screen displayGraphEditor(
 
         if (showNodeErrorPopUp) {
             
-            if (nodeErrorPopUp.dismissHoverState(mousePositionPopUp, sf::Color(237, 98, 28), sf::Color::Black))
+            if (nodeErrorPopUp.dismissHoverState(mousePositionPopUp))
                 window.setMouseCursor(handCursor);
 
             nodeErrorPopUp.drawPopUp(window);
@@ -553,7 +571,7 @@ Screen displayGraphEditor(
 
         if (showEdgeErrorPopUp) {
 
-            if (edgeErrorPopUp.dismissHoverState(mousePositionPopUp, sf::Color(237, 98, 28), sf::Color::Black))
+            if (edgeErrorPopUp.dismissHoverState(mousePositionPopUp))
                 window.setMouseCursor(handCursor);
 
             edgeErrorPopUp.drawPopUp(window);

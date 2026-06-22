@@ -3,8 +3,24 @@
 
 #include <SFML/Graphics.hpp>
 #include "../ui_structures/Button/Button.hpp"
+#include "../ui_structures/PopUp/PopUp.hpp"
+#include "../ui_structures/Label/Label.hpp"
 
-ButtonStyle normalButton {
+// Label Styles
+inline const LabelStyle titleStyle {
+        .textPunto = 50,
+        .textColor = sf::Color(237, 98, 28),
+        .textStyle = sf::Text::Bold
+};
+
+inline const LabelStyle subTitleStyle {
+        .textPunto = 30,
+        .textColor = sf::Color(237, 98, 28),
+        .textStyle = sf::Text::Bold
+};
+
+// Button Styles
+inline const ButtonStyle normalButton {
         .backgroundColor = sf::Color::Transparent,
         .outlineColor = sf::Color(237, 98, 28),
         .outlineThickness = 2.0f,
@@ -12,7 +28,7 @@ ButtonStyle normalButton {
         .textPunto = 30
 };
 
-ButtonStyle hoverNormalButton {
+inline const ButtonStyle hoverNormalButton {
         .backgroundColor = sf::Color(237, 98, 28),
         .outlineColor = sf::Color(237, 98, 28),
         .outlineThickness = 2.0f,
@@ -20,7 +36,7 @@ ButtonStyle hoverNormalButton {
         .textPunto = 30
 };
 
-ButtonStyle compactButton {
+inline const ButtonStyle compactButton {
         .backgroundColor = sf::Color::Transparent,
         .outlineColor = sf::Color(237, 98, 28),
         .outlineThickness = 2.0f,
@@ -28,12 +44,29 @@ ButtonStyle compactButton {
         .textPunto = 20
 };
 
-ButtonStyle hoverCompactButton {
+inline const ButtonStyle hoverCompactButton {
         .backgroundColor = sf::Color(237, 98, 28),
         .outlineColor = sf::Color(237, 98, 28),
         .outlineThickness = 2.0f,
         .textColor = sf::Color::Black,
         .textPunto = 20
+};
+
+// PopUp Styles
+inline const PopUpStyle popUpDefault {
+        .titleColor = sf::Color(237, 98, 28),
+        .titlePunto = 30,
+        .descriptionColor = sf::Color(237, 98, 28),
+        .descriptionPunto = 30,
+
+        .backgroundColor = sf::Color(0, 0, 0, 200),
+        .outlineColor = sf::Color(237, 98, 28),
+        .outlineThickness = 2.0f,
+
+        .bgShadeColor = sf::Color(237, 98, 28),
+
+        .defaultStyle = normalButton,
+        .hoverStyle = hoverNormalButton
 };
 
 #endif
