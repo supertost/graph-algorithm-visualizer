@@ -22,6 +22,7 @@ class Button
                 ButtonStyle defaultStyle;
                 ButtonStyle hoverStyle;
                 
+                unsigned int baseTextPunto;
                 bool hovered = false;
 
                 void centerText();
@@ -41,7 +42,8 @@ class Button
                         
                 bool isClicked(sf::Vector2f mousePosition) const;
                 bool hoverState(sf::Vector2f mousePosition);
-                unsigned int getTextPunto();
+                unsigned int getTextPunto() const;
+                unsigned int getBaseTextPunto() const;
                         
                 // For real time scaling of the program
                 void setSize(sf::Vector2f size);

@@ -23,46 +23,109 @@ void updateGraphEditorLayout(
         float uiWidth = windowWidth * 0.2f;
 
         sf::Vector2f compactButtonSize(uiWidth * 0.8f, windowHeight * 0.06f);
-        sf::Vector2f normalButtonSize(uiWidth * 0.8f, windowHeight * 0.1f);
+        sf::Vector2f defaultButtonSize(uiWidth * 0.8f, windowHeight * 0.1f);
 
         
         sf::Vector2f exitButtonPosition(uiWidth / 2.0f, windowHeight * 0.06f);
-        exitButton.adjustScaling(compactButtonSize, exitButtonPosition, updateTextScale(window, exitButton.getTextPunto()));
+        exitButton.adjustScaling(
+                compactButtonSize,
+                exitButtonPosition,
+                updateTextScale(
+                        window,
+                        exitButton.getBaseTextPunto()
+                )
+        );
         exitButton.setOriginCenter();
 
 
         sf::Vector2f nodeBoxPosition(uiWidth / 2.0f, windowHeight * 0.8f);
-        nodeBox.adjustScaling(normalButtonSize, nodeBoxPosition, updateTextScale(window, nodeBox.characterSize));
+        nodeBox.adjustScaling(
+                defaultButtonSize,
+                nodeBoxPosition,
+                updateTextScale(
+                        window,
+                        nodeBox.getBaseTextPunto()
+                )
+        );
         nodeBox.setOriginCenter();
 
         sf::Vector2f addNodeButtonPosition(uiWidth / 2.0f, windowHeight * 0.915f);
-        addNodeButton.adjustScaling(normalButtonSize, addNodeButtonPosition, updateTextScale(window, exitButton.getTextPunto()));
+        addNodeButton.adjustScaling(
+                defaultButtonSize,
+                addNodeButtonPosition,
+                updateTextScale(
+                        window,
+                        addNodeButton.getBaseTextPunto()
+                )
+        );
         addNodeButton.setOriginCenter();
 
 
         sf::Vector2f edgeBoxPosition(uiWidth / 2.0f, windowHeight * 0.55f);
-        edgeBox.adjustScaling(normalButtonSize, edgeBoxPosition, updateTextScale(window, edgeBox.characterSize));
+        edgeBox.adjustScaling(
+                defaultButtonSize,
+                edgeBoxPosition,
+                updateTextScale(
+                        window,
+                        edgeBox.getBaseTextPunto()
+                )
+        );
         edgeBox.setOriginCenter();
 
         sf::Vector2f addEdgeButtonPosition(uiWidth / 2.0f, windowHeight * 0.665f);
-        addEdgeButton.adjustScaling(normalButtonSize, addEdgeButtonPosition, updateTextScale(window, exitButton.getTextPunto()));
+        addEdgeButton.adjustScaling(
+                defaultButtonSize,
+                addEdgeButtonPosition,
+                updateTextScale(
+                        window,
+                        addEdgeButton.getBaseTextPunto()
+                )
+        );
         addEdgeButton.setOriginCenter();
 
         
         sf::Vector2f clearGraphButtonPosition(uiWidth / 2.0f, windowHeight * 0.15f);
-        clearGraphButton.adjustScaling(compactButtonSize, clearGraphButtonPosition, updateTextScale(window, exitButton.getTextPunto()));
+        clearGraphButton.adjustScaling(
+                compactButtonSize,
+                clearGraphButtonPosition,
+                updateTextScale(
+                        window,
+                        exitButton.getBaseTextPunto()
+                )
+        );
         clearGraphButton.setOriginCenter();
         
         sf::Vector2f loadGraphButtonPosition(uiWidth / 2.0f, windowHeight * 0.24f);
-        loadGraphButton.adjustScaling(compactButtonSize, loadGraphButtonPosition, updateTextScale(window, exitButton.getTextPunto()));
+        loadGraphButton.adjustScaling(
+                compactButtonSize,
+                loadGraphButtonPosition,
+                updateTextScale(
+                        window,
+                        exitButton.getBaseTextPunto()
+                )
+        );
         loadGraphButton.setOriginCenter();
         
         sf::Vector2f saveGraphButtonPosition(uiWidth / 2.0f, windowHeight * 0.33f);
-        saveGraphButton.adjustScaling(compactButtonSize, saveGraphButtonPosition, updateTextScale(window, exitButton.getTextPunto()));
+        saveGraphButton.adjustScaling(
+                compactButtonSize,
+                saveGraphButtonPosition,
+                updateTextScale(
+                        window,
+                        exitButton.getBaseTextPunto()
+                )
+        );
         saveGraphButton.setOriginCenter();
         
         sf::Vector2f centerGraphButtonPosition(uiWidth / 2.0f, windowHeight * 0.42f);
-        centerGraphButton.adjustScaling(compactButtonSize, centerGraphButtonPosition, updateTextScale(window, exitButton.getTextPunto()));
+        centerGraphButton.adjustScaling(
+                compactButtonSize,
+                centerGraphButtonPosition,
+                updateTextScale(
+                        window,
+                        exitButton.getBaseTextPunto()
+                )
+        );
         centerGraphButton.setOriginCenter();
 
         uibg.setSize(sf::Vector2f(uiWidth, windowHeight));
@@ -110,7 +173,7 @@ void updateMenuLayout(
                 graphEditorPosition,
                 updateTextScale(
                         window,
-                        graphButton.getTextPunto()
+                        graphButton.getBaseTextPunto()
                 )
         );
         bfsButton.adjustScaling(
@@ -118,7 +181,7 @@ void updateMenuLayout(
                 BFSPosition,
                 updateTextScale(
                         window,
-                        bfsButton.getTextPunto()
+                        bfsButton.getBaseTextPunto()
                 )
         );
         dfsButton.adjustScaling(
@@ -126,7 +189,7 @@ void updateMenuLayout(
                 DFSPosition,
                 updateTextScale(
                         window,
-                        dfsButton.getTextPunto()
+                        dfsButton.getBaseTextPunto()
                 )
         );
         
@@ -139,7 +202,7 @@ void updateMenuLayout(
                 settingsPosition,
                 updateTextScale(
                         window,
-                        settingsButton.getTextPunto()
+                        settingsButton.getBaseTextPunto()
                 )
         );
 }
@@ -159,7 +222,7 @@ void updateSettingsLayout(
         float windowWidth = static_cast<float>(windowSize.x);
         float windowHeight = static_cast<float>(windowSize.y);
 
-        sf::Vector2f normalButtonSize(windowWidth * 0.20f, windowHeight * 0.10f);
+        sf::Vector2f defaultButtonSize(windowWidth * 0.20f, windowHeight * 0.10f);
         sf::Vector2f compactButtonSize(windowWidth * 0.20f, windowHeight * 0.06f);
 
         title.setTextPunto(updateTextScale(window, 50));
@@ -184,11 +247,11 @@ void updateSettingsLayout(
                 windowHeight * 0.25f + smoothScrollBounds.height / 2 + 5.0f
         );
         smoothScrollButton.adjustScaling(
-                normalButtonSize,
+                defaultButtonSize,
                 smoothScrollButtonPosition,
                 updateTextScale(
                         window,
-                        smoothScrollButton.getTextPunto()
+                        smoothScrollButton.getBaseTextPunto()
                 )
         );
 
@@ -207,7 +270,7 @@ void updateSettingsLayout(
                 exitButtonPosition,
                 updateTextScale(
                         window,
-                        exitButton.getTextPunto()
+                        exitButton.getBaseTextPunto()
                 )
         );
         exitButton.setOriginCenter();
@@ -221,7 +284,7 @@ void updateSettingsLayout(
                 savePosition,
                 updateTextScale(
                         window,
-                        saveButton.getTextPunto()
+                        saveButton.getBaseTextPunto()
                 )
         );
 }

@@ -47,7 +47,7 @@ Screen displaySettings(
         Label smoothScroll(
                 "Smooth Scroll",
                 font,
-                subTitleStyle,
+                subtitleStyle,
                 sf::Vector2f(0.0f, 0.0f)
         );
 
@@ -66,8 +66,8 @@ Screen displaySettings(
                 sf::Vector2f(0.0f, 0.0f),
                 sf::Vector2f(0.0f, 0.0f),
                 font,
-                normalButton,
-                hoverNormalButton
+                defaultButton,
+                hoverDefaultButton
         );
 
         updateSettingsLayout(window, exitButton, title, smoothScroll, smoothScrollButton, saveButton);

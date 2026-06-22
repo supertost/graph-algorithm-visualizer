@@ -8,8 +8,11 @@ struct PopUpStyle
 {
         sf::Color titleColor = sf::Color::Black;
         unsigned int titlePunto = 30;
+        sf::Text::Style titleStyle = sf::Text::Style::Bold;
+        
         sf::Color descriptionColor = sf::Color::Black;
         unsigned int descriptionPunto = 20;
+        sf::Text::Style descriptionStyle = sf::Text::Style::Regular;
 
         sf::Color backgroundColor = sf::Color::White;
         sf::Color outlineColor = sf::Color::Black;

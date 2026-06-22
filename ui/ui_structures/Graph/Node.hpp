@@ -3,27 +3,47 @@
 
 #include <SFML/Graphics.hpp>
 
-class Node {
-    private:
-        
-        int key;
-        float radius;
-        sf::Vector2f position;
-        sf::Text text;
-        sf::CircleShape shape;
+struct NodeStyle
+{
+        float radius = 30.0f;
+        sf::Color activeColor = sf::Color::Black;
+        sf::Color inactiveColor = sf::Color::White;
+        sf::Color activeOutlineColor = sf::Color::White;
+        sf::Color inactiveOutlineColor = sf::Color::Black;
+        float outlineThickness = 2.0f;
+};
 
-        void setText(const sf::Font &font);
-        void centerText();
+class Node
+{
+        private:
+                int key;
+                bool active = false;
+                sf::Vector2f position;
+                float radius;
 
-    public:
-        Node(int key, sf::Vector2f position, float radius, sf::Color nodeColorActive, sf::Color nodeColorUnactive, float outlineThickness, const sf::Font &font);
-        void drawNode(sf::RenderWindow &window) const;
-        sf::Vector2f getPosition() const;
+                sf::Text text;
+                sf::CircleShape shape;
 
-        bool isClicked() const;
-
-        const sf::FloatRect getGlobalBounds() const;
-        void setPosition(sf::Vector2f position);
+                void setText(const sf::Font &font);
+                void centerText();
+                
+                public:
+                Node(        
+                        int key,
+                        sf::Vector2f position,
+                        const NodeStyle &style,
+                        const sf::Font &font
+                );
+                
+                void drawNode(sf::RenderWindow &window) const;
+                
+                // Getters
+                sf::Vector2f getPosition() const;
+                const sf::FloatRect getGlobalBounds() const;
+                
+                // Setters
+                void setStyle(const NodeStyle &newStyle);
+                void setPosition(sf::Vector2f position);
 };
 
 

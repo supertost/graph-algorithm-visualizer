@@ -1,224 +1,192 @@
 #include "Textbox.hpp"
 
-Textbox::Textbox(sf::Vector2f size, sf::Vector2f position, const sf::Font &font, unsigned int characterSize, sf::Color textboxColor, sf::Color outlineColor, float outlineThickness, sf::Color textColor) {
+Textbox::Textbox(
+                sf::Vector2f size,
+                sf::Vector2f position,
+                const sf::Font &font,
+                const std::string &placeholderText,
+                const TextboxStyle &style
+        )
+{
+        shape.setSize(size);
+        shape.setPosition(position);
 
-    this->shape.setSize(size);
-    this->shape.setPosition(position);
-    this->shape.setFillColor(textboxColor);
-    this->shape.setOutlineColor(outlineColor);
-    this->shape.setOutlineThickness(outlineThickness);
+        text.setFont(font);
+        placeholder = placeholderText;
+        text.setString(placeholder);
 
-    this->text.setFont(font);
-    this->text.setCharacterSize(characterSize);
-    this->text.setFillColor(textColor);
-    this->characterSize = characterSize;
+        setStyle(style);
+        baseTextPunto = style.textPunto;
 
-    this->textboxColor = textboxColor;
-    this->textColor = textColor;
-    this->outlineColor = outlineColor;
-
-    positionText();
+        positionText();
 }
 
-Textbox::Textbox(sf::Vector2f size, sf::Vector2f position, const sf::Font &font, unsigned int characterSize, sf::Color textboxColor, sf::Color outlineColor, float outlineThickness, sf::Color textColor, std::string placeholder) {
+void Textbox::setStyle(const TextboxStyle &newStyle)
+{
+        style = newStyle;
+        
+        shape.setFillColor(style.inactivebackgroundColor);
+        shape.setOutlineColor(style.inactiveOutlineColor);
+        shape.setOutlineThickness(style.outlineThickness);
 
-    this->shape.setSize(size);
-    this->shape.setPosition(position);
-    this->shape.setFillColor(textboxColor);
-    this->shape.setOutlineColor(outlineColor);
-    this->shape.setOutlineThickness(outlineThickness);
-
-    this->text.setFont(font);
-    this->text.setCharacterSize(characterSize);
-    this->text.setFillColor(textColor);
-    this->characterSize = characterSize;
-
-    this->placeholder = placeholder;
-    this->text.setString(placeholder);
-
-    this->textboxColor = textboxColor;
-    this->textColor = textColor;
-    this->outlineColor = outlineColor;
-
-    positionText();
+        text.setCharacterSize(style.textPunto);
+        text.setFillColor(style.inactiveTextColor);
 }
 
-Textbox::Textbox(sf::Vector2f size, sf::Vector2f position, const sf::Font &font, unsigned int characterSize, sf::Color textboxColor, sf::Color outlineColor, float outlineThickness, sf::Color textColor, std::string placeholder, sf::Color activeTextboxColor, sf::Color activeTextColor, sf::Color activeOutlineColor) {
+void Textbox::positionText()
+{
+        sf::FloatRect buttonBounds = shape.getGlobalBounds();
+        sf::FloatRect textBounds = text.getLocalBounds();
 
-    this->shape.setSize(size);
-    this->shape.setPosition(position);
-    this->shape.setFillColor(textboxColor);
-    this->shape.setOutlineColor(outlineColor);
-    this->shape.setOutlineThickness(outlineThickness);
-
-    this->text.setFont(font);
-    this->text.setCharacterSize(characterSize);
-    this->text.setFillColor(textColor);
-    this->characterSize = characterSize;
-
-    this->placeholder = placeholder;
-    this->text.setString(placeholder);
-
-    this->textboxColor = textboxColor;
-    this->textColor = textColor;
-    this->outlineColor = outlineColor;
-
-    this->activeTextboxColor = activeTextboxColor;
-    this->activeTextColor = activeTextColor;
-    this->activeOutlineColor = activeOutlineColor;
-
-    positionText();
+        text.setOrigin(
+                textBounds.left,
+                textBounds.top + textBounds.height / 2.0f
+        );
+        text.setPosition(
+                buttonBounds.left + 10.0f,
+                buttonBounds.top + buttonBounds.height / 2.0f
+        );
 }
 
-void Textbox::positionText() {
+void Textbox::handleEvent(
+                const sf::Event &event,
+                const sf::RenderWindow &window,
+                const sf::View &view
+        )
+{
+        switch (event.type) {
+        
+        case sf::Event::MouseButtonPressed:    
+                if (event.mouseButton.button == sf::Mouse::Left) {
+                        sf::Vector2i mousePixel(
+                                event.mouseButton.x,
+                                event.mouseButton.y
+                        );
+                        sf::Vector2f mousePosition = window.mapPixelToCoords(
+                                mousePixel,
+                                view
+                        );
 
-    sf::FloatRect buttonBounds = this->shape.getGlobalBounds();
-    sf::FloatRect textBounds = this->text.getLocalBounds();
+                        active = shape.getGlobalBounds().contains(mousePosition);
 
-    this->text.setOrigin(textBounds.left, textBounds.top + textBounds.height / 2.0f);
-    this->text.setPosition(buttonBounds.left + 10.0f, buttonBounds.top + buttonBounds.height / 2.0f);
-}
+                        setActive();
 
-void Textbox::setSize(sf::Vector2f size) {
+                        std::string currentText = text.getString();
 
-    this->shape.setSize(size);
-    positionText();
-}
-
-void Textbox::setPosition(sf::Vector2f position) {
-
-    this->shape.setPosition(position);
-    positionText();
-}
-
-void Textbox::setTextPunto(unsigned int size) {
-
-    this->text.setCharacterSize(size);
-    positionText();
-}
-
-void Textbox::adjustScaling(sf::Vector2f size, sf::Vector2f position, int charSize) {
-
-    setSize(size);
-    setPosition(position);
-    setTextPunto(charSize);
-}
-
-void Textbox::drawTextbox(sf::RenderWindow &window) {
-
-    window.draw(this->shape);
-    window.draw(this->text);
-}
-
-
-void Textbox::setActive(sf::Color textboxColor, sf::Color outlineColor, sf::Color textColor) {
-
-    if (this->active) {
-
-        this->shape.setFillColor(textboxColor);
-        this->shape.setOutlineColor(outlineColor);
-        this->text.setFillColor(textColor);
-    }
-
-    else {
-
-        this->shape.setFillColor(this->textboxColor);
-        this->shape.setOutlineColor(this->outlineColor);
-        this->text.setFillColor(this->textColor);
-    }
-}
-
-
-void Textbox::handleEvent(const sf::Event &event, const sf::RenderWindow &window, const sf::View &view) {
-
-    switch (event.type) {
-
-        case sf::Event::MouseButtonPressed:
-            
-            if (event.mouseButton.button == sf::Mouse::Left) {
-
-                sf::Vector2i mousePixel(event.mouseButton.x, event.mouseButton.y);
-                sf::Vector2f mousePosition = window.mapPixelToCoords(mousePixel, view);
-
-                this->active = shape.getGlobalBounds().contains(mousePosition);
-                setActive(this->activeTextboxColor, this->activeOutlineColor, this->activeTextColor);
-
-                std::string currentText = this->text.getString();
-
-                if (active)
-                    if (!currentText.compare(placeholder))
-                        this->text.setString("");
+                        if (active && !currentText.compare(placeholder))
+                                text.setString("");
                 
-                if (!active)
-                    if (!currentText.compare(""))
-                        this->text.setString(placeholder);
-            }
-
-            break;
-
-        case sf::Event::TextEntered:
-
-            if (!this->active)
-                break;
-
-            if (event.text.unicode == 8) {
-
-                
-                if (!input.empty()) {
-                    
-                    input.pop_back();
-                    this->text.setString(input);
+                        if (!active && !currentText.compare(""))
+                                text.setString(placeholder);
                 }
 
-                if (input.empty())
-                    this->text.setString(this->placeholder);
-            }
+                break;
 
-            else if (this->active && ((event.text.unicode >= '0' && event.text.unicode <= '9') || event.text.unicode == ' ' || event.text.unicode == '-')) {
+        case sf::Event::TextEntered: {
 
-                input += static_cast<char>(event.text.unicode);
-                this->text.setString(input);
-            }
+                if (!active)
+                        break;
 
-            break;
+                if (event.text.unicode == 8) {
+                        if (input.empty()) {
+                                text.setString(placeholder);
+                        }
+                        else {
+                                input.pop_back();
+                                text.setString(input);
+                        }
+                }
+
+                const bool isDigit = event.text.unicode >= '0' && event.text.unicode <= '9';
+                const bool allowedSymbols = event.text.unicode == ' ' || event.text.unicode == '-';
+
+                if (active && (isDigit || allowedSymbols)) {
+                        input += static_cast<char>(event.text.unicode);
+                        text.setString(input);
+                }
+
+                break;
+        }
         
         default:
             break;
     }
 }
 
-void Textbox::setOriginCenter() {
-
-    sf::FloatRect bounds = this->shape.getLocalBounds();
-
-    this->shape.setOrigin(bounds.left + bounds.width / 2.0f, bounds.top + bounds.height / 2.0f);
-    positionText();
-}
-
-
-// Getters and setters
-sf::Color Textbox::getTextboxColor() const {
-
-    return this->textboxColor;
-}
-sf::Color Textbox::getOutlineColor() const {
-
-    return this->outlineColor;
-}
-sf::Color Textbox::getTextColor() const {
-
-    return this->textColor;
-}
-std::string Textbox::getTextContent() const {
- 
-    return this->text.getString();
-}
-
-bool Textbox::getActive() const {
-
-    return this->active;
-}
-
-Textbox::~Textbox()
+void Textbox::drawTextbox(sf::RenderWindow &window) const 
 {
+        window.draw(shape);
+        window.draw(text);
+}
+
+// Setters
+void Textbox::setActive()
+{
+        if (active) {
+                shape.setFillColor(style.activeBackgroundColor);
+                shape.setOutlineColor(style.activeOutlineColor);
+                text.setFillColor(style.activeTextColor);
+        }
+        else {
+                shape.setFillColor(style.inactivebackgroundColor);
+                shape.setOutlineColor(style.inactiveOutlineColor);
+                text.setFillColor(style.inactiveTextColor);
+        }
+}
+
+void Textbox::setSize(sf::Vector2f newSize)
+{
+        shape.setSize(newSize);
+        positionText();
+}
+
+void Textbox::setPosition(sf::Vector2f newPosition)
+{
+        shape.setPosition(newPosition);
+        positionText();
+}
+
+void Textbox::setTextPunto(unsigned int newTextPunto)
+{
+        style.textPunto = newTextPunto;
+        text.setCharacterSize(newTextPunto);
+        positionText();
+}
+
+void Textbox::adjustScaling(sf::Vector2f size, sf::Vector2f position, int charSize)
+{
+        setSize(size);
+        setPosition(position);
+        setTextPunto(charSize);
+}
+
+void Textbox::setOriginCenter()
+{
+        sf::FloatRect bounds = shape.getLocalBounds();
+
+        shape.setOrigin(
+                bounds.left + bounds.width / 2.0f,
+                bounds.top + bounds.height / 2.0f
+        );
+        positionText();
+}
+
+// Getters
+unsigned int Textbox::getTextPunto() const
+{
+        return style.textPunto;
+}
+unsigned int Textbox::getBaseTextPunto() const
+{
+        return baseTextPunto;
+}
+
+std::string Textbox::getTextContent() const
+{
+        return text.getString();
+}
+
+bool Textbox::getActive() const
+{
+        return active;
 }

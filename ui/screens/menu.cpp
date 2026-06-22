@@ -37,8 +37,8 @@ Screen displayMenu(
                 buttonSize,
                 buttonPosition,
                 font,
-                normalButton,
-                hoverNormalButton
+                defaultButton,
+                hoverDefaultButton
         );
         
         Button bfsButton(
@@ -46,8 +46,8 @@ Screen displayMenu(
                 buttonSize,
                 buttonPosition,
                 font,
-                normalButton,
-                hoverNormalButton
+                defaultButton,
+                hoverDefaultButton
         );
 
         Button dfsButton(
@@ -55,8 +55,8 @@ Screen displayMenu(
                 buttonSize,
                 buttonPosition,
                 font,
-                normalButton,
-                hoverNormalButton
+                defaultButton,
+                hoverDefaultButton
         );
         
         Button settingsButton(
@@ -64,8 +64,8 @@ Screen displayMenu(
                 buttonSize,
                 buttonPosition,
                 font,
-                normalButton,
-                hoverNormalButton
+                defaultButton,
+                hoverDefaultButton
         );
 
     

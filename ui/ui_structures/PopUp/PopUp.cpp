@@ -15,6 +15,7 @@ PopUp::PopUp(
         float windowWidth = static_cast<float>(windowSize.x);
         float windowHeight = static_cast<float>(windowSize.y);
 
+        setFont(font);
         
         bgShade.setSize(sf::Vector2f(windowWidth, windowHeight));
         bgShade.setPosition(0.0f, 0.0f);
@@ -31,7 +32,7 @@ PopUp::PopUp(
         setStyle(style);
         dismissButton = Button(
                                 buttonText, 
-                                sf::Vector2f(0.0f, 0.0f), 
+                                sf::Vector2f(size.x * 0.4f, size.y * 0.2f), 
                                 sf::Vector2f(0.0f, 0.0f), 
                                 font,
                                 style.defaultStyle,
@@ -58,9 +59,11 @@ void PopUp::setStyle(const PopUpStyle &newStyle)
 
         title.setFillColor(style.titleColor);
         title.setCharacterSize(style.titlePunto);
+        title.setStyle(style.titleStyle);
 
         description.setFillColor(style.descriptionColor);
         description.setCharacterSize(style.descriptionPunto);
+        description.setStyle(style.descriptionStyle);
 }
 
 void PopUp::positionPopUpWindow(float windowWidth, float windowHeight)
@@ -148,8 +151,10 @@ void PopUp::drawPopUp(sf::RenderWindow &window)
     float windowHeight = static_cast<float>(windowSize.y);
 
     bgShade.setSize(sf::Vector2f(windowWidth, windowHeight));
-    positionPopUpWindow(windowWidth, windowHeight);
+
     setSizePopUpWindow(windowWidth, windowHeight);
+    positionPopUpWindow(windowWidth, windowHeight);
+    
     centerTitle();
     centerDescription();
     centerButton();

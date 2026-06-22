@@ -20,6 +20,7 @@ Button::Button(
         text.setString(buttonText);
 
         setStyle(defaultStyle);
+        baseTextPunto = defaultStyle.textPunto;
 }
 
 void Button::setStyle(const ButtonStyle &buttonStyle)
@@ -79,9 +80,14 @@ void Button::drawButton(sf::RenderWindow &window) const
 }
 
 // Getters
-unsigned int Button::getTextPunto()
+unsigned int Button::getTextPunto() const
 {
         return defaultStyle.textPunto;
+}
+
+unsigned int Button::getBaseTextPunto() const
+{
+        return baseTextPunto;
 }
 
 // Setter Functions

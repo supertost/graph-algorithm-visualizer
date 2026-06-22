@@ -1,62 +1,80 @@
 #include "Node.hpp"
 
-Node::Node(int key, sf::Vector2f position, float radius, sf::Color nodeColorActive, sf::Color nodeColorUnactive, float outlineThickness, const sf::Font &font) {
+Node::Node(
+                int nodeKey,
+                sf::Vector2f nodePosition,
+                const NodeStyle &style,
+                const sf::Font &font
+        )
+{
+        key = nodeKey;
 
-    this->key = key;
-    this->radius = radius;
-    this->shape.setRadius(radius);
-    this->shape.setOrigin(radius, radius);
-    this->shape.setPosition(position);
-    this->shape.setFillColor(nodeColorUnactive);
-    this->shape.setOutlineColor(nodeColorActive);
-    this->shape.setOutlineThickness(outlineThickness);
+        setStyle(style);
+        shape.setPosition(nodePosition);
+        position = nodePosition;
 
-    this->position = position;
-
-    setText(font);
+        setText(font);
 }
 
-void Node::setText(const sf::Font &font) {
+void Node::setStyle(const NodeStyle &newStyle)
+{
+        radius = newStyle.radius;
+        
+        shape.setRadius(radius);
+        shape.setOrigin(radius, radius);
+        shape.setFillColor(newStyle.inactiveColor);
+        shape.setOutlineColor(newStyle.inactiveOutlineColor);
+        shape.setOutlineThickness(newStyle.outlineThickness);
 
-    this->text.setFont(font);
-    this->text.setString(std::to_string(this->key));
-    this->text.setCharacterSize(this->radius);
-    this->text.setFillColor(sf::Color(237, 98, 28));
-    centerText();
+        if (active)
+                text.setFillColor(newStyle.inactiveColor);
+        else
+                text.setFillColor(newStyle.activeColor);
 }
 
-void Node::centerText() {
-
-    sf::FloatRect textBounds = this->text.getLocalBounds();
-
-    this->text.setOrigin(textBounds.left + textBounds.width / 2.0f, textBounds.top + textBounds.height / 2.0f);
-    this->text.setPosition(this->shape.getPosition());
+void Node::setText(const sf::Font &font)
+{
+        text.setFont(font);
+        text.setString(std::to_string(key));
+        text.setCharacterSize(radius);
+        centerText();
 }
 
-void Node::drawNode(sf::RenderWindow &window) const {
+void Node::centerText()
+{
+        sf::FloatRect textBounds = text.getLocalBounds();
 
-    window.draw(this->shape);
-    window.draw(this->text);
+        text.setOrigin(
+                textBounds.left + textBounds.width / 2.0f,
+                textBounds.top + textBounds.height / 2.0f
+        );
+        text.setPosition(shape.getPosition());
+}
+
+void Node::drawNode(sf::RenderWindow &window) const
+{
+        window.draw(shape);
+        window.draw(text);
 }
 
 // Getters
 
-sf::Vector2f Node::getPosition() const {
-
-    return this->position;
+sf::Vector2f Node::getPosition() const
+{
+        return position;
 }
 
-const sf::FloatRect Node::getGlobalBounds() const {
-
-    return this->shape.getGlobalBounds();
+const sf::FloatRect Node::getGlobalBounds() const
+{
+        return shape.getGlobalBounds();
 }
 
 
 // Setters
 
-void Node::setPosition(sf::Vector2f position) {
-
-    this->position = position;
-    this->shape.setPosition(position);
-    centerText();
+void Node::setPosition(sf::Vector2f newPosition)
+{
+        position = newPosition;
+        shape.setPosition(position);
+        centerText();
 }
