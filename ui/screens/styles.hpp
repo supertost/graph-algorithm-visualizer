@@ -86,7 +86,7 @@ inline const NodeStyle defaultNodeStyle {
 
 // Textbox Styles
 inline const TextboxStyle defaultTextbox {
-        .inactivebackgroundColor = sf::Color::Transparent,
+        .inactiveBackgroundColor = sf::Color::Transparent,
         .activeBackgroundColor = sf::Color::Transparent,
 
         .inactiveOutlineColor = sf::Color(237, 98, 28, 100),

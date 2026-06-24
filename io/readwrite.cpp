@@ -20,11 +20,7 @@ bool readGraphData(const char *filepath, VisualGraph &vgraph) {
     vgraph.clearGraph();
 
     std::string line;
-
-    std::map<int, Node> &nodes = vgraph.getNodesMapNonConst(); 
-
     while (getline(filein, line)) {
-        
         std::stringstream ss(line);
 
         int node;
@@ -34,7 +30,7 @@ bool readGraphData(const char *filepath, VisualGraph &vgraph) {
         float x;
         float y;
         ss >> x >> y;
-        nodes.at(node).setPosition(sf::Vector2f(x, y));
+        vgraph.setNodePosition(node, sf::Vector2f(x, y));
 
         int neighbor;
         while (ss >> neighbor) {

@@ -3,6 +3,48 @@
 
 #include <iostream>
 
+Screen mouseButtonEvent(
+                sf::Event &event,
+                sf::RenderWindow &window,
+                Config &config,
+                Button &exitButton,
+                Button &smoothScrollButton,
+                Button &saveButton
+        )
+{
+        switch (event.mouseButton.button) {
+
+        case sf::Mouse::Left: {
+                sf::Vector2i mousePixel(event.mouseButton.x, event.mouseButton.y);
+                sf::Vector2f mousePositionClickForUI = window.mapPixelToCoords(mousePixel);
+
+                if (exitButton.isClicked(mousePositionClickForUI))
+                        return Screen::Menu;
+
+                if (smoothScrollButton.isClicked(mousePositionClickForUI)) {
+                        config.smoothScroll = !config.smoothScroll;
+                                
+                        if (config.smoothScroll == 1)
+                                smoothScrollButton.setText("On");
+                        else
+                                smoothScrollButton.setText("Off");
+
+                        std::cout << "Smoothscroll: " << config.smoothScroll << "\n"; 
+                }
+
+                if (saveButton.isClicked(mousePositionClickForUI))
+                        saveConfig(config);
+
+                break;
+        }
+                        
+                default:
+                        break;
+        }
+
+        return Screen::Settings;
+}
+
 Screen displaySettings(
                 sf::RenderWindow &window,
                 const sf::Font &font,
@@ -70,7 +112,14 @@ Screen displaySettings(
                 hoverDefaultButton
         );
 
-        updateSettingsLayout(window, exitButton, title, smoothScroll, smoothScrollButton, saveButton);
+        updateSettingsLayout(
+                window,
+                exitButton,
+                title,
+                smoothScroll,
+                smoothScrollButton,
+                saveButton
+        );
         updateBorderRing(window, rectRing);
 
     
@@ -80,80 +129,66 @@ Screen displaySettings(
     while (window.isOpen()) {
         sf::Event event;
 
-        while (window.pollEvent(event)) {
+                while (window.pollEvent(event)) {
 
 
-            switch (event.type) {
+                        switch (event.type) {
 
-                case sf::Event::Closed:
-                    
-                    window.close();
-                    return Screen::Exit;
-                    break;
+                        case sf::Event::Closed:             
+                                window.close();
+                                return Screen::Exit;
+                                break;
 
-                case sf::Event::Resized: {
+                        case sf::Event::Resized: {
+                                sf::FloatRect visibleArea(
+                                        0.0f, 0.0f,
+                                        event.size.width, event.size.height
+                                );
+                                window.setView(sf::View(visibleArea));
 
-                    sf::FloatRect visibleArea(0.0f, 0.0f, event.size.width, event.size.height);
-                    window.setView(sf::View(visibleArea));
-
-                    updateSettingsLayout(window, exitButton, title, smoothScroll, smoothScrollButton, saveButton);
-                    updateBorderRing(window, rectRing);
-                    break;
-                }
-
-                case sf::Event::KeyPressed:
-
-                    if (event.key.code == sf::Keyboard::Escape)
-                        return Screen::Menu;
-
-                    break;
-
-                case sf::Event::MouseButtonPressed:
-                    
-                    switch (event.mouseButton.button) {
-
-                        case sf::Mouse::Left: {
-
-                            sf::Vector2i mousePixel(event.mouseButton.x, event.mouseButton.y);
-                            sf::Vector2f mousePositionClickForUI = window.mapPixelToCoords(mousePixel);
-
-                            if (exitButton.isClicked(mousePositionClickForUI))
-                                return Screen::Menu;
-
-                            if (smoothScrollButton.isClicked(mousePositionClickForUI)) {
-                                config.smoothScroll = !config.smoothScroll;
-                                
-                                if (config.smoothScroll == 1)
-                                    smoothScrollButton.setText("On");
-                                else
-                                    smoothScrollButton.setText("Off");
-
-                                std::cout << "Smoothscroll: " << config.smoothScroll << "\n"; 
-                            }
-
-                            if (saveButton.isClicked(mousePositionClickForUI))
-                                saveConfig(config);
-
-                            break;
-
+                                updateSettingsLayout(
+                                        window,
+                                        exitButton,
+                                        title,
+                                        smoothScroll,
+                                        smoothScrollButton,
+                                        saveButton
+                                );
+                                updateBorderRing(window, rectRing);
+                                break;
                         }
-                        
-                        
-                        default:
-                            break;
-                    }
 
-                    break;
+                        case sf::Event::KeyPressed:
+                                if (event.key.code == sf::Keyboard::Escape)
+                                        return Screen::Menu;
 
+                                break;
+
+                        case sf::Event::MouseButtonPressed: {
+                                Screen screenToGo = mouseButtonEvent(
+                                        event,
+                                        window,
+                                        config,
+                                        exitButton,
+                                        smoothScrollButton,
+                                        saveButton
+                                );
+
+                                if (screenToGo != Screen::Settings)
+                                        return screenToGo;
+
+                                break;
+                        }
             
-                default:
-                    break;
+                        default:
+                                break;
             }
         }        
 
         window.clear(sf::Color::Black);
 
-        sf::Vector2f mousePosition(event.mouseMove.x, event.mouseMove.y);
+        sf::Vector2i mousePixel = sf::Mouse::getPosition(window);
+        sf::Vector2f mousePosition = window.mapPixelToCoords(mousePixel);
 
         title.drawLabel(window);
 

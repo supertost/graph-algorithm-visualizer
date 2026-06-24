@@ -27,7 +27,7 @@ class Node
                 void setText(const sf::Font &font);
                 void centerText();
                 
-                public:
+        public:
                 Node(        
                         int key,
                         sf::Vector2f position,
@@ -39,7 +39,7 @@ class Node
                 
                 // Getters
                 sf::Vector2f getPosition() const;
-                const sf::FloatRect getGlobalBounds() const;
+                sf::FloatRect getGlobalBounds() const;
                 
                 // Setters
                 void setStyle(const NodeStyle &newStyle);

@@ -37,9 +37,11 @@ class VisualGraph
 
                 // Getters
                 const std::map<int, Node> &getNodesMap() const;
-                std::map<int, Node> &getNodesMapNonConst();
                 const std::map<int, std::vector<int>> &getEdgesMap() const;
                 const std::array<float, 4> getBounds() const;
+
+                // Setters
+                bool setNodePosition(int key, sf::Vector2f position);
 };
 
 

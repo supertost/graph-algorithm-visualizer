@@ -6,7 +6,7 @@
 
 struct TextboxStyle
 {
-        sf::Color inactivebackgroundColor = sf::Color(255, 255, 255, 200);
+        sf::Color inactiveBackgroundColor = sf::Color(255, 255, 255, 200);
         sf::Color activeBackgroundColor = sf::Color::White;
         
         sf::Color inactiveOutlineColor = sf::Color(0, 0, 0, 200);
@@ -15,7 +15,7 @@ struct TextboxStyle
         
         sf::Color inactiveTextColor = sf::Color (0, 0, 0, 200);
         sf::Color activeTextColor = sf::Color::Black;
-        unsigned int textPunto = 30.0f;
+        unsigned int textPunto = 30;
 };
 
 class Textbox

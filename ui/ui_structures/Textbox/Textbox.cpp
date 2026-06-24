@@ -25,7 +25,7 @@ void Textbox::setStyle(const TextboxStyle &newStyle)
 {
         style = newStyle;
         
-        shape.setFillColor(style.inactivebackgroundColor);
+        shape.setFillColor(style.inactiveBackgroundColor);
         shape.setOutlineColor(style.inactiveOutlineColor);
         shape.setOutlineThickness(style.outlineThickness);
 
@@ -128,7 +128,7 @@ void Textbox::setActive()
                 text.setFillColor(style.activeTextColor);
         }
         else {
-                shape.setFillColor(style.inactivebackgroundColor);
+                shape.setFillColor(style.inactiveBackgroundColor);
                 shape.setOutlineColor(style.inactiveOutlineColor);
                 text.setFillColor(style.inactiveTextColor);
         }
@@ -183,7 +183,7 @@ unsigned int Textbox::getBaseTextPunto() const
 
 std::string Textbox::getTextContent() const
 {
-        return text.getString();
+        return input;
 }
 
 bool Textbox::getActive() const

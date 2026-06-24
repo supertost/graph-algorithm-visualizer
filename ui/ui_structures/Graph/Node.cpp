@@ -64,7 +64,7 @@ sf::Vector2f Node::getPosition() const
         return position;
 }
 
-const sf::FloatRect Node::getGlobalBounds() const
+sf::FloatRect Node::getGlobalBounds() const
 {
         return shape.getGlobalBounds();
 }

@@ -26,7 +26,7 @@ sf::Vector2f VisualGraph::determineNodeLocation() const
 bool VisualGraph::addNode(int key)
 {
         if (containsNode(key))
-        return false;
+                return false;
         
         
         sf::Vector2f position = determineNodeLocation();
@@ -43,8 +43,8 @@ bool VisualGraph::addEdge(int source, int dest)
         addNode(dest);
         
         for (int neighbor : edges.at(source))
-        if (neighbor == dest)
-        return false;
+                if (neighbor == dest)
+                        return false;
         
         edges[source].push_back(dest);
         
@@ -60,8 +60,8 @@ bool VisualGraph::isClicked(sf::Vector2f mousePosition, int &nodeClicked)
 {
         for (const std::pair<const int, Node> &node : displayNodes) {
                 if (node.second.getGlobalBounds().contains(mousePosition)) {
-                nodeClicked = node.first;
-                return true;
+                        nodeClicked = node.first;
+                        return true;
                 }
         }
 
@@ -78,8 +78,6 @@ void VisualGraph::clearGraph()
         displayNodes.clear();
         edges.clear();
 }
-
-
 
 void VisualGraph::drawGraph(sf::RenderWindow &window) const
 {
@@ -104,16 +102,9 @@ void VisualGraph::drawGraph(sf::RenderWindow &window) const
                 node.drawNode(window);
 }
 
-
 // Getters
-
 const std::map<int, Node>& VisualGraph::getNodesMap() const
 {
-        return displayNodes;
-}
-
-std::map<int, Node>& VisualGraph::getNodesMapNonConst() {
-
         return displayNodes;
 }
 
@@ -153,4 +144,18 @@ const std::array<float, 4>  VisualGraph::getBounds() const {
         }
 
         return {lowestX, highestX, lowestY, highestY};
+}
+
+// Setters
+
+// Returns true if node found and a position is set, false if no node found in graph.
+bool VisualGraph::setNodePosition(int key, sf::Vector2f position)
+{
+        if (displayNodes.find(key) != displayNodes.end()) {
+
+                displayNodes.at(key).setPosition(position);
+                return true;
+        }
+
+        return false;
 }
