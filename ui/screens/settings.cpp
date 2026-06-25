@@ -1,4 +1,5 @@
 #include "settings.hpp"
+#include "settingsElements.hpp"
 #include "../../io/readwrite.hpp"
 
 #include <iostream>
@@ -7,9 +8,7 @@ Screen mouseButtonEvent(
                 sf::Event &event,
                 sf::RenderWindow &window,
                 Config &config,
-                Button &exitButton,
-                Button &smoothScrollButton,
-                Button &saveButton
+                SettingsUIElements &ui
         )
 {
         switch (event.mouseButton.button) {
@@ -18,21 +17,21 @@ Screen mouseButtonEvent(
                 sf::Vector2i mousePixel(event.mouseButton.x, event.mouseButton.y);
                 sf::Vector2f mousePositionClickForUI = window.mapPixelToCoords(mousePixel);
 
-                if (exitButton.isClicked(mousePositionClickForUI))
+                if (ui.exitButton.isClicked(mousePositionClickForUI))
                         return Screen::Menu;
 
-                if (smoothScrollButton.isClicked(mousePositionClickForUI)) {
+                if (ui.smoothScrollButton.isClicked(mousePositionClickForUI)) {
                         config.smoothScroll = !config.smoothScroll;
                                 
                         if (config.smoothScroll == 1)
-                                smoothScrollButton.setText("On");
+                                ui.smoothScrollButton.setText("On");
                         else
-                                smoothScrollButton.setText("Off");
+                                ui.smoothScrollButton.setText("Off");
 
                         std::cout << "Smoothscroll: " << config.smoothScroll << "\n"; 
                 }
 
-                if (saveButton.isClicked(mousePositionClickForUI))
+                if (ui.saveButton.isClicked(mousePositionClickForUI))
                         saveConfig(config);
 
                 break;
@@ -52,74 +51,20 @@ Screen displaySettings(
                 Config &config
         )
 {
-        sf::Cursor normalCursor;
-        normalCursor.loadFromSystem(sf::Cursor::Arrow);
-        
-        sf::Cursor handCursor;
-        handCursor.loadFromSystem(sf::Cursor::Hand);
-
+        Cursors cursors;
 
         sf::Vector2u windowSize = window.getSize();
 
         float windowWidth = static_cast<float>(windowSize.x);
         float windowHeight = static_cast<float>(windowSize.y);
-
-
-    
-        Label title(
-                "Settings",
-                font,
-                titleStyle,
-                sf::Vector2f(40.0f, 30.f)
-        );
-    
-        Button exitButton(
-                "<- Menu", 
-                sf::Vector2f(0.0f, 0.0f),
-                sf::Vector2f(0.0f, 0.0f),
-                font,
-                compactButton,
-                hoverCompactButton
-        );
         
         std::string smoothState = "Off";
         if (config.smoothScroll == 1)
                 smoothState = "On";
 
-        Label smoothScroll(
-                "Smooth Scroll",
-                font,
-                subtitleStyle,
-                sf::Vector2f(0.0f, 0.0f)
-        );
+        SettingsUIElements ui(font, smoothState);
 
-        Button smoothScrollButton(
-                smoothState,
-                sf::Vector2f(0.0f, 0.0f),
-                sf::Vector2f(0.0f, 0.0f),
-                font,
-                compactButton,
-                hoverCompactButton
-        );
-        
-
-        Button saveButton(
-                "Save",
-                sf::Vector2f(0.0f, 0.0f),
-                sf::Vector2f(0.0f, 0.0f),
-                font,
-                defaultButton,
-                hoverDefaultButton
-        );
-
-        updateSettingsLayout(
-                window,
-                exitButton,
-                title,
-                smoothScroll,
-                smoothScrollButton,
-                saveButton
-        );
+        updateSettingsLayout(window, ui);
         updateBorderRing(window, rectRing);
 
     
@@ -146,14 +91,7 @@ Screen displaySettings(
                                 );
                                 window.setView(sf::View(visibleArea));
 
-                                updateSettingsLayout(
-                                        window,
-                                        exitButton,
-                                        title,
-                                        smoothScroll,
-                                        smoothScrollButton,
-                                        saveButton
-                                );
+                                updateSettingsLayout(window, ui);
                                 updateBorderRing(window, rectRing);
                                 break;
                         }
@@ -169,9 +107,7 @@ Screen displaySettings(
                                         event,
                                         window,
                                         config,
-                                        exitButton,
-                                        smoothScrollButton,
-                                        saveButton
+                                        ui
                                 );
 
                                 if (screenToGo != Screen::Settings)
@@ -187,25 +123,15 @@ Screen displaySettings(
 
         window.clear(sf::Color::Black);
 
+        ui.drawUI(window);
+
         sf::Vector2i mousePixel = sf::Mouse::getPosition(window);
         sf::Vector2f mousePosition = window.mapPixelToCoords(mousePixel);
 
-        title.drawLabel(window);
-
-        smoothScroll.drawLabel(window);
-        smoothScrollButton.drawButton(window);
-        bool smoothScrollHover = smoothScrollButton.hoverState(mousePosition);
-
-        exitButton.drawButton(window);
-        bool exitHover = exitButton.hoverState(mousePosition);
-
-        saveButton.drawButton(window);
-        bool saveHover = saveButton.hoverState(mousePosition);
-
-        if (exitHover || smoothScrollHover || saveHover)
-            window.setMouseCursor(handCursor);
+        if (ui.checkHover(mousePosition))
+            window.setMouseCursor(cursors.handCursor);
         else
-            window.setMouseCursor(normalCursor);
+            window.setMouseCursor(cursors.normalCursor);
 
         window.draw(rectRing);
         

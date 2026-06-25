@@ -5,11 +5,6 @@ void updateBfsViews(sf::RenderWindow &window)
         (void)window;
 }
 
-void updateBfsLayout(sf::RenderWindow &window)
-{
-        (void)window;
-}
-
 void mouseButtonEvent(sf::Event &event, sf::RenderWindow &window)
 {
         switch (event.mouseButton.button) {
@@ -38,6 +33,8 @@ Screen displaySettings(sf::RenderWindow &window, const sf::Font &font, sf::Recta
         (void)windowWidth, (void)windowHeight;
         (void)font;
 
+        BfsUIElements ui(font);
+
         sf::View graphView;
         sf::View uiView;
 
@@ -58,7 +55,7 @@ Screen displaySettings(sf::RenderWindow &window, const sf::Font &font, sf::Recta
                                 sf::FloatRect bfsView(0.0f, 0.0f, event.size.width, event.size.height);
                                 window.setView(sf::View(bfsView));
 
-                                updateBfsLayout(window);
+                                updateBfsLayout(window, ui);
                                 updateBorderRing(window, rectRing);
                                 break;
                         }

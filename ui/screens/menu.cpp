@@ -1,4 +1,5 @@
 #include "menu.hpp"
+#include "menuElements.hpp"
 
 Screen displayMenu(
                 sf::RenderWindow &window,
@@ -7,12 +8,7 @@ Screen displayMenu(
         )
 {
         // Cursor for buttons and normal use
-        sf::Cursor normalCursor;
-        normalCursor.loadFromSystem(sf::Cursor::Arrow);
-        
-        sf::Cursor handCursor;
-        handCursor.loadFromSystem(sf::Cursor::Hand);
-
+        Cursors cursors;
 
 
         sf::Vector2u windowSize = window.getSize();
@@ -20,146 +16,90 @@ Screen displayMenu(
         float windowHeight = static_cast<float>(windowSize.y);
 
 
-        // Title Text
-        Label title(
-                "Graph Algorithm Visualizer",
-                font,
-                titleStyle,
-                sf::Vector2f(40.0f, 30.f)
-        );
-
-        // Graph Edit Button
-        sf::Vector2f buttonSize(250.0f, 70.0f);
-        sf::Vector2f buttonPosition(0.0f, 0.0f);
-
-        Button graphButton(
-                "Graph Editor",
-                buttonSize,
-                buttonPosition,
-                font,
-                defaultButton,
-                hoverDefaultButton
-        );
-        
-        Button bfsButton(
-                "Run BFS",
-                buttonSize,
-                buttonPosition,
-                font,
-                defaultButton,
-                hoverDefaultButton
-        );
-
-        Button dfsButton(
-                "Run DFS",
-                buttonSize,
-                buttonPosition,
-                font,
-                defaultButton,
-                hoverDefaultButton
-        );
-        
-        Button settingsButton(
-                "Settings",
-                buttonSize,
-                buttonPosition,
-                font,
-                defaultButton,
-                hoverDefaultButton
-        );
+        MenuUIElements ui(font);
 
     
-    sf::FloatRect visibleArea(0.0f, 0.0f, static_cast<float>(windowWidth), static_cast<float>(windowHeight));
-    window.setView(sf::View(visibleArea));
-    updateMenuLayout(window, title, graphButton, bfsButton, dfsButton, settingsButton);
+        sf::FloatRect visibleArea(
+                0.0f,
+                0.0f,
+                static_cast<float>(windowWidth),
+                static_cast<float>(windowHeight)
+        );
+        window.setView(sf::View(visibleArea));
+        updateMenuLayout(window, ui);
 
-    updateBorderRing(window, rectRing);
+        updateBorderRing(window, rectRing);
 
-    while (window.isOpen()) {
-        sf::Event event;
+        while (window.isOpen()) {
+                sf::Event event;
 
-        while (window.pollEvent(event)) {
+                while (window.pollEvent(event)) {
+                        switch (event.type) {
 
-            switch (event.type) {
+                        case sf::Event::Closed:
+                                window.close();
+                                return Screen::Exit;
+                                break;
 
-                case sf::Event::Closed:
-                    
-                    window.close();
-                    return Screen::Exit;
-                    break;
+                        case sf::Event::Resized: {                       
+                                sf::FloatRect visibleArea(
+                                        0.0f, 
+                                        0.0f,
+                                        static_cast<float>(event.size.width),
+                                        static_cast<float>(event.size.height)
+                                );
 
-                case sf::Event::Resized: {
-                    
-                    sf::FloatRect visibleArea(0.0f, 0.0f, static_cast<float>(event.size.width), static_cast<float>(event.size.height));
+                                window.setView(sf::View(visibleArea));
+                                updateMenuLayout(window, ui);
+                                updateBorderRing(window, rectRing);
+                                break;
+                        }
 
-                    window.setView(sf::View(visibleArea));
-                    updateMenuLayout(window, title, graphButton, bfsButton, dfsButton, settingsButton);
-                    updateBorderRing(window, rectRing);
-                    break;
+                        case sf::Event::KeyPressed:
+                                if (event.key.code == sf::Keyboard::Escape) {
+                                        window.close();
+                                        return Screen::Exit;
+                                }
+
+                                break;
+
+                        case sf::Event::MouseButtonPressed:
+                                if (event.mouseButton.button == sf::Mouse::Left) {
+                                        sf::Vector2f mousePositionClick(
+                                                static_cast<float>(event.mouseButton.x),
+                                                static_cast<float>(event.mouseButton.y)
+                                        );
+
+                                        if (ui.graphButton.isClicked(mousePositionClick))
+                                        return Screen::Graph;
+
+                                        if (ui.settingsButton.isClicked(mousePositionClick))
+                                        return Screen::Settings;
+                                }
+
+                                break;
+            
+                        default:
+                                break;
+                        }
                 }
 
-                case sf::Event::KeyPressed:
+                window.clear(sf::Color::Black);
 
-                    if (event.key.code == sf::Keyboard::Escape) {
-                        window.close();
-                        return Screen::Exit;
-                    }
+                window.draw(rectRing);
 
-                    break;
+                ui.drawUI(window);
 
-                case sf::Event::MouseButtonPressed:
-                    
-                    if (event.mouseButton.button == sf::Mouse::Left) {
+                sf::Vector2i mousePixel = sf::Mouse::getPosition(window);
+                sf::Vector2f mousePosition = window.mapPixelToCoords(mousePixel);
 
-                        sf::Vector2f mousePositionClick(static_cast<float>(event.mouseButton.x), static_cast<float>(event.mouseButton.y));
+                if (ui.hoverCheck(mousePosition))
+                        window.setMouseCursor(cursors.handCursor);
+                else
+                        window.setMouseCursor(cursors.normalCursor);
 
-                        if (graphButton.isClicked(mousePositionClick))
-                            return Screen::Graph;
-
-                        if (settingsButton.isClicked(mousePositionClick))
-                            return Screen::Settings;
-                    }
-
-                    break;
-            
-                default:
-                    break;
-            }
+                window.display();
         }
 
-        window.clear(sf::Color::Black);
-
-        window.draw(rectRing);
-
-
-        title.drawLabel(window);
-
-        sf::Vector2f mousePosition(static_cast<float>(event.mouseMove.x), static_cast<float>(event.mouseMove.y));
-
-        graphButton.drawButton(window);
-        bool graphEditorHover = graphButton.hoverState(mousePosition);
-        
-        bfsButton.drawButton(window);
-        bool bfsHover = bfsButton.hoverState(mousePosition);
-
-        dfsButton.drawButton(window);
-        bool dfsHover = dfsButton.hoverState(mousePosition);
-
-        settingsButton.drawButton(window);
-        bool settingsHover = settingsButton.hoverState(mousePosition);
-
-        if (graphEditorHover || bfsHover || dfsHover || settingsHover) {
-
-            window.setMouseCursor(handCursor);
-        }
-
-        else {
-
-            window.setMouseCursor(normalCursor);
-        }
-
-        window.display();
-    }
-
-    return Screen::Exit;
+        return Screen::Exit;
 }

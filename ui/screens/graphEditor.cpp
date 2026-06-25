@@ -98,7 +98,7 @@ Screen mouseButtonEvent(
                 EditorUIElements &ui,
                 EditorPopUps &popUps,
                 EditorState &state,
-                EditorCursors &cursors
+                Cursors &cursors
         )
 {
         switch (event.mouseButton.button) {
@@ -219,7 +219,7 @@ Screen displayGraphEditor(
         )
 {
         // Cursor for buttons and normal use
-        EditorCursors cursors;
+        Cursors cursors;
 
         // Window Dimensions
         sf::Vector2u windowSize = window.getSize();

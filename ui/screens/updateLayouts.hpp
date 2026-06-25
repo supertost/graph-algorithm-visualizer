@@ -3,25 +3,16 @@
 
 #include "screens.hpp"
 #include "graphEditorElements.hpp"
+#include "bfsScreenElements.hpp"
+#include "settingsElements.hpp"
+#include "menuElements.hpp"
 
 void updateGraphEditorLayout(sf::RenderWindow &window, EditorUIElements &ui);
 
-void updateMenuLayout(
-        sf::RenderWindow &window,
-        Label &title,
-        Button &graphButton,
-        Button &bfsButton,
-        Button &dfsButton,
-        Button &settingsButton
-);
+void updateMenuLayout(sf::RenderWindow &window, MenuUIElements &ui);
 
-void updateSettingsLayout(
-        sf::RenderWindow &window,
-        Button &exitButton,
-        Label &title,
-        Label &smoothScroll,
-        Button &smoothScrollButton,
-        Button &saveButton
-);
+void updateSettingsLayout(sf::RenderWindow &window, SettingsUIElements &ui);
+
+void updateBfsLayout(sf::RenderWindow &window, BfsUIElements &ui);
 
 #endif

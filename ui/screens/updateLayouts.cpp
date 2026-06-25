@@ -120,14 +120,7 @@ void updateGraphEditorLayout(sf::RenderWindow &window, EditorUIElements &ui)
 }
 
 
-void updateMenuLayout(
-                sf::RenderWindow &window,
-                Label &title,
-                Button &graphButton,
-                Button &bfsButton,
-                Button &dfsButton,
-                Button &settingsButton
-        )
+void updateMenuLayout(sf::RenderWindow &window, MenuUIElements &ui)
 {
         sf::Vector2u windowSize = window.getSize();
 
@@ -135,8 +128,8 @@ void updateMenuLayout(
         float windowHeight = static_cast<float>(windowSize.y);
 
         // Title text
-        title.setTextPunto(updateTextScale(window, 50));
-        title.setPosition(sf::Vector2f(windowWidth * 0.03f, windowHeight * 0.06f));
+        ui.title.setTextPunto(updateTextScale(window, 50));
+        ui.title.setPosition(sf::Vector2f(windowWidth * 0.03f, windowHeight * 0.06f));
 
         // Menu nav buttons
         sf::Vector2f navButtonSize(windowWidth * 0.20f, windowHeight * 0.10f);
@@ -156,28 +149,28 @@ void updateMenuLayout(
                 windowHeight * 0.2f + navButtonSize.y * 2.0f + windowHeight * 0.04f * 2.0f
         );
 
-        graphButton.adjustScaling(
+        ui.graphButton.adjustScaling(
                 navButtonSize,
                 graphEditorPosition,
                 updateTextScale(
                         window,
-                        graphButton.getBaseTextPunto()
+                        ui.graphButton.getBaseTextPunto()
                 )
         );
-        bfsButton.adjustScaling(
+        ui.bfsButton.adjustScaling(
                 navButtonSize,
                 BFSPosition,
                 updateTextScale(
                         window,
-                        bfsButton.getBaseTextPunto()
+                        ui.bfsButton.getBaseTextPunto()
                 )
         );
-        dfsButton.adjustScaling(
+        ui.dfsButton.adjustScaling(
                 navButtonSize,
                 DFSPosition,
                 updateTextScale(
                         window,
-                        dfsButton.getBaseTextPunto()
+                        ui.dfsButton.getBaseTextPunto()
                 )
         );
         
@@ -185,24 +178,17 @@ void updateMenuLayout(
                 windowWidth * 0.03f,
                 windowHeight * 0.89f
         );
-        settingsButton.adjustScaling(
+        ui.settingsButton.adjustScaling(
                 setttingsButtonSize,
                 settingsPosition,
                 updateTextScale(
                         window,
-                        settingsButton.getBaseTextPunto()
+                        ui.settingsButton.getBaseTextPunto()
                 )
         );
 }
 
-void updateSettingsLayout(
-                sf::RenderWindow &window,
-                Button &exitButton,
-                Label &title,
-                Label &smoothScroll,
-                Button &smoothScrollButton,
-                Button &saveButton
-        )
+void updateSettingsLayout(sf::RenderWindow &window, SettingsUIElements &ui)
 {
 
         sf::Vector2u windowSize = window.getSize();
@@ -213,37 +199,37 @@ void updateSettingsLayout(
         sf::Vector2f defaultButtonSize(windowWidth * 0.20f, windowHeight * 0.10f);
         sf::Vector2f compactButtonSize(windowWidth * 0.20f, windowHeight * 0.06f);
 
-        title.setTextPunto(updateTextScale(window, 50));
-        title.setPosition(
+        ui.title.setTextPunto(updateTextScale(window, 50));
+        ui.title.setPosition(
                 sf::Vector2f(
                         windowWidth * 0.03f,
                         windowHeight * 0.06f
                 )
         );
 
-        smoothScroll.setTextPunto(updateTextScale(window, 30));
-        smoothScroll.setPosition(
+        ui.smoothScroll.setTextPunto(updateTextScale(window, 30));
+        ui.smoothScroll.setPosition(
                 sf::Vector2f(
                         windowWidth * 0.03f,
                         windowHeight * 0.25f
                 )
         );
-        sf::FloatRect smoothScrollBounds = smoothScroll.getLocalBounds();
+        sf::FloatRect smoothScrollBounds = ui.smoothScroll.getLocalBounds();
 
         sf::Vector2f smoothScrollButtonPosition(
                 windowWidth * 0.28f,
                 windowHeight * 0.25f + smoothScrollBounds.height / 2 + 5.0f
         );
-        smoothScrollButton.adjustScaling(
+        ui.smoothScrollButton.adjustScaling(
                 defaultButtonSize,
                 smoothScrollButtonPosition,
                 updateTextScale(
                         window,
-                        smoothScrollButton.getBaseTextPunto()
+                        ui.smoothScrollButton.getBaseTextPunto()
                 )
         );
 
-        smoothScrollButton.setOriginCenter();
+        ui.smoothScrollButton.setOriginCenter();
 
         sf::Vector2f exitButtonSize(
                 windowWidth * 0.2 * 0.8f,
@@ -253,26 +239,32 @@ void updateSettingsLayout(
                 windowWidth * 0.2 / 2.0f + windowWidth * 0.8,
                 windowHeight * 0.06f
         );
-        exitButton.adjustScaling(
+        ui.exitButton.adjustScaling(
                 exitButtonSize,
                 exitButtonPosition,
                 updateTextScale(
                         window,
-                        exitButton.getBaseTextPunto()
+                        ui.exitButton.getBaseTextPunto()
                 )
         );
-        exitButton.setOriginCenter();
+        ui.exitButton.setOriginCenter();
 
         sf::Vector2f savePosition(
                 windowWidth * 0.03f,
                 windowHeight * 0.89f
         );
-        saveButton.adjustScaling(
+        ui.saveButton.adjustScaling(
                 compactButtonSize,
                 savePosition,
                 updateTextScale(
                         window,
-                        saveButton.getBaseTextPunto()
+                        ui.saveButton.getBaseTextPunto()
                 )
         );
+}
+
+void updateBfsLayout(sf::RenderWindow &window, BfsUIElements &ui)
+{
+        (void)window;
+        (void)ui;
 }

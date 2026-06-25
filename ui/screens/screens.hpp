@@ -9,6 +9,8 @@
 #include "../ui_structures/Graph/VisualGraph.hpp"
 #include "../ui_structures/PopUp/PopUp.hpp"
 
+#include "cursors.hpp"
+
 #include "updateLayouts.hpp"
 #include "styles.hpp"
 

@@ -191,22 +191,6 @@ struct EditorState
 
         float currentZoom = 1.0f;
         float targetZoom = 1.0f;
-
-        char const *lFilterPatterns[];
-};
-
-struct EditorCursors
-{
-        sf::Cursor normalCursor;
-        sf::Cursor handCursor;
-        sf::Cursor moveCursor;
-
-        EditorCursors()
-        {
-                normalCursor.loadFromSystem(sf::Cursor::Arrow);
-                handCursor.loadFromSystem(sf::Cursor::Hand);
-                moveCursor.loadFromSystem(sf::Cursor::SizeAll);
-        }
 };
 
 #endif
