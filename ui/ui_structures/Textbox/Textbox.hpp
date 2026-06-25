@@ -4,54 +4,67 @@
 #include <SFML/Graphics.hpp>
 #include <string>
 
-class Textbox {
-    
-    private:
+struct TextboxStyle
+{
+        sf::Color inactiveBackgroundColor = sf::Color(255, 255, 255, 200);
+        sf::Color activeBackgroundColor = sf::Color::White;
+        
+        sf::Color inactiveOutlineColor = sf::Color(0, 0, 0, 200);
+        sf::Color activeOutlineColor = sf::Color::Black;
+        float outlineThickness = 2.0f;
+        
+        sf::Color inactiveTextColor = sf::Color (0, 0, 0, 200);
+        sf::Color activeTextColor = sf::Color::Black;
+        unsigned int textPunto = 30;
+};
 
-        sf::Text text;
-        std::string placeholder;
-        std::string input = "";
-        sf::RectangleShape shape;
+class Textbox
+{
+        private:
+                sf::Text text;
+                sf::RectangleShape shape;
 
-        sf::Color activeTextboxColor = sf::Color::Black;
-        sf::Color activeTextColor = sf::Color::Blue;
-        sf::Color activeOutlineColor = sf::Color::Blue;
+                std::string input = "";
+                std::string placeholder;
 
-        bool active = false;
+                TextboxStyle style;
 
-        sf::Color textboxColor;
-        sf::Color outlineColor;
-        sf::Color textColor;
+                bool active = false;
+                unsigned int baseTextPunto;
 
-        void positionText();
+                void setStyle(const TextboxStyle &newStyle);
+                void positionText();
 
-    public:
-        // UPDATE FUNCTIONS FOR ALL CONSTRUCTOR TYPES
-        Textbox(sf::Vector2f size, sf::Vector2f position, const sf::Font &font, unsigned int characterSize, sf::Color textboxColor, sf::Color outlineColor, float outlineThickness, sf::Color textColor);
-        Textbox(sf::Vector2f size, sf::Vector2f position, const sf::Font &font, unsigned int characterSize, sf::Color textboxColor, sf::Color outlineColor, float outlineThickness, sf::Color textColor, std::string placeholder);
-        Textbox(sf::Vector2f size, sf::Vector2f position, const sf::Font &font, unsigned int characterSize, sf::Color textboxColor, sf::Color outlineColor, float outlineThickness, sf::Color textColor, std::string placeholder, sf::Color activeTextboxColor, sf::Color activeTextColor, sf::Color activeOutlineColor);
-        ~Textbox();
+        public:
+                Textbox(
+                        sf::Vector2f size,
+                        sf::Vector2f position,
+                        const sf::Font &font,
+                        const std::string &placeholder,
+                        const TextboxStyle &style
+                );
 
-        void handleEvent(const sf::Event &event, const sf::RenderWindow &window, const sf::View &view);
-        void setActive(sf::Color textboxColor, sf::Color outlineColor, sf::Color textColor);
+                void handleEvent(
+                        const sf::Event &event,
+                        const sf::RenderWindow &window,
+                        const sf::View &view
+                );
 
-        void setSize(sf::Vector2f size);
-        void setPosition(sf::Vector2f position);
-        void setCharacterSize(unsigned int size);
-        void adjustScaling(sf::Vector2f size, sf::Vector2f position, int charSize);
+                void drawTextbox(sf::RenderWindow &window) const;
+                
+                // Setters
+                void setActive();
+                void setSize(sf::Vector2f size);
+                void setPosition(sf::Vector2f position);
+                void setTextPunto(unsigned int size);
+                void adjustScaling(sf::Vector2f size, sf::Vector2f position, int charSize);
+                void setOriginCenter();
 
-        void drawTextbox(sf::RenderWindow &window);
-
-        void setOriginCenter();
-
-        // Getters
-        sf::Color getTextboxColor() const;
-        sf::Color getOutlineColor() const;
-        sf::Color getTextColor() const;
-        std::string getTextContent() const;
-        bool getActive() const;
-
-        unsigned int characterSize;
+                // Getters
+                unsigned int getTextPunto() const;
+                unsigned int getBaseTextPunto() const;
+                std::string getTextContent() const;
+                bool getActive() const;
 };
 
 #endif
