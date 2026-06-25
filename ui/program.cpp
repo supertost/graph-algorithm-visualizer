@@ -48,7 +48,7 @@ int main() {
     Screen currentScreen = Screen::Menu;
 
 
-    VisualGraph vgraph(font);
+    VisualGraph vgraph(font, defaultNodeStyle);
 
     while (window.isOpen() && currentScreen != Screen::Exit) {
 

@@ -2,33 +2,64 @@
 #define POPUP_HPP
 
 #include <SFML/Graphics.hpp>
-#include "../button/Button.hpp"
+#include "../Button/Button.hpp"
 
-class PopUp {
-
-    private:
+struct PopUpStyle
+{
+        sf::Color titleColor = sf::Color::Black;
+        unsigned int titlePunto = 30;
+        sf::Text::Style titleStyle = sf::Text::Style::Bold;
         
-        sf::RectangleShape bgShade;
-        sf::RectangleShape errorPopUp;
+        sf::Color descriptionColor = sf::Color::Black;
+        unsigned int descriptionPunto = 20;
+        sf::Text::Style descriptionStyle = sf::Text::Style::Regular;
 
-        Button dismissButton;
+        sf::Color backgroundColor = sf::Color::White;
+        sf::Color outlineColor = sf::Color::Black;
+        float outlineThickness = 2.0f;
 
-        sf::Text title;
-        sf::Text description;
+        sf::Color bgShadeColor = sf::Color(0, 0, 0, 200);
 
-        void positionPopUpWindow(float windowWidth, float windowHeight);
-        void setSizePopUpWindow(float windowWidth, float windowHeight);
-        void centerTitle();
-        void centerDescription();
-        void centerButton();
+        ButtonStyle defaultStyle;
+        ButtonStyle hoverStyle;
+};
+
+class PopUp
+{
+        private:
+        
+                sf::RectangleShape bgShade;
+                sf::RectangleShape errorPopUp;
+
+                Button dismissButton;
+
+                sf::Text title;
+                sf::Text description;
+
+                PopUpStyle style;
+
+                void positionPopUpWindow(float windowWidth, float windowHeight);
+                void centerTitle();
+                void centerDescription();
+                void centerButton();
+                void setSizePopUpWindow(float windowWidth, float windowHeight);
+                void setStyle(const PopUpStyle &newStyle);
+                void setFont(const sf::Font &font);
     public:
-        //PopUp(const std::string &title, const std::string &description, const sf::Font &font, unsigned int textPunto, sf::Vector2f size, sf::Color popUpBg, sf::Color popUpOutline, float popUpOutlineThickness, sf::Color errorBgShadeColor);
-        PopUp(const std::string &title, const std::string &description, const std::string &buttonText, sf::Color titleColor, sf::Color descriptionColor, sf::Color buttonColorText, const sf::Font &fontBold, const sf::Font &fontLight, unsigned int textPunto, sf::Vector2f size, sf::Color popUpBg, sf::Color popUpOutline, float popUpOutlineThickness, sf::Color errorBgShadeColor, sf::Color buttonBgColor, sf::RenderWindow &window);
-        void drawPopUp(sf::RenderWindow &window);
-        void adjustScaling();
-        bool isDismissed(sf::Vector2f &mousePosition);
-        bool dismissHoverState(sf::Vector2f &mousePosition, sf::Color dismissBackgroundColor, sf::Color dismissTextColor);
+                PopUp(
+                        const std::string &title, 
+                        const std::string &description, 
+                        const std::string &buttonText,
+                        const sf::Font &font, 
+                        sf::Vector2f size,
+                        const PopUpStyle &style,
+                        sf::RenderWindow &window
+                );
 
+                void drawPopUp(sf::RenderWindow &window);
+                void adjustScaling();
+                bool isDismissed(const sf::Vector2f &mousePosition);
+                bool dismissHoverState(const sf::Vector2f &mousePosition);
 };
 
 #endif
