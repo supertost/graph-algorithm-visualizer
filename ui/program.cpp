@@ -5,76 +5,77 @@
 #include "screens/settings.hpp"
 #include "../io/readwrite.hpp"
 
-void updateBorderRing(sf::RenderWindow &window, sf::RectangleShape &rectRing) {
+void updateBorderRing(sf::RenderWindow &window, sf::RectangleShape &rectRing)
+{
+        sf::Vector2u windowSize = window.getSize();
 
-    sf::Vector2u windowSize = window.getSize();
+        float windowWidth = static_cast<float>(windowSize.x);
+        float windowHeight = static_cast<float>(windowSize.y);
 
-    float windowWidth = static_cast<float>(windowSize.x);
-    float windowHeight = static_cast<float>(windowSize.y);
+        rectRing.setSize(sf::Vector2f(windowWidth * 0.98f, windowHeight * 0.97f));
+        sf::FloatRect rectRingBounds = rectRing.getLocalBounds();
 
-    rectRing.setSize(sf::Vector2f(windowWidth * 0.98f, windowHeight * 0.97f));
-    sf::FloatRect rectRingBounds = rectRing.getLocalBounds();
-
-    rectRing.setOrigin(rectRingBounds.left + rectRingBounds.width / 2.0f, rectRingBounds.top + rectRingBounds.height / 2.0f);
-    rectRing.setPosition(windowWidth / 2.0f,  windowHeight / 2.0f);
+        rectRing.setOrigin(rectRingBounds.left + rectRingBounds.width / 2.0f, rectRingBounds.top + rectRingBounds.height / 2.0f);
+        rectRing.setPosition(windowWidth / 2.0f,  windowHeight / 2.0f);
 }
 
 
-int main() {
+int main()
+{
+        sf::ContextSettings settings;
+        settings.antialiasingLevel = 8;
 
-    sf::ContextSettings settings;
-    settings.antialiasingLevel = 8;
+        sf::RenderWindow window(sf::VideoMode(1280, 720), "Graph Algorithm Visualizer", sf::Style::Default, settings);
+        window.setFramerateLimit(144); // Without frame limiting my gpu makes coil whine noise.
 
-    sf::RenderWindow window(sf::VideoMode(1280, 720), "Graph Algorithm Visualizer", sf::Style::Default, settings);
-
-    // Setting up font
-    sf::Font font;
-    if (!font.loadFromFile("ui/fonts/Futura-Heavy.ttf"))
-        return EXIT_FAILURE;
-
-
-    // Background rectangle ring
-    sf::RectangleShape rectRing;
-    rectRing.setOutlineColor(sf::Color(237, 98, 28));
-    rectRing.setOutlineThickness(2.0f);
-    rectRing.setFillColor(sf::Color::Transparent);
+        // Setting up font
+        sf::Font font;
+        if (!font.loadFromFile("ui/fonts/Futura-Heavy.ttf"))
+                return EXIT_FAILURE;
 
 
-    // Config settings
-    Config config;
-    readConfig(config);
+        // Background rectangle ring
+        sf::RectangleShape rectRing;
+        rectRing.setOutlineColor(sf::Color(237, 98, 28));
+        rectRing.setOutlineThickness(2.0f);
+        rectRing.setFillColor(sf::Color::Transparent);
 
 
-    Screen currentScreen = Screen::Menu;
+        // Config settings
+        Config config;
+        readConfig(config);
 
 
-    VisualGraph vgraph(font, defaultNodeStyle);
+        Screen currentScreen = Screen::Menu;
 
-    while (window.isOpen() && currentScreen != Screen::Exit) {
 
-        switch (currentScreen) {
+        VisualGraph vgraph(font, defaultNodeStyle);
+
+        while (window.isOpen() && currentScreen != Screen::Exit) {
+
+                switch (currentScreen) {
     
-            case Screen::Menu:
-    
-                currentScreen = displayMenu(window, font, rectRing);
-                break;
+                case Screen::Menu:
+                        currentScreen = displayMenu(window, font, rectRing);
+                        break;
 
 
-            case Screen::Graph: // For adding nodes into the graph and such
-
-                currentScreen = displayGraphEditor(window, vgraph, font, rectRing, config);
-                break;
+                case Screen::Graph: // For adding nodes into the graph and such
+                        currentScreen = displayGraphEditor(window, vgraph, font, rectRing, config);
+                        break;
 
             
-            case Screen::Settings:
+                case Screen::Settings:
+                        currentScreen = displaySettings(window, font, rectRing, config);
+                        break;
 
-                currentScreen = displaySettings(window, font, rectRing, config);
-                break;
+                case Screen::BFS:
+                        currentScreen = displayBfsScreen(window, font, vgraph, rectRing);
 
-            default:
-                break;   
+                default:
+                        break;   
+                }
         }
-    }
 
-    return 0;
+        return 0;
 }

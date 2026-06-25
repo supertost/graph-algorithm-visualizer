@@ -73,7 +73,7 @@ void addEdgeAction(Textbox &edgeBox, VisualGraph &vgraph, bool &showEdgeErrorPop
         }
 }
 
-void centerCamera(sf::View &graphView, VisualGraph &vgraph)
+static void centerCamera(sf::View &graphView, VisualGraph &vgraph)
 {
         std::array<float, 4> bounds = vgraph.getBounds();
 
@@ -181,7 +181,6 @@ Screen mouseButtonEvent(
                 }
 
                 else {
-
                         if (state.showNodeErrorPopUp)
                                 if (popUps.nodeErrorPopUp.isDismissed(mousePositionClickForBorder))
                                         state.showNodeErrorPopUp = false;

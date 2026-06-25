@@ -3,6 +3,13 @@
 
 #include "bfsScreen.hpp"
 
+struct BfsViews
+{
+        sf::View graphView;
+        sf::View uiView;
+        sf::View borderView;
+};
+
 struct BfsUIElements
 {
         Button playpause;
@@ -43,6 +50,12 @@ struct BfsUIElements
                 playpause.setOriginCenter();
                 skipOneIteration.setOriginCenter();
         }
+
+        void drawUI(sf::RenderWindow &window)
+        {
+                playpause.drawButton(window);
+        }
 };
+
 
 #endif
