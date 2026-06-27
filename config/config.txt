@@ -1,1 +1,1 @@
-smoothScroll 1
+smoothScroll 0

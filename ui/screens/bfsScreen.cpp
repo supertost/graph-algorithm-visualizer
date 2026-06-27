@@ -1,4 +1,5 @@
 #include "bfsScreen.hpp"
+#include "../vgraph_algorithms/bfs/vbfs.hpp"
 
 static void centerCamera(sf::View &graphView, sf::Vector2f graphViewSize, VisualGraph &vgraph)
 {
@@ -55,15 +56,21 @@ void updateBfsViews(sf::RenderWindow &window, BfsViews &views, VisualGraph &vgra
         //views.borderView.setCenter(graphViewSize.x / 2.0f, graphViewSize.y / 2.0f);
 }
 
-void mouseButtonEvent(sf::Event &event, sf::RenderWindow &window)
+void mouseButtonEvent(sf::Event &event, sf::RenderWindow &window, VisualGraph &vgraph, BfsViews &views, BfsUIElements &ui)
 {
         switch (event.mouseButton.button) {
 
         case sf::Mouse::Left: {
                 sf::Vector2i mousePixel(event.mouseButton.x, event.mouseButton.y);
-                sf::Vector2f mousePositionClickForUI = window.mapPixelToCoords(mousePixel);
+                sf::Vector2f mousePositionClickForUI = window.mapPixelToCoords(mousePixel, views.uiView);
 
-                (void) mousePositionClickForUI;
+                if (ui.playpause.isClicked(mousePositionClickForUI)) {
+                        std::vector<int> traversal = bfs(vgraph, 21);
+
+                        for (int node : traversal) {
+                                vgraph.setNodeVisited(node);
+                        }
+                }
 
                 break;
         }           
@@ -73,8 +80,10 @@ void mouseButtonEvent(sf::Event &event, sf::RenderWindow &window)
         }
 }
 
-Screen displayBfsScreen(sf::RenderWindow &window, const sf::Font &font, VisualGraph &vgraph, sf::RectangleShape &rectRing)
+Screen displayBfsScreen(sf::RenderWindow &window, const sf::Font &font, VisualGraph vgraph, sf::RectangleShape &rectRing)
 {    
+        Cursors cursors;
+
         BfsUIElements ui(font);
 
         BfsViews views;
@@ -109,13 +118,16 @@ Screen displayBfsScreen(sf::RenderWindow &window, const sf::Font &font, VisualGr
                                 break;
 
                         case sf::Event::MouseButtonPressed:
-                                mouseButtonEvent(event, window);
+                                mouseButtonEvent(event, window, vgraph, views, ui);
                                 break;
 
                         default:
                         break;
                         }
-                }        
+                }
+
+                sf::Vector2i mousePixel = sf::Mouse::getPosition(window);
+                sf::Vector2f mousePosition = window.mapPixelToCoords(mousePixel, views.uiView);
 
                 window.clear(sf::Color::Black);
 
@@ -124,6 +136,10 @@ Screen displayBfsScreen(sf::RenderWindow &window, const sf::Font &font, VisualGr
 
                 window.setView(views.uiView);
                 ui.drawUI(window);
+                if (ui.hoverCheck(mousePosition))
+                        window.setMouseCursor(cursors.handCursor);
+                else
+                        window.setMouseCursor(cursors.normalCursor);
 
                 //window.setView(views.borderView);
                 //window.draw(rectRing);

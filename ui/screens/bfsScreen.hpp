@@ -4,6 +4,6 @@
 #include "screens.hpp"
 #include "bfsScreenElements.hpp"
 
-Screen displayBfsScreen(sf::RenderWindow &window, const sf::Font &font, VisualGraph &vgraph, sf::RectangleShape &rectRing);
+Screen displayBfsScreen(sf::RenderWindow &window, const sf::Font &font, VisualGraph vgraph, sf::RectangleShape &rectRing);
 
 #endif

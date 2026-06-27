@@ -42,6 +42,7 @@ class VisualGraph
 
                 // Setters
                 bool setNodePosition(int key, sf::Vector2f position);
+                bool setNodeVisited(int key);
 };
 
 

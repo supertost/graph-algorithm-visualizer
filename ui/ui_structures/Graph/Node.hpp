@@ -44,6 +44,7 @@ class Node
                 // Setters
                 void setStyle(const NodeStyle &newStyle);
                 void setPosition(sf::Vector2f position);
+                void setActive(const NodeStyle &newStyle);
 };
 
 

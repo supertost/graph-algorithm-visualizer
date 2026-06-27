@@ -265,6 +265,26 @@ void updateSettingsLayout(sf::RenderWindow &window, SettingsUIElements &ui)
 
 void updateBfsLayout(sf::RenderWindow &window, BfsUIElements &ui)
 {
-        (void)window;
-        (void)ui;
+        sf::Vector2u windowSize = window.getSize();
+
+        float windowWidth = static_cast<float>(windowSize.x);
+        float windowHeight = static_cast<float>(windowSize.y);
+
+        sf::Vector2f defaultButtonSize(windowWidth * 0.10f, windowHeight * 0.10f);
+
+        float uiViewHeight = windowHeight * 0.2;
+
+        sf::Vector2f playpauseButtonPosition(
+                windowWidth / 2.0f, 
+                uiViewHeight / 2.0f
+        );
+        ui.playpause.adjustScaling(
+                defaultButtonSize,
+                playpauseButtonPosition,
+                updateTextScale(
+                        window,
+                        ui.playpause.getBaseTextPunto()
+                )
+        );
+        ui.playpause.setOriginCenter();
 }

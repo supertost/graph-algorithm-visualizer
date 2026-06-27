@@ -20,10 +20,13 @@ struct BfsUIElements
 
         Button exitButton;
 
+        Textbox startNodeBox;
+        Textbox destNodeBox;
+
         BfsUIElements(const sf::Font &font)
                 :
                 playpause(
-                        "Play",
+                        "Start",
                         sf::Vector2f(0.0f, 0.0f),
                         sf::Vector2f(0.0f, 0.0f),
                         font,
@@ -45,6 +48,20 @@ struct BfsUIElements
                         font,
                         compactButton,
                         hoverCompactButton
+                ),
+                startNodeBox(
+                        sf::Vector2f(0.0f, 0.0f),
+                        sf::Vector2f(3.0f, 3.0f),
+                        font,
+                        "Start Node",
+                        defaultTextbox
+                ),
+                destNodeBox(
+                        sf::Vector2f(0.0f, 0.0f),
+                        sf::Vector2f(3.0f, 3.0f),
+                        font,
+                        "Destination Node",
+                        defaultTextbox
                 )
         {
                 playpause.setOriginCenter();
@@ -54,8 +71,22 @@ struct BfsUIElements
         void drawUI(sf::RenderWindow &window)
         {
                 playpause.drawButton(window);
+                startNodeBox.drawTextbox(window);
+                destNodeBox.drawTextbox(window);
+        }
+
+        bool hoverCheck(sf::Vector2f mousePosition)
+        {
+                bool playpauseHover = playpause.hoverState(mousePosition);
+
+                if (playpauseHover)
+                        return true;
+
+                return false;
         }
 };
+
+// Play Pause ikonu için sfml şekilleri ile struct ile bir şeyler yapabilirim
 
 
 #endif

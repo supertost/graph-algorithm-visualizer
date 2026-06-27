@@ -159,3 +159,13 @@ bool VisualGraph::setNodePosition(int key, sf::Vector2f position)
 
         return false;
 }
+
+bool VisualGraph::setNodeVisited(int key)
+{
+        if (displayNodes.find(key) != displayNodes.end()) {
+                displayNodes.at(key).setActive(defaultStyle);
+                return true;
+        }
+
+        return false;
+}
