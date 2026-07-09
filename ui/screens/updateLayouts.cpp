@@ -270,21 +270,56 @@ void updateBfsLayout(sf::RenderWindow &window, BfsUIElements &ui)
         float windowWidth = static_cast<float>(windowSize.x);
         float windowHeight = static_cast<float>(windowSize.y);
 
-        sf::Vector2f defaultButtonSize(windowWidth * 0.10f, windowHeight * 0.10f);
-
+        
         float uiViewHeight = windowHeight * 0.2;
+        
+        // UI Size
+        sf::Vector2f defaultButtonSize(windowWidth * 0.10f, windowHeight * 0.10f);
+        sf::Vector2f defaultTextBoxSize(windowWidth * 0.15f, windowHeight * 0.10f);
 
-        sf::Vector2f playpauseButtonPosition(
+        // UI Positions
+        sf::Vector2f runButtonButtonPosition(
                 windowWidth / 2.0f, 
                 uiViewHeight / 2.0f
         );
-        ui.playpause.adjustScaling(
+        sf::Vector2f skipOneButtonPosition(
+                windowWidth / 2.0f + defaultButtonSize.x + 10.0f, 
+                uiViewHeight / 2.0f
+        );
+        sf::Vector2f startNodeBoxPosition(
+                windowWidth * 0.1f,
+                uiViewHeight / 2.0f
+        );
+
+        // Apple to UI parts
+        ui.runButton.adjustScaling(
                 defaultButtonSize,
-                playpauseButtonPosition,
+                runButtonButtonPosition,
                 updateTextScale(
                         window,
-                        ui.playpause.getBaseTextPunto()
+                        ui.runButton.getBaseTextPunto()
                 )
         );
-        ui.playpause.setOriginCenter();
+        ui.runButton.setOriginCenter();
+
+        ui.skipOneButton.adjustScaling(
+                defaultButtonSize,
+                skipOneButtonPosition,
+                updateTextScale(
+                        window,
+                        ui.runButton.getBaseTextPunto()
+                )
+        );
+        ui.skipOneButton.setOriginCenter();
+
+
+        ui.startNodeBox.adjustScaling(
+                defaultTextBoxSize,
+                startNodeBoxPosition,
+                updateTextScale(
+                        window,
+                        ui.startNodeBox.getBaseTextPunto()
+                )
+        );
+        ui.startNodeBox.setOriginCenter();
 }

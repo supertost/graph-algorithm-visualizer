@@ -1,6 +1,8 @@
 #include "bfsScreen.hpp"
 #include "../vgraph_algorithms/bfs/vbfs.hpp"
 
+#include <iostream>
+
 static void centerCamera(sf::View &graphView, sf::Vector2f graphViewSize, VisualGraph &vgraph)
 {
         std::array<float, 4> bounds = vgraph.getBounds();
@@ -56,7 +58,14 @@ void updateBfsViews(sf::RenderWindow &window, BfsViews &views, VisualGraph &vgra
         //views.borderView.setCenter(graphViewSize.x / 2.0f, graphViewSize.y / 2.0f);
 }
 
-void mouseButtonEvent(sf::Event &event, sf::RenderWindow &window, VisualGraph &vgraph, BfsViews &views, BfsUIElements &ui)
+void mouseButtonEvent(
+                sf::Event &event,
+                sf::RenderWindow &window,
+                VisualGraph &vgraph,
+                BfsViews &views,
+                BfsUIElements &ui,
+                BfsStuffTest &bfsgraph
+        )
 {
         switch (event.mouseButton.button) {
 
@@ -64,12 +73,39 @@ void mouseButtonEvent(sf::Event &event, sf::RenderWindow &window, VisualGraph &v
                 sf::Vector2i mousePixel(event.mouseButton.x, event.mouseButton.y);
                 sf::Vector2f mousePositionClickForUI = window.mapPixelToCoords(mousePixel, views.uiView);
 
-                if (ui.playpause.isClicked(mousePositionClickForUI)) {
-                        std::vector<int> traversal = bfs(vgraph, 21);
+                if (ui.runButton.isClicked(mousePositionClickForUI)) {  
+                        try {
+                                int startNode = std::stoi(ui.startNodeBox.getTextContent());
+                                std::vector<int> traversal = bfs(vgraph, startNode);
 
-                        for (int node : traversal) {
-                                vgraph.setNodeVisited(node);
+                                for (int node : traversal) {
+                                        vgraph.setNodeVisited(node);
+                                }
                         }
+                        catch(const std::exception& e) {
+                                std::cout << "Invalid node number\n";
+                        }
+                }
+
+                if (ui.skipOneButton.isClicked(mousePositionClickForUI)) {
+                        if (bfsgraph.firstIteration) {
+                                try {
+                                        int startNode = std::stoi(ui.startNodeBox.getTextContent());
+                                        bfsgraph.lastNode = startNode;
+                                        bfsgraph.firstIteration = false;
+
+                                        std::cout << "Running first iteration, node to start is " << startNode << "\n";
+                                        initialSetup(bfsgraph);
+                                }
+                                catch(const std::exception& e) {
+                                        std::cout << "Invalid node number\n";
+                                }
+
+                        }
+
+                        runOneIteration(bfsgraph, vgraph);
+                        
+                        vgraph.setNodeVisited(bfsgraph.lastNode);
                 }
 
                 break;
@@ -87,6 +123,9 @@ Screen displayBfsScreen(sf::RenderWindow &window, const sf::Font &font, VisualGr
         BfsUIElements ui(font);
 
         BfsViews views;
+
+        BfsStuffTest bfsgraph;
+        bfsgraph.firstIteration = true;
 
         updateBfsViews(window, views, vgraph);
         updateBfsLayout(window, ui);
@@ -118,12 +157,14 @@ Screen displayBfsScreen(sf::RenderWindow &window, const sf::Font &font, VisualGr
                                 break;
 
                         case sf::Event::MouseButtonPressed:
-                                mouseButtonEvent(event, window, vgraph, views, ui);
+                                mouseButtonEvent(event, window, vgraph, views, ui, bfsgraph);
                                 break;
 
                         default:
-                        break;
+                                break;
                         }
+
+                        ui.startNodeBox.handleEvent(event, window, views.uiView);
                 }
 
                 sf::Vector2i mousePixel = sf::Mouse::getPosition(window);

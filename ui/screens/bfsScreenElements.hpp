@@ -12,8 +12,9 @@ struct BfsViews
 
 struct BfsUIElements
 {
-        Button playpause;
-        Button skipOneIteration;
+        Button runButton;
+        Button skipOneButton;
+        Button showTraversalButton;
         Button stepForward;
         Button stepBack;
         Button stepBackOneIteration;
@@ -25,16 +26,24 @@ struct BfsUIElements
 
         BfsUIElements(const sf::Font &font)
                 :
-                playpause(
-                        "Start",
+                runButton(
+                        "Run",
                         sf::Vector2f(0.0f, 0.0f),
                         sf::Vector2f(0.0f, 0.0f),
                         font,
                         defaultButton,
                         hoverDefaultButton
                 ),
-                skipOneIteration(
+                skipOneButton(
                         "Skip",
+                        sf::Vector2f(0.0f, 0.0f),
+                        sf::Vector2f(0.0f, 0.0f),
+                        font,
+                        defaultButton,
+                        hoverDefaultButton
+                ),
+                showTraversalButton(
+                        "Traversal",
                         sf::Vector2f(0.0f, 0.0f),
                         sf::Vector2f(0.0f, 0.0f),
                         font,
@@ -64,26 +73,38 @@ struct BfsUIElements
                         defaultTextbox
                 )
         {
-                playpause.setOriginCenter();
-                skipOneIteration.setOriginCenter();
+                runButton.setOriginCenter();
+                skipOneButton.setOriginCenter();
         }
 
         void drawUI(sf::RenderWindow &window)
         {
-                playpause.drawButton(window);
+                runButton.drawButton(window);
+                skipOneButton.drawButton(window);
+
                 startNodeBox.drawTextbox(window);
-                destNodeBox.drawTextbox(window);
         }
 
         bool hoverCheck(sf::Vector2f mousePosition)
         {
-                bool playpauseHover = playpause.hoverState(mousePosition);
+                bool runButtonHover = runButton.hoverState(mousePosition);
+                bool skipOneButtonHover = skipOneButton.hoverState(mousePosition);
 
-                if (playpauseHover)
+                if (runButtonHover || skipOneButtonHover)
                         return true;
 
                 return false;
         }
+};
+
+struct BfsPopUps
+{
+        PopUp traversal;
+
+        /*BfsPopUps(const sf::Font &font, sf::RenderWindow &window)
+        {
+
+        }*/
 };
 
 // Play Pause ikonu için sfml şekilleri ile struct ile bir şeyler yapabilirim
