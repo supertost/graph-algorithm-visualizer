@@ -15,6 +15,8 @@ struct BfsStuffTest
         std::queue<int> queue;
         int lastNode;
         bool firstIteration;
+        bool play;
+        bool quit;
 };
 
 Screen displayBfsScreen(sf::RenderWindow &window, const sf::Font &font, VisualGraph vgraph, sf::RectangleShape &rectRing);

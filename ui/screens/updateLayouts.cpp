@@ -275,15 +275,20 @@ void updateBfsLayout(sf::RenderWindow &window, BfsUIElements &ui)
         
         // UI Size
         sf::Vector2f defaultButtonSize(windowWidth * 0.10f, windowHeight * 0.10f);
+        sf::Vector2f wideButtonSize(windowWidth * 0.15f, windowHeight * 0.10f);
         sf::Vector2f defaultTextBoxSize(windowWidth * 0.15f, windowHeight * 0.10f);
 
         // UI Positions
-        sf::Vector2f runButtonButtonPosition(
+        sf::Vector2f playPauseButtonPosition(
                 windowWidth / 2.0f, 
                 uiViewHeight / 2.0f
         );
+        sf::Vector2f runButtonButtonPosition(
+                windowWidth / 2.0f - wideButtonSize.x - 10.0f, 
+                uiViewHeight / 2.0f
+        );
         sf::Vector2f skipOneButtonPosition(
-                windowWidth / 2.0f + defaultButtonSize.x + 10.0f, 
+                windowWidth / 2.0f + wideButtonSize.x + 10.0f, 
                 uiViewHeight / 2.0f
         );
         sf::Vector2f startNodeBoxPosition(
@@ -292,6 +297,16 @@ void updateBfsLayout(sf::RenderWindow &window, BfsUIElements &ui)
         );
 
         // Apple to UI parts
+        ui.playPauseButton.adjustScaling(
+                wideButtonSize,
+                playPauseButtonPosition,
+                updateTextScale(
+                        window,
+                        ui.playPauseButton.getBaseTextPunto()
+                )
+        );
+        ui.playPauseButton.setOriginCenter();
+
         ui.runButton.adjustScaling(
                 defaultButtonSize,
                 runButtonButtonPosition,

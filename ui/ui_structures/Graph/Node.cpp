@@ -73,6 +73,10 @@ sf::FloatRect Node::getGlobalBounds() const
         return shape.getGlobalBounds();
 }
 
+bool Node::getActive()
+{
+        return active;
+}
 
 // Setters
 

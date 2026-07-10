@@ -1,6 +1,8 @@
 #include "vbfs.hpp"
 
 #include <iostream>
+#include <chrono>
+#include <thread>
 
 // Only for test
 std::vector<int> bfs(const VisualGraph &vgraph, const int startNode)
@@ -35,6 +37,16 @@ void initialSetup(BfsStuffTest &bfsgraph)
 {
         bfsgraph.queue.push(bfsgraph.lastNode);
         bfsgraph.visited.insert(bfsgraph.lastNode);
+}
+
+void runWithWait(BfsStuffTest &bfsgraph, const VisualGraph &vgraph)
+{
+        while(!bfsgraph.quit) {
+                if (bfsgraph.play) {
+                        runOneIteration(bfsgraph, vgraph);
+                        std::this_thread::sleep_for(std::chrono::milliseconds(500));
+                }
+        }
 }
 
 void runOneIteration(BfsStuffTest &bfsgraph, const VisualGraph &vgraph)

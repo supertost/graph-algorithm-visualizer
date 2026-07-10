@@ -146,6 +146,14 @@ const std::array<float, 4>  VisualGraph::getBounds() const {
         return {lowestX, highestX, lowestY, highestY};
 }
 
+bool VisualGraph::getNodeVisited(int node)
+{
+        if (displayNodes.find(node) != displayNodes.end())
+                return displayNodes.at(node).getActive();
+
+        return false;
+}
+
 // Setters
 
 // Returns true if node found and a position is set, false if no node found in graph.

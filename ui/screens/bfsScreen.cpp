@@ -2,6 +2,7 @@
 #include "../vgraph_algorithms/bfs/vbfs.hpp"
 
 #include <iostream>
+#include <thread>
 
 static void centerCamera(sf::View &graphView, sf::Vector2f graphViewSize, VisualGraph &vgraph)
 {
@@ -108,6 +109,33 @@ void mouseButtonEvent(
                         vgraph.setNodeVisited(bfsgraph.lastNode);
                 }
 
+                if (ui.playPauseButton.isClicked(mousePositionClickForUI)) {
+                        if (bfsgraph.firstIteration) {
+                                try {
+                                        int startNode = std::stoi(ui.startNodeBox.getTextContent());
+                                        bfsgraph.lastNode = startNode;
+                                        bfsgraph.firstIteration = false;
+                                        bfsgraph.play = true;
+
+                                        ui.playPauseButton.setText("Pause");
+
+                                        std::cout << "Running first iteration, node to start is " << startNode << "\n";
+                                        initialSetup(bfsgraph);
+                                }
+                                catch(const std::exception& e) {
+                                        std::cout << "Invalid node number\n";
+                                }
+                        }
+                        else {
+                                bfsgraph.play = !bfsgraph.play;
+
+                                if(bfsgraph.play)
+                                        ui.playPauseButton.setText("Pause");
+                                else
+                                        ui.playPauseButton.setText("Play");
+                        }
+                }
+
                 break;
         }           
                         
@@ -126,10 +154,14 @@ Screen displayBfsScreen(sf::RenderWindow &window, const sf::Font &font, VisualGr
 
         BfsStuffTest bfsgraph;
         bfsgraph.firstIteration = true;
+        bfsgraph.play = false;
+        bfsgraph.quit = false;
 
         updateBfsViews(window, views, vgraph);
         updateBfsLayout(window, ui);
         updateBorderRing(window, rectRing);
+
+        std::thread t1(runWithWait, std::ref(bfsgraph), std::cref(vgraph));
     
         while (window.isOpen()) {
                 sf::Event event;
@@ -138,6 +170,8 @@ Screen displayBfsScreen(sf::RenderWindow &window, const sf::Font &font, VisualGr
                         switch (event.type) {
 
                         case sf::Event::Closed:
+                                bfsgraph.quit = true;
+                                t1.join();
                                 window.close();
                                 return Screen::Exit;
                                 break;
@@ -151,8 +185,11 @@ Screen displayBfsScreen(sf::RenderWindow &window, const sf::Font &font, VisualGr
                         }
 
                         case sf::Event::KeyPressed:
-                                if (event.key.code == sf::Keyboard::Escape)
+                                if (event.key.code == sf::Keyboard::Escape) {
+                                        bfsgraph.quit = true;
+                                        t1.join();
                                         return Screen::Menu;
+                                }
 
                                 break;
 
@@ -166,6 +203,9 @@ Screen displayBfsScreen(sf::RenderWindow &window, const sf::Font &font, VisualGr
 
                         ui.startNodeBox.handleEvent(event, window, views.uiView);
                 }
+
+                if (bfsgraph.play && !vgraph.getNodeVisited(bfsgraph.lastNode))
+                        vgraph.setNodeVisited(bfsgraph.lastNode);
 
                 sf::Vector2i mousePixel = sf::Mouse::getPosition(window);
                 sf::Vector2f mousePosition = window.mapPixelToCoords(mousePixel, views.uiView);
@@ -188,5 +228,7 @@ Screen displayBfsScreen(sf::RenderWindow &window, const sf::Font &font, VisualGr
                 window.display();
         }
 
-    return Screen::Menu;
+        bfsgraph.quit = true;
+        t1.join();
+        return Screen::Menu;
 }

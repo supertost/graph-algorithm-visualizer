@@ -13,6 +13,7 @@ struct BfsViews
 struct BfsUIElements
 {
         Button runButton;
+        Button playPauseButton;
         Button skipOneButton;
         Button showTraversalButton;
         Button stepForward;
@@ -28,6 +29,14 @@ struct BfsUIElements
                 :
                 runButton(
                         "Run",
+                        sf::Vector2f(0.0f, 0.0f),
+                        sf::Vector2f(0.0f, 0.0f),
+                        font,
+                        defaultButton,
+                        hoverDefaultButton
+                ),
+                playPauseButton(
+                        "Play",
                         sf::Vector2f(0.0f, 0.0f),
                         sf::Vector2f(0.0f, 0.0f),
                         font,
@@ -80,6 +89,7 @@ struct BfsUIElements
         void drawUI(sf::RenderWindow &window)
         {
                 runButton.drawButton(window);
+                playPauseButton.drawButton(window);
                 skipOneButton.drawButton(window);
 
                 startNodeBox.drawTextbox(window);
@@ -89,8 +99,12 @@ struct BfsUIElements
         {
                 bool runButtonHover = runButton.hoverState(mousePosition);
                 bool skipOneButtonHover = skipOneButton.hoverState(mousePosition);
+                bool playPauseButtonHover = playPauseButton.hoverState(mousePosition);
 
-                if (runButtonHover || skipOneButtonHover)
+                if (runButtonHover 
+                        || skipOneButtonHover
+                        || playPauseButtonHover       
+                )
                         return true;
 
                 return false;

@@ -9,6 +9,7 @@
 
 std::vector<int> bfs(const VisualGraph &vgraph, const int startNode);
 void initialSetup(BfsStuffTest &bfsgraph);
+void runWithWait(BfsStuffTest &bfsgraph, const VisualGraph &vgraph);
 void runOneIteration(BfsStuffTest &bfsgraph, const VisualGraph &vgraph);
 
 #endif

@@ -40,6 +40,7 @@ class Node
                 // Getters
                 sf::Vector2f getPosition() const;
                 sf::FloatRect getGlobalBounds() const;
+                bool getActive();
                 
                 // Setters
                 void setStyle(const NodeStyle &newStyle);

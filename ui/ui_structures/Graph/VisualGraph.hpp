@@ -39,6 +39,7 @@ class VisualGraph
                 const std::map<int, Node> &getNodesMap() const;
                 const std::map<int, std::vector<int>> &getEdgesMap() const;
                 const std::array<float, 4> getBounds() const;
+                bool getNodeVisited(int node);
 
                 // Setters
                 bool setNodePosition(int key, sf::Vector2f position);
