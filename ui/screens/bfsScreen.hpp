@@ -17,6 +17,7 @@ struct BfsStuffTest
         bool firstIteration;
         bool play;
         bool quit;
+        float waitSeconds;
 };
 
 Screen displayBfsScreen(sf::RenderWindow &window, const sf::Font &font, VisualGraph vgraph, sf::RectangleShape &rectRing);

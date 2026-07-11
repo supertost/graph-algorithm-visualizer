@@ -44,7 +44,18 @@ void runWithWait(BfsStuffTest &bfsgraph, const VisualGraph &vgraph)
         while(!bfsgraph.quit) {
                 if (bfsgraph.play) {
                         runOneIteration(bfsgraph, vgraph);
-                        std::this_thread::sleep_for(std::chrono::milliseconds(500));
+                        
+                        int count = 0;
+                        int seconds = bfsgraph.waitSeconds * 1000;
+                        while (count < seconds) {
+                                if (seconds != bfsgraph.waitSeconds * 1000)
+                                        seconds = bfsgraph.waitSeconds * 1000;
+
+                                std::this_thread::sleep_for(std::chrono::milliseconds(1));
+                                if (bfsgraph.quit || !bfsgraph.play)
+                                        break;
+                                count++;
+                        }
                 }
         }
 }

@@ -136,6 +136,15 @@ void mouseButtonEvent(
                         }
                 }
 
+                if (ui.changeSecondsButton.isClicked(mousePositionClickForUI)) {
+                        try {
+                                bfsgraph.waitSeconds = std::stof(ui.waitSecondBox.getTextContent());
+                        }
+                        catch(const std::exception& e) {
+                                std::cout << "Invalid value for seconds\n";
+                        }
+                }
+
                 break;
         }           
                         
@@ -156,6 +165,7 @@ Screen displayBfsScreen(sf::RenderWindow &window, const sf::Font &font, VisualGr
         bfsgraph.firstIteration = true;
         bfsgraph.play = false;
         bfsgraph.quit = false;
+        bfsgraph.waitSeconds = 1;
 
         updateBfsViews(window, views, vgraph);
         updateBfsLayout(window, ui);
@@ -202,6 +212,7 @@ Screen displayBfsScreen(sf::RenderWindow &window, const sf::Font &font, VisualGr
                         }
 
                         ui.startNodeBox.handleEvent(event, window, views.uiView);
+                        ui.waitSecondBox.handleEvent(event, window, views.uiView);
                 }
 
                 if (bfsgraph.play && !vgraph.getNodeVisited(bfsgraph.lastNode))

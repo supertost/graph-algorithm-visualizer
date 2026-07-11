@@ -19,11 +19,13 @@ struct BfsUIElements
         Button stepForward;
         Button stepBack;
         Button stepBackOneIteration;
+        Button changeSecondsButton;
 
         Button exitButton;
 
         Textbox startNodeBox;
         Textbox destNodeBox;
+        Textbox waitSecondBox;
 
         BfsUIElements(const sf::Font &font)
                 :
@@ -59,6 +61,14 @@ struct BfsUIElements
                         defaultButton,
                         hoverDefaultButton
                 ),
+                changeSecondsButton(
+                        "Change Wait Seconds",
+                        sf::Vector2f(0.0f, 0.0f),
+                        sf::Vector2f(0.0f, 0.0f),
+                        font,
+                        compactButton,
+                        hoverCompactButton
+                ),
                 exitButton(
                         "<- Menu",
                         sf::Vector2f(0.0f, 0.0f),
@@ -80,6 +90,13 @@ struct BfsUIElements
                         font,
                         "Destination Node",
                         defaultTextbox
+                ),
+                waitSecondBox(
+                        sf::Vector2f(0.0f, 0.0f),
+                        sf::Vector2f(3.0f, 3.0f),
+                        font,
+                        "Seconds",
+                        defaultTextbox
                 )
         {
                 runButton.setOriginCenter();
@@ -91,8 +108,10 @@ struct BfsUIElements
                 runButton.drawButton(window);
                 playPauseButton.drawButton(window);
                 skipOneButton.drawButton(window);
+                changeSecondsButton.drawButton(window);
 
                 startNodeBox.drawTextbox(window);
+                waitSecondBox.drawTextbox(window);
         }
 
         bool hoverCheck(sf::Vector2f mousePosition)
@@ -100,10 +119,12 @@ struct BfsUIElements
                 bool runButtonHover = runButton.hoverState(mousePosition);
                 bool skipOneButtonHover = skipOneButton.hoverState(mousePosition);
                 bool playPauseButtonHover = playPauseButton.hoverState(mousePosition);
+                bool changeSecondsHover = changeSecondsButton.hoverState(mousePosition);
 
                 if (runButtonHover 
                         || skipOneButtonHover
-                        || playPauseButtonHover       
+                        || playPauseButtonHover
+                        || changeSecondsHover
                 )
                         return true;
 

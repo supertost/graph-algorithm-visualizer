@@ -276,6 +276,7 @@ void updateBfsLayout(sf::RenderWindow &window, BfsUIElements &ui)
         // UI Size
         sf::Vector2f defaultButtonSize(windowWidth * 0.10f, windowHeight * 0.10f);
         sf::Vector2f wideButtonSize(windowWidth * 0.15f, windowHeight * 0.10f);
+        sf::Vector2f compactWideButtonSize(windowWidth * 0.15f, (windowHeight * 0.10f) / 2 - 5.0f);
         sf::Vector2f defaultTextBoxSize(windowWidth * 0.15f, windowHeight * 0.10f);
 
         // UI Positions
@@ -294,6 +295,14 @@ void updateBfsLayout(sf::RenderWindow &window, BfsUIElements &ui)
         sf::Vector2f startNodeBoxPosition(
                 windowWidth * 0.1f,
                 uiViewHeight / 2.0f
+        );
+        sf::Vector2f changeSecondsButtonPosition(
+                windowWidth / 2.0f + (wideButtonSize.x  * 2.0f) + 10.0f,
+                uiViewHeight / 2.0f + (compactWideButtonSize.y / 2) + 5.0f
+        );
+        sf::Vector2f waitSecondsBoxPosition(
+                windowWidth / 2.0f + (wideButtonSize.x  * 2.0f) + 10.0f,
+                uiViewHeight / 2.0f - (compactWideButtonSize.y / 2) - 5.0f
         );
 
         // Apple to UI parts
@@ -327,6 +336,16 @@ void updateBfsLayout(sf::RenderWindow &window, BfsUIElements &ui)
         );
         ui.skipOneButton.setOriginCenter();
 
+        ui.changeSecondsButton.adjustScaling(
+                compactWideButtonSize,
+                changeSecondsButtonPosition,
+                updateTextScale(
+                        window,
+                        ui.changeSecondsButton.getBaseTextPunto()
+                )
+        );
+        ui.changeSecondsButton.setOriginCenter();
+
 
         ui.startNodeBox.adjustScaling(
                 defaultTextBoxSize,
@@ -337,4 +356,14 @@ void updateBfsLayout(sf::RenderWindow &window, BfsUIElements &ui)
                 )
         );
         ui.startNodeBox.setOriginCenter();
+
+        ui.waitSecondBox.adjustScaling(
+                compactWideButtonSize,
+                waitSecondsBoxPosition,
+                updateTextScale(
+                        window,
+                        ui.waitSecondBox.getBaseTextPunto()
+                )
+        );
+        ui.waitSecondBox.setOriginCenter();
 }
