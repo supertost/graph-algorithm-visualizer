@@ -13,6 +13,9 @@ void updateGraphEditorLayout(sf::RenderWindow &window, EditorUIElements &ui)
         sf::Vector2f compactButtonSize(uiWidth * 0.8f, windowHeight * 0.06f);
         sf::Vector2f defaultButtonSize(uiWidth * 0.8f, windowHeight * 0.1f);
 
+        float halfButtonDiff = uiWidth * 0.02f;
+        sf::Vector2f defaultButtonHalfSize((uiWidth * 0.8f) / 2.0f - halfButtonDiff, windowHeight * 0.1f);
+
         
         sf::Vector2f exitButtonPosition(uiWidth / 2.0f, windowHeight * 0.06f);
         ui.exitButton.adjustScaling(
@@ -37,9 +40,9 @@ void updateGraphEditorLayout(sf::RenderWindow &window, EditorUIElements &ui)
         );
         ui.nodeBox.setOriginCenter();
 
-        sf::Vector2f addNodeButtonPosition(uiWidth / 2.0f, windowHeight * 0.915f);
+        sf::Vector2f addNodeButtonPosition(((uiWidth / 2.0f) - (defaultButtonHalfSize.x / 2.0f) - halfButtonDiff), windowHeight * 0.915f);
         ui.addNodeButton.adjustScaling(
-                defaultButtonSize,
+                defaultButtonHalfSize,
                 addNodeButtonPosition,
                 updateTextScale(
                         window,
@@ -48,6 +51,16 @@ void updateGraphEditorLayout(sf::RenderWindow &window, EditorUIElements &ui)
         );
         ui.addNodeButton.setOriginCenter();
 
+        sf::Vector2f deleteNodeButtonPosition(((uiWidth / 2.0f) + (defaultButtonHalfSize.x / 2.0f) + halfButtonDiff), windowHeight * 0.915f);
+        ui.deleteNodeButton.adjustScaling(
+                defaultButtonHalfSize,
+                deleteNodeButtonPosition,
+                updateTextScale(
+                        window,
+                        ui.deleteNodeButton.getBaseTextPunto()
+                )
+        );
+        ui.deleteNodeButton.setOriginCenter();
 
         sf::Vector2f edgeBoxPosition(uiWidth / 2.0f, windowHeight * 0.55f);
         ui.edgeBox.adjustScaling(
@@ -60,9 +73,9 @@ void updateGraphEditorLayout(sf::RenderWindow &window, EditorUIElements &ui)
         );
         ui.edgeBox.setOriginCenter();
 
-        sf::Vector2f addEdgeButtonPosition(uiWidth / 2.0f, windowHeight * 0.665f);
+        sf::Vector2f addEdgeButtonPosition(((uiWidth / 2.0f) - (defaultButtonHalfSize.x / 2.0f) - halfButtonDiff), windowHeight * 0.665f);
         ui.addEdgeButton.adjustScaling(
-                defaultButtonSize,
+                defaultButtonHalfSize,
                 addEdgeButtonPosition,
                 updateTextScale(
                         window,
@@ -70,6 +83,18 @@ void updateGraphEditorLayout(sf::RenderWindow &window, EditorUIElements &ui)
                 )
         );
         ui.addEdgeButton.setOriginCenter();
+
+
+        sf::Vector2f deleteEdgeButtonPosition(((uiWidth / 2.0f) + (defaultButtonHalfSize.x / 2.0f) + halfButtonDiff), windowHeight * 0.665f);
+        ui.deleteEdgeButton.adjustScaling(
+                defaultButtonHalfSize,
+                deleteEdgeButtonPosition,
+                updateTextScale(
+                        window,
+                        ui.deleteEdgeButton.getBaseTextPunto()
+                )
+        );
+        ui.deleteEdgeButton.setOriginCenter();
 
         
         sf::Vector2f clearGraphButtonPosition(uiWidth / 2.0f, windowHeight * 0.15f);

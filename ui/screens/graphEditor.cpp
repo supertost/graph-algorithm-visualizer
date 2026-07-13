@@ -49,6 +49,29 @@ void addNodeAction(Textbox &nodeBox, VisualGraph &vgraph, bool &showNodeErrorPop
         }
 }
 
+bool deleteNodeAction(Textbox &nodeBox, VisualGraph &vgraph, bool &showNodeDelErrorPopUp)
+{
+        try {
+                int key = std::stoi(nodeBox.getTextContent());
+                std::cout << key << "\n";
+
+                if (vgraph.removeNode(key)) {
+                        std::cout << "Node " << key << " Removed\n";
+                        return true;
+                }
+                else {
+                        std::cout << "Node " << key << " cannot be removed, node not in graph\n";
+                        showNodeDelErrorPopUp = true;
+                        return false;
+                }
+        }
+        catch(const std::exception& e) {
+                std::cout << "Invalid Node Number\n";
+        }
+
+        return false;
+}
+
 void addEdgeAction(Textbox &edgeBox, VisualGraph &vgraph, bool &showEdgeErrorPopUp)
 {
         try {
@@ -66,6 +89,30 @@ void addEdgeAction(Textbox &edgeBox, VisualGraph &vgraph, bool &showEdgeErrorPop
                 }
                 else {
                         std::cout << "Invalid edge input\n";
+                }
+        }
+        catch(const std::exception& e) {
+                std::cout << "Invalid Edge input\n";
+        }
+}
+
+void deleteEdgeAction(Textbox &edgeBox, VisualGraph &vgraph, bool &showEdgeDelErrorPopUp)
+{
+        try {
+                std::string edge = edgeBox.getTextContent();
+                std::stringstream ss(edge);
+
+                int source;
+                int destination;
+
+                if (ss >> source >> destination) {
+                        if (!vgraph.removeEdge(source, destination)) {
+                                showEdgeDelErrorPopUp = true;
+                                std::cout << "Edge cannot be deleted, edge not in graph\n";
+                        }
+                }
+                else {
+                        std::cout << "Invalid Edge input\n";
                 }
         }
         catch(const std::exception& e) {
@@ -109,16 +156,26 @@ Screen mouseButtonEvent(
                 sf::Vector2f mousePositionClickForGraph = window.mapPixelToCoords(mousePixel, views.graphView);
                 sf::Vector2f mousePositionClickForBorder = window.mapPixelToCoords(mousePixel, views.borderView);
 
-                if (!(state.showEdgeErrorPopUp || state.showNodeErrorPopUp)) {
+                if (!(state.showEdgeErrorPopUp 
+                        || state.showNodeErrorPopUp 
+                        || state.showNodeDelErrorPopUp 
+                        || state.showNodeDelErrorPopUp 
+                        || state.showEdgeDelErrorPopUp)) {
                         if (ui.exitButton.isClicked(mousePositionClickForUI))
                                 return Screen::Menu;
                 
                         // Change this later on
                         else if (ui.addNodeButton.isClicked(mousePositionClickForUI))
                                 addNodeAction(ui.nodeBox, vgraph, state.showNodeErrorPopUp);
+
+                        else if (ui.deleteNodeButton.isClicked(mousePositionClickForUI))
+                                deleteNodeAction(ui.nodeBox, vgraph, state.showNodeDelErrorPopUp);
                 
                         else if (ui.addEdgeButton.isClicked(mousePositionClickForUI))
                                 addEdgeAction(ui.edgeBox, vgraph, state.showEdgeErrorPopUp);
+
+                        else if (ui.deleteEdgeButton.isClicked(mousePositionClickForUI))
+                                deleteEdgeAction(ui.edgeBox, vgraph, state.showEdgeDelErrorPopUp);
                 
                         else if (ui.clearGraphButton.isClicked(mousePositionClickForUI))
                                 vgraph.clearGraph();
@@ -181,18 +238,10 @@ Screen mouseButtonEvent(
                 }
 
                 else {
-                        if (state.showNodeErrorPopUp)
-                                if (popUps.nodeErrorPopUp.isDismissed(mousePositionClickForBorder))
-                                        state.showNodeErrorPopUp = false;
-
-                        if (state.showEdgeErrorPopUp)
-                                if (popUps.edgeErrorPopUp.isDismissed(mousePositionClickForBorder))
-                                        state.showEdgeErrorPopUp = false;
+                        popUps.isDismissed(state, mousePositionClickForBorder);
                 }
                 
-
                 break;
-
         }
 
         case sf::Mouse::Middle:
@@ -201,6 +250,20 @@ Screen mouseButtonEvent(
                 window.setMouseCursor(cursors.moveCursor);
 
                 break;
+
+        case sf::Mouse::Right: {
+                sf::Vector2i mousePixel(event.mouseButton.x, event.mouseButton.y);
+                sf::Vector2f mousePositionClickForGraph = window.mapPixelToCoords(mousePixel, views.graphView);
+
+                if (vgraph.isClicked(mousePositionClickForGraph, state.clickedNode)) {
+                        if (vgraph.removeNode(state.clickedNode))
+                                std::cout << "Node " << state.clickedNode << " Removed\n";
+                        else
+                                std::cout << "Node " << state.clickedNode << " Removed\n";
+                }
+
+                break;
+        }
                                 
         default:
                 break;
@@ -398,22 +461,7 @@ Screen displayGraphEditor(
         
                 window.setView(views.borderView);
                 sf::Vector2f mousePositionPopUp = window.mapPixelToCoords(mousePixel, views.borderView);
-
-                if (state.showNodeErrorPopUp) {
-                        if (popUps.nodeErrorPopUp.dismissHoverState(mousePositionPopUp)) {
-                                window.setMouseCursor(cursors.handCursor);
-                        }
-
-                        popUps.nodeErrorPopUp.drawPopUp(window);
-                }
-
-                if (state.showEdgeErrorPopUp) {
-                        if (popUps.edgeErrorPopUp.dismissHoverState(mousePositionPopUp)) {
-                                window.setMouseCursor(cursors.handCursor);
-                        }
-
-                        popUps.edgeErrorPopUp.drawPopUp(window);
-                }
+                popUps.drawPopUps(window, state, mousePositionPopUp, cursors);
 
                 window.draw(rectRing);
                 

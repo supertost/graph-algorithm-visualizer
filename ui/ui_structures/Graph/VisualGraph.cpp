@@ -56,6 +56,53 @@ bool VisualGraph::containsNode(int key) const
         return displayNodes.find(key) != displayNodes.end();
 }
 
+// Returns -1 if edge not found, returns index if edge found
+int VisualGraph::containsEdge(int source, int dest) const
+{
+        if (!(containsNode(source) || containsNode(dest)))
+                return -1;
+
+        if (edges.find(source) != edges.end()) {
+                const std::vector<int> &nodeEdges = edges.at(source);
+                for (size_t i = 0; i < nodeEdges.size(); i++)
+                        if (nodeEdges.at(i) == dest)
+                                return i;
+        }
+
+        return -1;
+}
+
+// Returns true if node removed, false if node not found
+bool VisualGraph::removeNode(int key)
+{
+        if (!containsNode(key))
+                return false;
+
+        displayNodes.erase(key);
+        edges.erase(key);
+
+        for (auto &[node, nodeEdges] : edges)
+                for (size_t i = 0; i < nodeEdges.size();)
+                        if (nodeEdges[i] == key)
+                                nodeEdges.erase(nodeEdges.begin() + i);
+                        else
+                                i++;
+
+        return true;
+}
+
+bool VisualGraph::removeEdge(int source, int dest)
+{
+        int result = containsEdge(source, dest);
+        if (result == -1)
+                return false;
+
+        std::vector<int> &nodeEdges = edges[source]; 
+        nodeEdges.erase(nodeEdges.begin() + result);
+
+        return true;
+}
+
 bool VisualGraph::isClicked(sf::Vector2f mousePosition, int &nodeClicked)
 {
         for (const std::pair<const int, Node> &node : displayNodes) {
