@@ -4,6 +4,22 @@
 #include "screens.hpp"
 #include "bfsScreenElements.hpp"
 
-Screen displaySettings(sf::RenderWindow &window, const sf::Font &font, sf::RectangleShape &rectRing);
+#include <vector>
+#include <unordered_set>
+#include <queue>
+
+struct BfsStuffTest
+{
+        std::vector<int> traversal;
+        std::unordered_set<int> visited;
+        std::queue<int> queue;
+        int lastNode;
+        bool firstIteration;
+        bool play;
+        bool quit;
+        float waitSeconds;
+};
+
+Screen displayBfsScreen(sf::RenderWindow &window, const sf::Font &font, VisualGraph vgraph, sf::RectangleShape &rectRing);
 
 #endif

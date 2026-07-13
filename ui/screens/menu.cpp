@@ -71,10 +71,13 @@ Screen displayMenu(
                                         );
 
                                         if (ui.graphButton.isClicked(mousePositionClick))
-                                        return Screen::Graph;
+                                                return Screen::Graph;
 
                                         if (ui.settingsButton.isClicked(mousePositionClick))
-                                        return Screen::Settings;
+                                                return Screen::Settings;
+
+                                        if (ui.bfsButton.isClicked(mousePositionClick))
+                                                return Screen::BFS;
                                 }
 
                                 break;

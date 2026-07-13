@@ -26,8 +26,12 @@ class VisualGraph
 
                 bool addNode(int key);
                 bool addEdge(int source, int dest);
-                
+
                 bool containsNode(int key) const;
+                int containsEdge(int source, int dest) const;
+                bool removeNode(int key);
+                bool removeEdge(int source, int dest);
+                
                 bool isClicked(sf::Vector2f mousePosition, int &nodeClicked);
                 void dragNode(sf::Vector2f mousePosition, int clickedNode);
                 
@@ -39,9 +43,11 @@ class VisualGraph
                 const std::map<int, Node> &getNodesMap() const;
                 const std::map<int, std::vector<int>> &getEdgesMap() const;
                 const std::array<float, 4> getBounds() const;
+                bool getNodeVisited(int node);
 
                 // Setters
                 bool setNodePosition(int key, sf::Vector2f position);
+                bool setNodeVisited(int key);
 };
 
 

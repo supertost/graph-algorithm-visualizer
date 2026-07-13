@@ -11,11 +11,30 @@ struct EditorViews
         sf::View borderView;
 };
 
+struct EditorState
+{
+        bool showNodeErrorPopUp = false;
+        bool showEdgeErrorPopUp = false;
+        bool showNodeDelErrorPopUp = false;
+        bool showEdgeDelErrorPopUp = false;
+
+        bool isPanningGraph = false;
+        sf::Vector2i lastPanPixel;
+
+        bool isNodeClicked = false;
+        int clickedNode = 0;
+
+        float currentZoom = 1.0f;
+        float targetZoom = 1.0f;
+};
+
 struct EditorUIElements
 {
         Button exitButton;
         Button addNodeButton;
+        Button deleteNodeButton;
         Button addEdgeButton;
+        Button deleteEdgeButton;
         Button clearGraphButton;
         Button loadGraphButton;
         Button saveGraphButton;
@@ -37,7 +56,15 @@ struct EditorUIElements
                         hoverCompactButton
                 ),
                 addNodeButton(
-                        "Add Node",
+                        "Add",
+                        sf::Vector2f(0.0f, 0.0f),
+                        sf::Vector2f(3.0f, 130.0f),
+                        font,
+                        defaultButton,
+                        hoverDefaultButton
+                ),
+                deleteNodeButton(
+                        "Del",
                         sf::Vector2f(0.0f, 0.0f),
                         sf::Vector2f(3.0f, 130.0f),
                         font,
@@ -45,7 +72,15 @@ struct EditorUIElements
                         hoverDefaultButton
                 ),
                 addEdgeButton(
-                        "Add Edge",
+                        "Add",
+                        sf::Vector2f(0.0f, 0.0f),
+                        sf::Vector2f(3.0f, 130.0f),
+                        font,
+                        defaultButton,
+                        hoverDefaultButton
+                ),
+                deleteEdgeButton(
+                        "Del",
                         sf::Vector2f(0.0f, 0.0f),
                         sf::Vector2f(3.0f, 130.0f),
                         font,
@@ -110,9 +145,11 @@ struct EditorUIElements
 
                 nodeBox.drawTextbox(window);
                 addNodeButton.drawButton(window);
+                deleteNodeButton.drawButton(window);
 
                 edgeBox.drawTextbox(window);
                 addEdgeButton.drawButton(window);
+                deleteEdgeButton.drawButton(window);
 
                 clearGraphButton.drawButton(window);
                 loadGraphButton.drawButton(window);
@@ -126,19 +163,23 @@ struct EditorUIElements
         {
                 bool exitButtonHover = exitButton.hoverState(mousePosition);
                 bool addNodeHover = addNodeButton.hoverState(mousePosition);
+                bool deleteNodeHover = deleteNodeButton.hoverState(mousePosition);
                 bool addEdgeHover = addEdgeButton.hoverState(mousePosition);
+                bool deleteEdgeHover = deleteEdgeButton.hoverState(mousePosition);
                 bool clearGraphHover = clearGraphButton.hoverState(mousePosition);
                 bool loadGraphHover = loadGraphButton.hoverState(mousePosition);
                 bool saveGraphHover = saveGraphButton.hoverState(mousePosition);
                 bool centerGraphHover = centerGraphButton.hoverState(mousePosition);
 
                 if (
-                        addNodeHover 
-                        || addEdgeHover 
-                        || exitButtonHover 
-                        || clearGraphHover 
-                        || loadGraphHover 
-                        || saveGraphHover 
+                        addNodeHover
+                        || deleteNodeHover
+                        || addEdgeHover
+                        || deleteEdgeHover
+                        || exitButtonHover
+                        || clearGraphHover
+                        || loadGraphHover
+                        || saveGraphHover
                         || centerGraphHover
                 ) {
                         return true;
@@ -153,12 +194,15 @@ struct EditorPopUps
         PopUp nodeErrorPopUp;
         PopUp edgeErrorPopUp;
 
+        PopUp nodeDelErrorPopUp;
+        PopUp edgeDelErrorPopUp;
+
         EditorPopUps(const sf::Font &font, sf::RenderWindow &window, sf::Vector2f size)
                 : 
                 nodeErrorPopUp(
                         "Cannot Add Node",
                         "The node you are trying to\n\nadd is already in the graph",
-                        "Okay",
+                        "OK",
                         font,
                         size,
                         popUpDefault,
@@ -167,7 +211,25 @@ struct EditorPopUps
                 edgeErrorPopUp(
                         "Cannot Add Edge",
                         "The edge you are trying to\n\nadd is already in the graph",
-                        "Okay",
+                        "OK",
+                        font,
+                        size,
+                        popUpDefault,
+                        window
+                ),
+                nodeDelErrorPopUp(
+                        "Cannot Delete Node",
+                        "The node you are trying to\n\ndelete is not in the graph",
+                        "OK",
+                        font,
+                        size,
+                        popUpDefault,
+                        window
+                ),
+                edgeDelErrorPopUp(
+                        "Cannot Delete Edge",
+                        "The edge you are trying to\n\ndelete is not in the graph",
+                        "OK",
                         font,
                         size,
                         popUpDefault,
@@ -176,21 +238,65 @@ struct EditorPopUps
         {
                 
         }
-};
 
-struct EditorState
-{
-        bool showNodeErrorPopUp = false;
-        bool showEdgeErrorPopUp = false;
+        void drawPopUps(
+                        sf::RenderWindow &window,
+                        EditorState &state,
+                        sf::Vector2f mousePositionPopUp,
+                        Cursors &cursors
+                )
+        {
+                if (state.showNodeErrorPopUp) {
+                        if (nodeErrorPopUp.dismissHoverState(mousePositionPopUp)) {
+                                window.setMouseCursor(cursors.handCursor);
+                        }
 
-        bool isPanningGraph = false;
-        sf::Vector2i lastPanPixel;
+                        nodeErrorPopUp.drawPopUp(window);
+                }
 
-        bool isNodeClicked = false;
-        int clickedNode = 0;
+                if (state.showNodeDelErrorPopUp) {
+                        if (nodeDelErrorPopUp.dismissHoverState(mousePositionPopUp)) {
+                                window.setMouseCursor(cursors.handCursor);
+                        }
 
-        float currentZoom = 1.0f;
-        float targetZoom = 1.0f;
+                        nodeDelErrorPopUp.drawPopUp(window);
+                }
+
+                if (state.showEdgeErrorPopUp) {
+                        if (edgeErrorPopUp.dismissHoverState(mousePositionPopUp)) {
+                                window.setMouseCursor(cursors.handCursor);
+                        }
+
+                        edgeErrorPopUp.drawPopUp(window);
+                }
+
+                if (state.showEdgeDelErrorPopUp) {
+                        if (edgeDelErrorPopUp.dismissHoverState(mousePositionPopUp)) {
+                                window.setMouseCursor(cursors.handCursor);
+                        }
+
+                        edgeDelErrorPopUp.drawPopUp(window);
+                }
+        }
+
+        void isDismissed(EditorState &state, sf::Vector2f mousePosition)
+        {
+                if (state.showNodeErrorPopUp)
+                        if (nodeErrorPopUp.isDismissed(mousePosition))
+                                state.showNodeErrorPopUp = false;
+
+                if (state.showEdgeErrorPopUp)
+                        if (edgeErrorPopUp.isDismissed(mousePosition))
+                                state.showEdgeErrorPopUp = false;
+
+                if (state.showNodeDelErrorPopUp)
+                        if (nodeDelErrorPopUp.isDismissed(mousePosition))
+                                state.showNodeDelErrorPopUp = false;
+                
+                if (state.showEdgeDelErrorPopUp)
+                        if (edgeDelErrorPopUp.isDismissed(mousePosition))
+                                state.showEdgeDelErrorPopUp = false;
+        }
 };
 
 #endif

@@ -13,6 +13,9 @@ void updateGraphEditorLayout(sf::RenderWindow &window, EditorUIElements &ui)
         sf::Vector2f compactButtonSize(uiWidth * 0.8f, windowHeight * 0.06f);
         sf::Vector2f defaultButtonSize(uiWidth * 0.8f, windowHeight * 0.1f);
 
+        float halfButtonDiff = uiWidth * 0.02f;
+        sf::Vector2f defaultButtonHalfSize((uiWidth * 0.8f) / 2.0f - halfButtonDiff, windowHeight * 0.1f);
+
         
         sf::Vector2f exitButtonPosition(uiWidth / 2.0f, windowHeight * 0.06f);
         ui.exitButton.adjustScaling(
@@ -37,9 +40,9 @@ void updateGraphEditorLayout(sf::RenderWindow &window, EditorUIElements &ui)
         );
         ui.nodeBox.setOriginCenter();
 
-        sf::Vector2f addNodeButtonPosition(uiWidth / 2.0f, windowHeight * 0.915f);
+        sf::Vector2f addNodeButtonPosition(((uiWidth / 2.0f) - (defaultButtonHalfSize.x / 2.0f) - halfButtonDiff), windowHeight * 0.915f);
         ui.addNodeButton.adjustScaling(
-                defaultButtonSize,
+                defaultButtonHalfSize,
                 addNodeButtonPosition,
                 updateTextScale(
                         window,
@@ -48,6 +51,16 @@ void updateGraphEditorLayout(sf::RenderWindow &window, EditorUIElements &ui)
         );
         ui.addNodeButton.setOriginCenter();
 
+        sf::Vector2f deleteNodeButtonPosition(((uiWidth / 2.0f) + (defaultButtonHalfSize.x / 2.0f) + halfButtonDiff), windowHeight * 0.915f);
+        ui.deleteNodeButton.adjustScaling(
+                defaultButtonHalfSize,
+                deleteNodeButtonPosition,
+                updateTextScale(
+                        window,
+                        ui.deleteNodeButton.getBaseTextPunto()
+                )
+        );
+        ui.deleteNodeButton.setOriginCenter();
 
         sf::Vector2f edgeBoxPosition(uiWidth / 2.0f, windowHeight * 0.55f);
         ui.edgeBox.adjustScaling(
@@ -60,9 +73,9 @@ void updateGraphEditorLayout(sf::RenderWindow &window, EditorUIElements &ui)
         );
         ui.edgeBox.setOriginCenter();
 
-        sf::Vector2f addEdgeButtonPosition(uiWidth / 2.0f, windowHeight * 0.665f);
+        sf::Vector2f addEdgeButtonPosition(((uiWidth / 2.0f) - (defaultButtonHalfSize.x / 2.0f) - halfButtonDiff), windowHeight * 0.665f);
         ui.addEdgeButton.adjustScaling(
-                defaultButtonSize,
+                defaultButtonHalfSize,
                 addEdgeButtonPosition,
                 updateTextScale(
                         window,
@@ -70,6 +83,18 @@ void updateGraphEditorLayout(sf::RenderWindow &window, EditorUIElements &ui)
                 )
         );
         ui.addEdgeButton.setOriginCenter();
+
+
+        sf::Vector2f deleteEdgeButtonPosition(((uiWidth / 2.0f) + (defaultButtonHalfSize.x / 2.0f) + halfButtonDiff), windowHeight * 0.665f);
+        ui.deleteEdgeButton.adjustScaling(
+                defaultButtonHalfSize,
+                deleteEdgeButtonPosition,
+                updateTextScale(
+                        window,
+                        ui.deleteEdgeButton.getBaseTextPunto()
+                )
+        );
+        ui.deleteEdgeButton.setOriginCenter();
 
         
         sf::Vector2f clearGraphButtonPosition(uiWidth / 2.0f, windowHeight * 0.15f);
@@ -265,6 +290,105 @@ void updateSettingsLayout(sf::RenderWindow &window, SettingsUIElements &ui)
 
 void updateBfsLayout(sf::RenderWindow &window, BfsUIElements &ui)
 {
-        (void)window;
-        (void)ui;
+        sf::Vector2u windowSize = window.getSize();
+
+        float windowWidth = static_cast<float>(windowSize.x);
+        float windowHeight = static_cast<float>(windowSize.y);
+
+        
+        float uiViewHeight = windowHeight * 0.2;
+        
+        // UI Size
+        sf::Vector2f defaultButtonSize(windowWidth * 0.10f, windowHeight * 0.10f);
+        sf::Vector2f wideButtonSize(windowWidth * 0.15f, windowHeight * 0.10f);
+        sf::Vector2f compactWideButtonSize(windowWidth * 0.15f, (windowHeight * 0.10f) / 2 - 5.0f);
+        sf::Vector2f defaultTextBoxSize(windowWidth * 0.15f, windowHeight * 0.10f);
+
+        // UI Positions
+        sf::Vector2f playPauseButtonPosition(
+                windowWidth / 2.0f, 
+                uiViewHeight / 2.0f
+        );
+        sf::Vector2f runButtonButtonPosition(
+                windowWidth / 2.0f - wideButtonSize.x - 10.0f, 
+                uiViewHeight / 2.0f
+        );
+        sf::Vector2f skipOneButtonPosition(
+                windowWidth / 2.0f + wideButtonSize.x + 10.0f, 
+                uiViewHeight / 2.0f
+        );
+        sf::Vector2f startNodeBoxPosition(
+                windowWidth * 0.1f,
+                uiViewHeight / 2.0f
+        );
+        sf::Vector2f changeSecondsButtonPosition(
+                windowWidth / 2.0f + (wideButtonSize.x  * 2.0f) + 10.0f,
+                uiViewHeight / 2.0f + (compactWideButtonSize.y / 2) + 5.0f
+        );
+        sf::Vector2f waitSecondsBoxPosition(
+                windowWidth / 2.0f + (wideButtonSize.x  * 2.0f) + 10.0f,
+                uiViewHeight / 2.0f - (compactWideButtonSize.y / 2) - 5.0f
+        );
+
+        // Apple to UI parts
+        ui.playPauseButton.adjustScaling(
+                wideButtonSize,
+                playPauseButtonPosition,
+                updateTextScale(
+                        window,
+                        ui.playPauseButton.getBaseTextPunto()
+                )
+        );
+        ui.playPauseButton.setOriginCenter();
+
+        ui.runButton.adjustScaling(
+                defaultButtonSize,
+                runButtonButtonPosition,
+                updateTextScale(
+                        window,
+                        ui.runButton.getBaseTextPunto()
+                )
+        );
+        ui.runButton.setOriginCenter();
+
+        ui.skipOneButton.adjustScaling(
+                defaultButtonSize,
+                skipOneButtonPosition,
+                updateTextScale(
+                        window,
+                        ui.runButton.getBaseTextPunto()
+                )
+        );
+        ui.skipOneButton.setOriginCenter();
+
+        ui.changeSecondsButton.adjustScaling(
+                compactWideButtonSize,
+                changeSecondsButtonPosition,
+                updateTextScale(
+                        window,
+                        ui.changeSecondsButton.getBaseTextPunto()
+                )
+        );
+        ui.changeSecondsButton.setOriginCenter();
+
+
+        ui.startNodeBox.adjustScaling(
+                defaultTextBoxSize,
+                startNodeBoxPosition,
+                updateTextScale(
+                        window,
+                        ui.startNodeBox.getBaseTextPunto()
+                )
+        );
+        ui.startNodeBox.setOriginCenter();
+
+        ui.waitSecondBox.adjustScaling(
+                compactWideButtonSize,
+                waitSecondsBoxPosition,
+                updateTextScale(
+                        window,
+                        ui.waitSecondBox.getBaseTextPunto()
+                )
+        );
+        ui.waitSecondBox.setOriginCenter();
 }

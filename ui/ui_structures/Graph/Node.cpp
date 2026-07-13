@@ -22,14 +22,18 @@ void Node::setStyle(const NodeStyle &newStyle)
         
         shape.setRadius(radius);
         shape.setOrigin(radius, radius);
-        shape.setFillColor(newStyle.inactiveColor);
-        shape.setOutlineColor(newStyle.inactiveOutlineColor);
         shape.setOutlineThickness(newStyle.outlineThickness);
 
-        if (active)
+        if (active) {
+                shape.setFillColor(newStyle.activeColor);
+                shape.setOutlineColor(newStyle.activeOutlineColor);
                 text.setFillColor(newStyle.inactiveColor);
-        else
+        }
+        else {
+                shape.setFillColor(newStyle.inactiveColor);
+                shape.setOutlineColor(newStyle.inactiveOutlineColor);
                 text.setFillColor(newStyle.activeColor);
+        }
 }
 
 void Node::setText(const sf::Font &font)
@@ -69,6 +73,10 @@ sf::FloatRect Node::getGlobalBounds() const
         return shape.getGlobalBounds();
 }
 
+bool Node::getActive()
+{
+        return active;
+}
 
 // Setters
 
@@ -77,4 +85,10 @@ void Node::setPosition(sf::Vector2f newPosition)
         position = newPosition;
         shape.setPosition(position);
         centerText();
+}
+
+void Node::setActive(const NodeStyle &newStyle)
+{
+        active = !active;
+        setStyle(newStyle);
 }
